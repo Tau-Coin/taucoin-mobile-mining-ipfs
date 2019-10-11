@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
+import io.taucoin.android.ipfs.IPFSManager;
 import io.taucoin.android.service.TaucoinRemoteService;
 import io.taucoin.android.service.TaucoinServiceMessage;
 import io.taucoin.android.service.events.EventData;
