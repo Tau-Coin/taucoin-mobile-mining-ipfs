@@ -1,0 +1,277 @@
+<resources>
+    <string name="app_name">TAUcoin</string>
+
+    <string name="common_loading">loading&#8230;</string>
+    <string name="common_no_login">Visitor</string>
+    <string name="common_cancel">Cancel</string>
+    <string name="common_ok">OK</string>
+    <string name="common_done">Done</string>
+    <string name="common_yes">Yes</string>
+    <string name="common_no">No</string>
+    <string name="common_continue">Continue</string>
+    <string name="common_balance" formatted="false"><Data><![CDATA[<font color="#f19322">%s</font>&nbsp;TAU]]> </Data></string>
+    <string name="common_exit" formatted="false">Do you want to stop mining?</string>
+    <string name="common_balance_unit">TAU</string>
+    <string name="common_zero_unit">0.00 TAU</string>
+    <string name="common_zero">0</string>
+    <string name="common_percentage_zero">0%</string>
+    <string name="common_percentage">&#37;</string>
+    <string name="common_refresh_failed">Refresh Failed</string>
+    <string name="common_see_more">Click to see more</string>
+    <string name="common_install_browser">Please install mobile browser first!</string>
+    <string name="common_wifi_disconnected">WIFI connection time out</string>
+    <string name="home_no_point">No.%s</string>
+    <string name="home_total_blocks">Total blocks %s</string>
+
+    <string name="splash_title">TAU mWallet %s</string>
+    <string name="splash_subheading">Mobile Mining Wallet</string>
+    <string name="splash_describe">Mobile &#038; Decentral\nProof of Transaction\nMining consumes 5 MB data per day</string>
+
+    <string name="main_home">Home</string>
+    <string name="main_send_receive">Send &#38; Receive</string>
+    <string name="main_manage">Manage</string>
+    <string name="main_home_title">TAUcoin.io - Mobile Mining Wallet</string>
+    <string name="main_exit">Click again to exit the application!</string>
+    <string name="main_congratulation">Congratulation!</string>
+    <string name="main_congratulation_msg">You\'ve successfully mined %s blocks, and %s TAU in the last %s hours!</string>
+
+    <string name="tx_increase">Increase Power</string>
+    <string name="tx_send">Send</string>
+    <string name="tx_manager_address">Manage Keys</string>
+    <string name="tx_receive">Receive</string>
+    <string name="tx_log">Transactions</string>
+    <string name="tx_log_empty">No records</string>
+    <string name="tx_to_address">To Address</string>
+    <string name="tx_from_address">From Address</string>
+    <string name="tx_transaction_id">Transaction ID</string>
+    <string name="tx_transaction_expiry">Transaction Expiry</string>
+    <string name="tx_transaction_fee">Transaction Fee</string>
+    <string name="tx_transaction_median_fee">Transaction Median Fee</string>
+    <string name="tx_log_tips">
+        &#160;Red font indicates a failed transaction,\n
+        Blue font indicates a pending transaction,\n
+        Black font indicates a successful transaction;\n
+        \'+\' represents income,\n
+        \'-\' represents payout
+    </string>
+    <string name="tx_hash_copy">TX hash copied</string>
+    <string name="tx_address_copy">Address copied</string>
+    <string name="tx_id_copy">Transaction ID copied</string>
+
+    <string name="manager_version">version %s</string>
+    <string name="manager_keys">Keys</string>
+    <string name="manager_setting">Settings</string>
+    <string name="manager_help">Help</string>
+    <string name="manager_p2p_exchange">P2P &#38; Non&#045;KYC Exchange</string>
+    <string name="manager_mining_group">Mining Group</string>
+    <string name="manager_upcoming_feature">Upcoming feature: IPFS native integration, Serverless Wallet, Sharding as Mining.</string>
+
+    <string name="send_receiver_address">Receiver\'s Address</string>
+    <string name="send_amount">Amount</string>
+    <string name="send_budget">Budget</string>
+    <string name="send_budget_hint">Amount for increasing power</string>
+    <string name="send_amount_increase">Budget:</string>
+    <string name="send_memo">Memo</string>
+    <string name="send_status">Status</string>
+    <string name="send_tx_fee_tip">The higher fee, the faster trx processing.</string>
+    <string name="send_transaction_expiry" formatted="false"><Data><![CDATA[Transaction expires in <font color="#0E88EF">%s</font> (≈%s minutes) blocks.]]> </Data></string>
+    <string name="send_to">To</string>
+    <string name="send_dialog_yes">Proceed</string>
+    <string name="send_dialog_no">Back</string>
+    <string name="send_tx_success">Transaction sent</string>
+    <string name="send_txs_sending">Transaction in progress</string>
+    <string name="send_tx_network_error">Error in network, send failed</string>
+    <string name="send_tx_address">Receiver&#160;Address:&#160;%s</string>
+    <string name="send_tx_increase_tip">Get more transaction number and mining power. Wallet automatically makes transaction under your Budget.</string>
+    <string name="send_tx_increase_address">To:&#160;%s</string>
+
+    <string name="send_tx_small_fee">0.01</string>
+    <string name="send_tx_total_amount">Total:&#160;%s&#160;TAU</string>
+    <string name="send_tx_budget_amount" formatted="false"><Data><![CDATA[Total:&nbsp;<font color="#f19322">%s</font>&nbsp;(Including each transaction fee)]]></Data></string>
+
+    <string name="send_tx_invalid_address">Invalid Address</string>
+    <string name="send_tx_invalid_amount">Invalid Amount</string>
+    <string name="send_tx_invalid_budget">Invalid Budget</string>
+    <string name="send_tx_invalid_budget_no_enough">Invalid Budget :\nBudget &#060; Transaction Fee</string>
+    <string name="send_tx_invalid_fee">Invalid Transaction Fee</string>
+    <string name="send_no_enough_coins">Insufficient Balance :\nAmount + Transaction Fee >= Balance</string>
+    <string name="send_no_enough_coins_budget">Insufficient Balance :\nBudget > Balance</string>
+    <string name="send_amount_too_low">Transaction amount is too low</string>
+    <string name="send_budget_too_low">Transaction budget is too low</string>
+    <!--<string name="send_amount_too_high">Transaction amount is too high</string>-->
+    <string name="send_fee_too_low">Transaction fee is too low</string>
+    <string name="send_fee_upper_limit">Transaction fees should not exceed %s TAU</string>
+    <!--<string name="send_fee_too_high">Transaction fee is too high</string>-->
+    <string name="send_budget_in_pool">TAU kindly remind you. There already has an increase power transaction in the pool. Sending frequently may increase the failure rate of the transaction.</string>
+
+    <string name="send_tx_status_pending">In processing, expected to confirm in 5 minutes.</string>
+    <string name="send_tx_status_success">Successfully</string>
+    <string name="send_tx_status_expired">Failed, transaction expired.</string>
+    <string name="send_tx_illegal">Failed, illegal transaction.</string>
+    <string name="send_tx_insufficient_fee">Failed, insufficient transaction fee</string>
+    <string name="send_tx_verify_signature">Failed, unable to verify signature</string>
+    <string name="send_tx_insufficient_balance">Failed, insufficient balance</string>
+    <string name="send_tx_illegal_version">Failed, illegal transaction version</string>
+    <string name="send_tx_illegal_option">Failed, illegal transaction option</string>
+    <string name="send_tx_illegal_expiry">Failed, illegal transaction expiry</string>
+    <string name="send_tx_illegal_time">Failed, illegal transaction time</string>
+    <string name="send_tx_illegal_sender">Burning address can not send coins</string>
+    <string name="send_tx_unknown_error">Failed, network error, please try it again</string>
+
+    <string name="keys_dialog_title">Please make sure your\nprivate key has been saved</string>
+    <string name="keys_address">Address</string>
+    <string name="keys_public_key">Public Key</string>
+    <string name="keys_private_key">Private Key</string>
+    <string name="keys_import_key">Import New Key</string>
+    <string name="keys_import">Import</string>
+    <string name="keys_generate">Generate New Private Key</string>
+    <string name="keys_how_import">How to import my private key?</string>
+    <string name="keys_paste_tip">Paste private key here</string>
+    <string name="keys_address_copy">Address copied</string>
+    <string name="keys_public_copy">Public Key copied</string>
+    <string name="keys_private_copy">Private Key copied</string>
+    <string name="keys_private_invalid">Invalid private key</string>
+
+    <string name="profile_avatar">Avatar</string>
+    <string name="profile_name">Name</string>
+    <string name="profile_title">Profile</string>
+    <string name="profile_select_photo">Choose from Album</string>
+    <string name="profile_take_photo">Take Photo</string>
+    <string name="profile_dialog_name">Please enter the name</string>
+
+    <!--version upgrade-->
+    <string name="app_upgrade_progress">Updating progress&#8230;</string>
+    <string name="app_upgrade_title">Update Log</string>
+    <string name="app_upgrade_install">Install</string>
+    <string name="app_upgrade_fail">Failed</string>
+    <string name="app_upgrade_retry">Retry</string>
+    <string name="app_upgrade_latest">latest version</string>
+
+    <!--permission tip-->
+    <string name="permission_tip_upgrade_denied">
+         Please enable storage rights for TAUcoin, it is disabled.
+    </string>
+
+    <string name="permission_tip_upgrade_never_ask_again">
+        Please enable storage rights for TAUcoin, it is forbidden now.
+    </string>
+
+    <string name="permission_install_unknown_apk_note">
+        Please allow installation of TAUcoin.
+    </string>
+
+    <string name="home_mining_balance">Balance</string>
+    <string name="home_mining_power">Mining\nPower</string>
+    <string name="home_mining_rate">Mining&#160;Rate(Log)</string>
+    <string name="home_mining_sync">Synced</string>
+    <string name="home_mining">Mining</string>
+    <string name="home_download">Download</string>
+    <string name="home_full_data">Full&#160;Data:&#160;%sM</string>
+    <string name="home_verify">Verify</string>
+    <string name="home_sync_tip">Synchronizing</string>
+    <string name="home_on">On</string>
+    <string name="home_off">Off</string>
+
+    <string name="home_mining_dashboard">Mining Dashboard</string>
+    <string name="home_mining_rank">Mining Rank</string>
+    <string name="home_wifi_only">Wifi Only</string>
+    <string name="home_current_mining">Current Mining</string>
+    <string name="home_reward_analysis">Reward Analysis</string>
+    <string name="home_success_requires">Mining Success Requires</string>
+    <string name="home_current_condition">Current Condition</string>
+    <string name="home_mined_history">History Mined</string>
+    <string name="home_last_tx_role">Role</string>
+    <string name="home_last_block_height">Height</string>
+    <string name="home_last_block_hash">Hash</string>
+    <string name="home_last_block_income">Income</string>
+    <string name="home_mining_history">View your mining history</string>
+    <string name="home_current_block">Current Block</string>
+    <string name="home_average_block_time">Average Block Time</string>
+    <!--<string name="home_average_block_time_tip">The block is currently competed by miners for packaging.</string>-->
+    <string name="home_average_block_time_value">05:00:00</string>
+    <string name="home_estimated_block_time">Count-down competition on your address (&#8230;%s) to win the block</string>
+    <string name="home_hit_tip">(Hit: Address \"%s\" network random number)</string>
+    <string name="home_avg_time_tip">(avg. 5 min)</string>
+
+    <string name="home_balance">Total Balance</string>
+    <string name="home_mining_income">Historical Mining Rewards</string>
+    <string name="home_power">Mining&#160;Power</string>
+    <string name="home_miners_default_title">0.5/3/24</string>
+    <string name="home_miners_title_value">(%sh)</string>
+    <string name="home_miners_default_value">0/0/0</string>
+    <string name="home_miners_title">Miners&#160;Online</string>
+    <string name="home_synchronized">Latest&#160;Block</string>
+    <string name="home_mined">Mined&#160;&#38;&#160;Participated</string>
+    <string name="home_cpu">CPU&#160;(%)</string>
+    <string name="home_memory">Memory&#160;(M)</string>
+    <string name="home_storage">Storage&#160;(M)</string>
+    <string name="home_circulation">Circulation</string>
+    <string name="home_txs_in_pool">Txs&#160;In&#160;Pool</string>
+    <string name="home_median_fee">Median&#160;Tx&#160;Fee</string>
+    <string name="home_data_storage">Daily&#160;Data&#160;(M)</string>
+    <string name="home_mining_transaction">Your&#160;phone&#160;has&#160;verified&#160;following&#160;transactions</string>
+    <string name="home_no_turn_on">Please turn on the mining function.</string>
+    <string name="home_chain_height">Blockchain Height</string>
+    <string name="home_what_is_power">Power is your total transaction history. The more transactions, the higher power is.</string>
+
+    <string name="home_mining_hash">TX hash</string>
+    <string name="home_mining_fee">TX Fee</string>
+    <string name="home_mining_status">Reward Type</string>
+    <string name="home_mining_miner">Miner</string>
+    <string name="home_mining_participant">Participant</string>
+    <string name="home_mining_miner_participant">Miner\n&#38;\nParticipant</string>
+    <string name="home_mining_mined_calculating">Calculating</string>
+    <string name="home_mining_power_tips">Sender will increase one mining power with a successful transaction.</string>
+    <string name="home_database_irreparable_error">There is something wrong with the synchronized block data. It\'s reloading now. Please wait&#8230;</string>
+
+    <string name="block_list_title">Blocks Synchronized &#38; Mined</string>
+    <string name="block_list_all">ALL</string>
+    <string name="block_list_me">ME</string>
+    <string name="block_no">Block No.%d</string>
+    <string name="block_mining_income">Total Transaction Fee</string>
+    <string name="block_miner">Miner</string>
+    <string name="block_total_transaction">Total Transaction</string>
+    <string name="block_transaction">Transaction</string>
+    <string name="block_transaction_id">Transaction&#160;ID&#160;&#160;</string>
+    <string name="bloc_transaction_fee">Transaction&#160;Fee&#160;&#160;%sTAU</string>
+
+    <string name="income_miner">New block reward %s TAU.</string>
+    <string name="income_miner_participant">New block and transaction participation reward %s TAU.</string>
+    <string name="income_participant">Transaction participation reward %s TAU.</string>
+
+    <string name="income_miner_rollback"> Blocks roll back.</string>
+
+    <string name="mining_import_private_key">Please stop mining first</string>
+    <string name="mining_generate_private_key">Please stop mining first</string>
+    <string name="mining_power_zero">Send transactions to increase \"Mining Power\" above 0 for mining.</string>
+    <string name="mining_sync_complete">Latest block need to be synced.</string>
+
+    <string name="setting_title">Settings</string>
+    <string name="setting_transaction_expiry_limit">Transaction valid time range: %d - %d minutes.</string>
+    <string name="setting_address_book">Keys Management</string>
+    <string name="setting_transaction_expiry">Transaction Expiry</string>
+    <string name="setting_transaction_expiry_tip">Please enter the transaction expiry</string>
+    <string name="setting_reset_data">Restart Verify</string>
+    <string name="setting_reset_data_success">Successful</string>
+    <string name="setting_reset_data_fail">Failed</string>
+    <string name="setting_reset_data_tips">Restarting Verify will not affect private key.</string>
+
+    <string name="main_de_fi">DeFi</string>
+    <string name="de_fi_coming_soon">Coming Soon</string>
+    <string name="de_fi_long_crypto">Project Long Crypto</string>
+    <string name="de_fi_content">As a coin project, making wealth for community is essential. Therefore,
+        just like famous project DAI, we will enable TAU community to be a decentral autonomous organization(DAO)
+        managing a DeFi(decentral finance) project, called “Long Crypto”. Through open and on-chain smart contracts
+        and transparent data, Long Crypto will borrow stable coins from general public. We use stable coins like USDT
+        to buy and hold ETH to achieve long term asset growth. The supplier interests will automatically adjust from 10%
+        - 99% annually. They can withdraw investments at any moment when liquidity allowes. In long term, stable coin suppliers
+        will always make money. As DAO member, TAU coin holder will get the profit from smart contract and vote key decisions proportionally.
+        TAU team is a group of programmers, who want to combine technology and finance together to serve TAU community.</string>
+    <string name="de_fi_range">* Citizens and Residents of United States, European Union and China shall not invest Long Crypto project.</string>
+    <string name="de_fi_telegram_group">Long Crypto Telegram Group</string>
+
+    <string name="address_book_search_hint">Search Address or Remark Name</string>
+    <string name="address_book_deleted_sure" formatted="false"><Data><![CDATA[Are you sure you want to <font color="#fa0105">delete</font> this address?]]></Data></string>
+    <string name="address_book_switch_sure">Confirm to use this address.</string>
+
+</resources>

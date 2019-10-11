@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_foundation/build/intermediates/res/merged/release/drawable-ldrtl-xxxhdpi-v17/abc_spinner_mtrl_am_alpha.9.png",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0-rc01.aar/b42257f3a39c0cb4048a6c80686cb465/res/drawable-ldrtl-xxxhdpi-v17/abc_spinner_mtrl_am_alpha.9.png"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_foundation/build/intermediates/res/merged/release/drawable-ldrtl-xxxhdpi-v17/abc_ic_menu_cut_mtrl_alpha.png",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0-rc01.aar/b42257f3a39c0cb4048a6c80686cb465/res/drawable-ldrtl-xxxhdpi-v17/abc_ic_menu_cut_mtrl_alpha.png"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_foundation/build/intermediates/res/merged/release/drawable-ldrtl-xxxhdpi-v17/abc_ic_menu_copy_mtrl_am_alpha.png",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0-rc01.aar/b42257f3a39c0cb4048a6c80686cb465/res/drawable-ldrtl-xxxhdpi-v17/abc_ic_menu_copy_mtrl_am_alpha.png"
+    }
+]

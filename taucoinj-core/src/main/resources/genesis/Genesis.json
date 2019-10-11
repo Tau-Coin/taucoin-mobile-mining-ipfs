@@ -1,0 +1,84 @@
+{
+  "version": "0x00",
+  "timestamp": "0x5ce42ecd",
+  "previousHeaderHash": "0x0000000000000000000000000000000000000000",
+  "generatorPublicKey": "0394c720df2a453ce470c7fbe48655f321b03432c53840d1333392c12332d61b05",
+
+  "blockSignature": "fb8b62d700fa65530bccd2664874aef0e78c1657b43394af70583ac49041305516c31632043063b6aeea5703bbfc2f1391c940f5a74fdbc48eb1604e718167e9",
+  "option": "0x00",
+  "coinbase": [],
+
+  "alloc": {
+    "d730c34a4521c2981b2013b931eacb6e7381057e": {
+      "balance": "10000000000"
+    },
+    "96a37844744a14b6474863612100a4ddff4c6a87": {
+      "balance": "10000000000"
+    },
+    "06aa4bfed0a2ca0d982ee3ce8fa5a1913b89f289": {
+      "balance": "10000000000"
+    },
+    "8e6e4a3ea4b80fb98e3073de7d3877c4010e4270": {
+      "balance": "10000000000"
+    },
+
+    "1bb6ddedc45ba52aa41220367bdbfc3308540ada": {
+      "balance": "10000000000"
+    },
+    "afa99383029e8d02c68907e5ca01a983f5b4ae14": {
+      "balance": "10000000000"
+    },
+    "b2499de7461e859df84799087f3f3f1c0a6b1747": {
+      "balance": "10000000000"
+    },
+    "df5ced25bce7d6bf519d8000f0053ae622c7a35e": {
+      "balance": "10000000000"
+    },
+    "a11fb5b3491339e22ef17fa72423c6e6e369ab70": {
+      "balance": "10000000000"
+    },
+    "090699a4619e630e746fad5f8c1173f8c4035088": {
+      "balance": "10000000000"
+    },
+
+    "df81f5c848dba8f211bb03784a30ffeaa783e859": {
+      "balance": "10000000000"
+    },
+
+    "82a4b06f9dfae3ae11980905fe23930313fa6625": {
+      "balance": "10000000000"
+    },
+
+    "249f9d6705f6d582237137b2b90fadf401c158b2": {
+      "balance": "10000000000"
+    },
+
+    "6229ddda357b7835ea620f78770df0be4b39e3da": {
+      "balance": "10000000000"
+    },
+
+    "ce94705ff779f0e93d58925491b28afab2ca758f": {
+      "balance": "10000000000"
+    },
+    "871e9e21cf764e0fe50946198fe75e5ec1fb379b": {
+      "balance": "10000000000"
+    },
+    "7cdbb471ac4cb7f9208949649eeb7932094a2be8": {
+      "balance": "10000000000"
+    },
+    "7022f4db47e0b7b8856eb2fecabccc174852be73": {
+      "balance": "10000000000"
+    },
+    "03527184b6748a25488434202c3ce1692645868f": {
+      "balance": "10000000000"
+    },
+    "473c4353b6b8d862ddc78db9d630f91f17ac85ee": {
+      "balance": "10000000000"
+    },
+    "562d67181662dd68145f689a2fa14a8ebd76ebfd": {
+      "balance": "10000000000"
+    }
+  },
+
+  "geneBasetarget": "0x0fffffffffffffff"
+}

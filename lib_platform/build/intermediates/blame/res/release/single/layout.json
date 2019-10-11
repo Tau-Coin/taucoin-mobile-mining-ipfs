@@ -1,0 +1,250 @@
+[
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/notification_template_icon_group.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/support-compat-28.0.0.aar/c54fea04c49a602004e92ab8f3a4404e/res/layout/notification_template_icon_group.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_search_dropdown_item_icons_2line.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_search_dropdown_item_icons_2line.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_dialog_title_material.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_dialog_title_material.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_alert_dialog_material.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_alert_dialog_material.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_list_menu_item_layout.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_list_menu_item_layout.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_screen_content_include.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_screen_content_include.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_popup_menu_item_layout.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_popup_menu_item_layout.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_alert_dialog_button_bar_material.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_alert_dialog_button_bar_material.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/notification_template_lines_media.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0.aar/b8d3480cf248224815915e140dcbf766/res/layout/notification_template_lines_media.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_tooltip.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_tooltip.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/design_navigation_menu_item.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/d25f062b469ff61804082a018f6d9d6a/res/layout/design_navigation_menu_item.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_action_menu_item_layout.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_action_menu_item_layout.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_screen_simple_overlay_action_mode.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_screen_simple_overlay_action_mode.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_select_dialog_material.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_select_dialog_material.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_activity_chooser_view_list_item.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_activity_chooser_view_list_item.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_screen_toolbar.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_screen_toolbar.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/select_dialog_item_material.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/select_dialog_item_material.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/notification_action_tombstone.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/support-compat-28.0.0.aar/c54fea04c49a602004e92ab8f3a4404e/res/layout/notification_action_tombstone.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_list_menu_item_icon.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_list_menu_item_icon.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_screen_simple.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_screen_simple.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/notification_media_action.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0.aar/b8d3480cf248224815915e140dcbf766/res/layout/notification_media_action.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/design_navigation_item_separator.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/d25f062b469ff61804082a018f6d9d6a/res/layout/design_navigation_item_separator.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_action_mode_bar.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_action_mode_bar.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/notification_template_media.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0.aar/b8d3480cf248224815915e140dcbf766/res/layout/notification_template_media.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/design_menu_item_action_area.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/d25f062b469ff61804082a018f6d9d6a/res/layout/design_menu_item_action_area.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_action_bar_title_item.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_action_bar_title_item.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_alert_dialog_title_material.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_alert_dialog_title_material.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/notification_template_big_media_narrow.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0.aar/b8d3480cf248224815915e140dcbf766/res/layout/notification_template_big_media_narrow.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_list_menu_item_checkbox.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_list_menu_item_checkbox.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/design_navigation_menu.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/d25f062b469ff61804082a018f6d9d6a/res/layout/design_navigation_menu.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/design_layout_tab_icon.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/d25f062b469ff61804082a018f6d9d6a/res/layout/design_layout_tab_icon.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/support_simple_spinner_dropdown_item.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/support_simple_spinner_dropdown_item.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_action_menu_layout.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_action_menu_layout.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/design_text_input_password_icon.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/d25f062b469ff61804082a018f6d9d6a/res/layout/design_text_input_password_icon.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/notification_template_big_media_narrow_custom.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0.aar/b8d3480cf248224815915e140dcbf766/res/layout/notification_template_big_media_narrow_custom.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/notification_media_cancel_action.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0.aar/b8d3480cf248224815915e140dcbf766/res/layout/notification_media_cancel_action.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_search_view.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_search_view.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_activity_chooser_view.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_activity_chooser_view.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/select_dialog_multichoice_material.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/select_dialog_multichoice_material.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_action_bar_up_container.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_action_bar_up_container.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_action_mode_close_item_material.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_action_mode_close_item_material.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/design_bottom_navigation_item.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/d25f062b469ff61804082a018f6d9d6a/res/layout/design_bottom_navigation_item.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/design_navigation_item_subheader.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/d25f062b469ff61804082a018f6d9d6a/res/layout/design_navigation_item_subheader.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_popup_menu_header_item_layout.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_popup_menu_header_item_layout.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/notification_template_part_time.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/support-compat-28.0.0.aar/c54fea04c49a602004e92ab8f3a4404e/res/layout/notification_template_part_time.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/notification_template_big_media_custom.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0.aar/b8d3480cf248224815915e140dcbf766/res/layout/notification_template_big_media_custom.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_cascading_menu_item_layout.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_cascading_menu_item_layout.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_list_menu_item_radio.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_list_menu_item_radio.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/abc_expanded_menu_layout.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/abc_expanded_menu_layout.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/design_layout_tab_text.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/d25f062b469ff61804082a018f6d9d6a/res/layout/design_layout_tab_text.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/notification_template_big_media.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0.aar/b8d3480cf248224815915e140dcbf766/res/layout/notification_template_big_media.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/mtrl_layout_snackbar.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/d25f062b469ff61804082a018f6d9d6a/res/layout/mtrl_layout_snackbar.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/design_bottom_sheet_dialog.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/d25f062b469ff61804082a018f6d9d6a/res/layout/design_bottom_sheet_dialog.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/notification_action.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/support-compat-28.0.0.aar/c54fea04c49a602004e92ab8f3a4404e/res/layout/notification_action.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/design_layout_snackbar_include.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/d25f062b469ff61804082a018f6d9d6a/res/layout/design_layout_snackbar_include.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/mtrl_layout_snackbar_include.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/d25f062b469ff61804082a018f6d9d6a/res/layout/mtrl_layout_snackbar_include.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/notification_template_media_custom.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0.aar/b8d3480cf248224815915e140dcbf766/res/layout/notification_template_media_custom.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/design_layout_snackbar.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/d25f062b469ff61804082a018f6d9d6a/res/layout/design_layout_snackbar.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/notification_template_part_chronometer.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/support-compat-28.0.0.aar/c54fea04c49a602004e92ab8f3a4404e/res/layout/notification_template_part_chronometer.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/design_navigation_item_header.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/d25f062b469ff61804082a018f6d9d6a/res/layout/design_navigation_item_header.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/design_navigation_item.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/d25f062b469ff61804082a018f6d9d6a/res/layout/design_navigation_item.xml"
+    },
+    {
+        "merged": "/home/CowTC/Codes/taucoin-mobile-mining/lib_platform/build/intermediates/res/merged/release/layout/select_dialog_singlechoice_material.xml",
+        "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/47abe31477654008ac2dc23c96e30583/res/layout/select_dialog_singlechoice_material.xml"
+    }
+]

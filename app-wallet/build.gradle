@@ -1,0 +1,97 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'org.greenrobot.greendao'
+
+//apply plugin: 'kotlin-android'
+//
+//apply plugin: 'kotlin-android-extensions'
+
+apply plugin: 'io.fabric'
+
+android {
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        applicationId "io.taucoin.android.wallet"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode project.appVersionCode as int
+        versionName project.appVersionName
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+        javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
+        resConfigs "en"
+    }
+
+    sourceSets {
+        release {
+            assets.srcDirs = ['assets', 'configs/release']
+        }
+        debug {
+            assets.srcDirs = ['assets', 'configs/debug']
+        }
+    }
+
+    configurations.all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            def requested = details.requested
+            if (requested.group == "com.android.support") {
+                if (!requested.name.startsWith("multidex")) {
+                    details.useVersion "28.0.0"
+                }
+            }
+        }
+    }
+
+    greendao {
+        schemaVersion dbSchemaVersion as int
+        daoPackage 'io.taucoin.android.wallet.db.greendao'
+        targetGenDir 'src/main/java'
+    }
+
+    signingConfigs {
+        myConfig {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'AndroidDebugKey'
+            keyPassword 'android'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+            zipAlignEnabled true
+            signingConfig signingConfigs.myConfig
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            zipAlignEnabled false
+            signingConfig signingConfigs.myConfig
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility rootProject.ext.sourceCompatibilityVersion
+        targetCompatibility rootProject.ext.targetCompatibilityVersion
+    }
+
+    packagingOptions {
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/proguard/androidx-annotations.pro'
+    }
+}
+
+dependencies {
+    implementation(project(':lib_platform'))
+
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    testImplementation rootProject.ext.junit
+    androidTestImplementation rootProject.ext.test
+    androidTestImplementation rootProject.ext.espresso
+}

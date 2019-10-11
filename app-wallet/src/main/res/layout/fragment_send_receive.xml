@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_home_bg"
+    android:orientation="vertical">
+
+    <io.taucoin.android.wallet.widget.ToolbarView
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:leftBackImage="@mipmap/icon_close"
+        app:rightImage="@mipmap/icon_refresh"
+        app:leftImagePadding="0dp"
+        app:titleText="@string/main_send_receive" />
+
+    <RelativeLayout
+        android:layout_below="@+id/toolBar"
+        android:id="@+id/rl_top_view"
+        android:layout_width="match_parent"
+        android:layout_height="170dp">
+
+        <io.taucoin.android.wallet.widget.banner.BannerLayout
+            android:id="@+id/banner_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:autoPlaying="false"
+            app:centerScale="1.3"
+            app:itemSpace="20"
+            app:moveSpeed="1.8"/>
+
+        <TextView
+            style="@style/style_normal_yellow"
+            android:id="@+id/tv_manage_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="10dp"
+            android:gravity="center_vertical"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:text="@string/tx_manager_address"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_send"
+        android:layout_below="@+id/rl_top_view"
+        android:orientation="horizontal"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_send"
+            style="@style/style_normal_white"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="50dp"
+            android:includeFontPadding="false"
+            android:background="@drawable/yellow_rect_small_round_bg"
+            android:text="@string/tx_send"
+            android:textAllCaps="false" />
+
+        <Button
+            android:visibility="gone"
+            android:id="@+id/btn_increase"
+            style="@style/style_big_white"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="50dp"
+            android:includeFontPadding="false"
+            android:layout_marginStart="2.5dp"
+            android:background="@drawable/yellow_rect_small_round_bg"
+            android:text="@string/tx_increase"
+            android:textAllCaps="false" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_tip"
+        android:layout_below="@+id/ll_send"
+        android:layout_width="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/style_normal_grey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="30dp"
+            android:text="@string/tx_log" />
+
+        <ImageView
+            android:id="@+id/iv_tx_log_tips"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:padding="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@null"
+            android:src="@mipmap/icon_log_help" />
+
+    </LinearLayout>
+
+    <io.taucoin.android.wallet.widget.EmptyLayout
+        android:layout_below="@+id/ll_tip"
+        android:visibility="gone"
+        android:id="@+id/empty_layout"
+        android:layout_width="match_parent"
+        app:empty_tip="@string/tx_log_empty"
+        android:layout_height="match_parent"/>
+
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:layout_below="@+id/ll_tip"
+        android:id="@+id/refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        app:srlAccentColor="#00000000"
+        app:srlPrimaryColor="#00000000"
+        app:srlEnablePreviewInEditMode="true">
+
+        <io.taucoin.android.wallet.widget.refresh.ClassicsHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <ExpandableListView
+            android:id="@+id/list_view_log"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            android:groupIndicator="@null"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:dividerHeight="0dp"
+            android:scrollbars="none" />
+
+        <io.taucoin.android.wallet.widget.refresh.ClassicsFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+</RelativeLayout>

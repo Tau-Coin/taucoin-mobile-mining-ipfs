@@ -1,0 +1,17 @@
+package io.taucoin.core;
+
+public enum ImportResult {
+
+    IMPORTED_BEST,
+    IMPORTED_NOT_BEST,
+    EXIST,
+    NO_PARENT,
+    INVALID_BLOCK,
+    CONSENSUS_BREAK,
+    DISCONTINUOUS_BRANCH,
+    IMMUTABLE_BRANCH;
+
+    public boolean isSuccessful() {
+        return equals(IMPORTED_BEST) || equals(IMPORTED_NOT_BEST);
+    }
+}

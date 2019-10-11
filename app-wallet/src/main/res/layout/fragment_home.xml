@@ -1,0 +1,732 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/color_home_bg"
+    android:orientation="vertical">
+
+    <io.taucoin.android.wallet.widget.ToolbarView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:leftBackImage="@mipmap/icon_close"
+        app:rightImage="@mipmap/icon_refresh"
+        app:leftImagePadding="0dp"
+        app:titleText="@string/main_home_title" />
+
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:srlAccentColor="#00000000"
+        app:srlPrimaryColor="#00000000"
+        app:srlEnablePreviewInEditMode="true">
+
+        <io.taucoin.android.wallet.widget.refresh.ClassicsHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginStart="20dp"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:contentDescription="@null"
+                        android:src="@mipmap/icon_balance"
+                        android:layout_marginTop="3dp"
+                        android:layout_height="16dp" />
+
+                    <TextView
+                        style="@style/style_normal_grey"
+                        android:layout_width="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_balance"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_balance"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="5dp"
+                    android:includeFontPadding="false"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="@color/color_yellow"
+                    android:maxLines="1"
+                    app:autoSizeTextType="uniform"
+                    app:autoSizeMaxTextSize="26dp"
+                    app:autoSizeMinTextSize="16dp"
+                    app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                    android:gravity="center_vertical|center"
+                    android:text="@string/common_zero_unit"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginStart="20dp"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:contentDescription="@null"
+                        android:src="@mipmap/icon_dashboard"
+                        android:layout_marginTop="3dp"
+                        android:layout_height="16dp" />
+
+                    <TextView
+                        style="@style/style_normal_grey"
+                        android:layout_width="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_mining_dashboard"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginTop="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/white_rect_round_bg_no_border">
+
+                        <TextView
+                            android:id="@+id/tv_download"
+                            style="@style/style_middle_blue"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/dimen_size_22"
+                            android:includeFontPadding="false"
+                            android:text="@string/common_percentage_zero"
+                            android:maxLines="1"
+                            android:gravity="center_vertical|center" />
+
+                        <TextView
+                            android:id="@+id/tv_block_chain_data"
+                            style="@style/style_small_light_grey"
+                            android:layout_width="match_parent"
+                            android:layout_height="14dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:includeFontPadding="false"
+                            android:paddingStart="1dp"
+                            android:paddingEnd="1dp"
+                            android:maxLines="2"
+                            android:gravity="center_horizontal|center"
+                            app:autoSizeTextType="uniform"
+                            app:autoSizeMaxTextSize="12dp"
+                            app:autoSizeMinTextSize="6dp"
+                            app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                            android:background="@drawable/selector_reward_forecast_bg"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="2dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_height="wrap_content">
+
+                            <io.taucoin.android.wallet.widget.ProgressView
+                                android:id="@+id/iv_download"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"/>
+
+                            <TextView
+                                style="@style/style_middle_black"
+                                android:layout_width="wrap_content"
+                                android:text="@string/home_download"
+                                android:gravity="center_vertical"
+                                android:includeFontPadding="false"
+                                android:layout_marginStart="5dp"
+                                android:layout_height="match_parent" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginTop="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/white_rect_round_bg_no_border">
+
+                        <TextView
+                            android:id="@+id/tv_verify"
+                            style="@style/style_middle_blue"
+                            android:layout_width="match_parent"
+                            android:layout_height="26dp"
+                            android:includeFontPadding="false"
+                            android:gravity="center_vertical|center"
+                            android:maxLines="1"
+                            app:autoSizeTextType="uniform"
+                            app:autoSizeMaxTextSize="22dp"
+                            app:autoSizeMinTextSize="10dp"
+                            app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                            android:text="@string/common_zero" />
+
+                        <TextView
+                            android:id="@+id/tv_next_block_no"
+                            style="@style/style_small_light_grey"
+                            android:layout_width="match_parent"
+                            android:layout_height="14dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:includeFontPadding="false"
+                            android:paddingStart="1dp"
+                            android:paddingEnd="1dp"
+                            android:maxLines="2"
+                            android:gravity="center_horizontal|center"
+                            app:autoSizeTextType="uniform"
+                            app:autoSizeMaxTextSize="12dp"
+                            app:autoSizeMinTextSize="6dp"
+                            app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                            android:background="@drawable/selector_reward_forecast_bg"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="2dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_height="wrap_content">
+
+                            <io.taucoin.android.wallet.widget.ProgressView
+                                android:id="@+id/iv_verify"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"/>
+
+                            <TextView
+                                style="@style/style_middle_black"
+                                android:layout_width="wrap_content"
+                                android:text="@string/home_verify"
+                                android:gravity="center_vertical"
+                                android:includeFontPadding="false"
+                                android:layout_marginStart="5dp"
+                                android:layout_height="match_parent" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:orientation="vertical">
+
+                        <Switch
+                            android:layout_gravity="center_horizontal"
+                            android:id="@+id/iv_mining_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:switchMinWidth="30dip"
+                            android:track="@drawable/grey_switch_rect_round_bg"
+                            android:thumb="@drawable/shape_switch_white"
+                            android:switchTextAppearance="@style/style_switch_grey_dark"
+                            android:textOn="@string/home_on"
+                            android:showText="true"
+                            android:thumbTextPadding="8dip"
+                            android:textOff="@string/home_off"
+                            android:checked="false"
+                            tools:ignore="UnusedAttribute" />
+
+                        <TextView
+                            android:id="@+id/tv_mining"
+                            style="@style/style_small_black"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:includeFontPadding="false"
+                            android:layout_marginTop="5dp"
+                            android:text="@string/home_mining"
+                            android:maxLines="1"
+                            android:gravity="center_vertical|center" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="5dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_height="wrap_content">
+
+                            <CheckBox
+                                android:id="@+id/cb_wifi_only"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+
+                            <TextView
+                                style="@style/style_small_black"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center_horizontal|center"
+                                android:includeFontPadding="false"
+                                android:text="@string/home_wifi_only"
+                                tools:ignore="RelativeOverlap" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/tv_irreparable_error"
+                    style="@style/style_middle_red"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="@string/home_database_irreparable_error"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:baselineAligned="false"
+                    android:layout_height="wrap_content">
+
+                    <io.taucoin.android.wallet.widget.DashboardLayout
+                        android:id="@+id/dashboard_layout"
+                        android:layout_marginTop="20dp"
+                        android:layout_width="140dp"
+                        android:minHeight="100dp"
+                        android:layout_height="wrap_content" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:layout_marginTop="15dp"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            style="@style/style_small_grey_light"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:layout_gravity="center_horizontal"
+                            android:text="@string/home_mining_income"/>
+
+                        <TextView
+                            android:id="@+id/tv_mining_income"
+                            android:layout_width="match_parent"
+                            android:layout_height="26dp"
+                            android:layout_gravity="center_horizontal"
+                            android:textColor="@color/color_yellow"
+                            android:includeFontPadding="false"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="2dp"
+                            android:maxLines="1"
+                            app:autoSizeTextType="uniform"
+                            app:autoSizeMaxTextSize="20dp"
+                            app:autoSizeMinTextSize="12dp"
+                            app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                            android:gravity="center_vertical|center"
+                            android:text="@string/common_zero_unit"/>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_marginTop="5dp"
+                            android:layout_height="14dp">
+
+                            <TextView
+                                style="@style/style_small_grey_light"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:gravity="center_horizontal|bottom"
+                                android:includeFontPadding="false"
+                                android:maxLines="1"
+                                app:autoSizeTextType="uniform"
+                                app:autoSizeMaxTextSize="10dp"
+                                app:autoSizeMinTextSize="6dp"
+                                app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                                android:text="@string/home_mining_rank"/>
+
+                            <TextView
+                                style="@style/style_small_grey_light"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:gravity="center_horizontal|bottom"
+                                android:includeFontPadding="false"
+                                android:maxLines="1"
+                                app:autoSizeTextType="uniform"
+                                app:autoSizeMaxTextSize="10dp"
+                                app:autoSizeMinTextSize="6dp"
+                                app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                                android:text="@string/home_cpu"/>
+
+                            <TextView
+                                style="@style/style_small_grey_light"
+                                android:layout_width="0dp"
+                                android:layout_weight="1.3"
+                                android:layout_height="match_parent"
+                                android:gravity="center_horizontal|bottom"
+                                android:includeFontPadding="false"
+                                android:maxLines="1"
+                                app:autoSizeTextType="uniform"
+                                app:autoSizeMaxTextSize="10dp"
+                                app:autoSizeMinTextSize="6dp"
+                                app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                                android:text="@string/home_circulation"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_marginTop="2dp"
+                            android:layout_height="22dp">
+
+                            <TextView
+                                android:id="@+id/tv_mining_rank"
+                                style="@style/style_big_blue"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical|center"
+                                android:maxLines="1"
+                                android:includeFontPadding="false"
+                                app:autoSizeTextType="uniform"
+                                app:autoSizeMaxTextSize="16dp"
+                                app:autoSizeMinTextSize="6dp"
+                                app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                                android:text="@string/common_zero"/>
+
+                            <TextView
+                                android:id="@+id/tv_cpu"
+                                style="@style/style_big_blue"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical|center"
+                                android:maxLines="1"
+                                android:includeFontPadding="false"
+                                app:autoSizeTextType="uniform"
+                                app:autoSizeMaxTextSize="16dp"
+                                app:autoSizeMinTextSize="12dp"
+                                app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                                android:text="@string/common_zero"/>
+
+                            <TextView
+                                android:id="@+id/tv_circulation"
+                                style="@style/style_big_blue"
+                                android:layout_width="0dp"
+                                android:layout_weight="1.3"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical|center"
+                                android:maxLines="1"
+                                android:includeFontPadding="false"
+                                app:autoSizeTextType="uniform"
+                                app:autoSizeMaxTextSize="16dp"
+                                app:autoSizeMinTextSize="6dp"
+                                app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                                android:text="@string/common_zero"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_marginTop="2dp"
+                            android:layout_height="14dp">
+
+                            <TextView
+                                style="@style/style_small_grey_light"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:gravity="center_horizontal|bottom"
+                                android:includeFontPadding="false"
+                                android:maxLines="1"
+                                app:autoSizeTextType="uniform"
+                                app:autoSizeMaxTextSize="10dp"
+                                app:autoSizeMinTextSize="6dp"
+                                app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                                android:text="@string/home_memory"/>
+
+                            <TextView
+                                style="@style/style_small_grey_light"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:gravity="center_horizontal|bottom"
+                                android:includeFontPadding="false"
+                                android:maxLines="1"
+                                app:autoSizeTextType="uniform"
+                                app:autoSizeMaxTextSize="10dp"
+                                app:autoSizeMinTextSize="6dp"
+                                app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                                android:text="@string/home_data_storage"/>
+
+                            <TextView
+                                style="@style/style_small_grey_light"
+                                android:layout_width="0dp"
+                                android:layout_weight="1.3"
+                                android:layout_height="match_parent"
+                                android:gravity="center_horizontal|bottom"
+                                android:includeFontPadding="false"
+                                android:maxLines="1"
+                                app:autoSizeTextType="uniform"
+                                app:autoSizeMaxTextSize="10dp"
+                                app:autoSizeMinTextSize="6dp"
+                                app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                                android:text="@string/home_storage"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_marginTop="2dp"
+                            android:layout_height="22dp">
+
+                            <TextView
+                                android:id="@+id/tv_memory"
+                                style="@style/style_big_blue"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical|center"
+                                android:maxLines="1"
+                                android:includeFontPadding="false"
+                                app:autoSizeTextType="uniform"
+                                app:autoSizeMaxTextSize="16dp"
+                                app:autoSizeMinTextSize="12dp"
+                                app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                                android:text="@string/common_zero"/>
+
+                            <TextView
+                                android:id="@+id/tv_data_storage"
+                                style="@style/style_big_blue"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical|center"
+                                android:maxLines="1"
+                                android:includeFontPadding="false"
+                                app:autoSizeTextType="uniform"
+                                app:autoSizeMaxTextSize="16dp"
+                                app:autoSizeMinTextSize="12dp"
+                                app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                                android:text="@string/common_zero"/>
+
+                            <TextView
+                                android:id="@+id/tv_storage"
+                                style="@style/style_big_blue"
+                                android:layout_width="0dp"
+                                android:layout_weight="1.3"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical|center"
+                                android:maxLines="1"
+                                android:includeFontPadding="false"
+                                app:autoSizeTextType="uniform"
+                                app:autoSizeMaxTextSize="16dp"
+                                app:autoSizeMinTextSize="6dp"
+                                app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                                android:text="@string/common_zero"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="2dp"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="0dp"
+                                android:layout_weight="2"
+                                android:layout_height="wrap_content">
+
+                                <LinearLayout
+                                    android:orientation="horizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="14dp">
+
+                                    <TextView
+                                        style="@style/style_small_grey_light"
+                                        android:layout_width="0dp"
+                                        android:layout_weight="1"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center_horizontal|bottom"
+                                        android:includeFontPadding="false"
+                                        android:maxLines="1"
+                                        app:autoSizeTextType="uniform"
+                                        app:autoSizeMaxTextSize="10dp"
+                                        app:autoSizeMinTextSize="6dp"
+                                        app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                                        android:text="@string/home_txs_in_pool"/>
+
+                                    <TextView
+                                        style="@style/style_small_grey_light"
+                                        android:layout_width="0dp"
+                                        android:layout_weight="1"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center_horizontal|bottom"
+                                        android:includeFontPadding="false"
+                                        android:maxLines="1"
+                                        app:autoSizeTextType="uniform"
+                                        app:autoSizeMaxTextSize="10dp"
+                                        app:autoSizeMinTextSize="6dp"
+                                        app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                                        android:text="@string/home_median_fee"/>
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:orientation="horizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_marginTop="4dp"
+                                    android:layout_height="22dp">
+
+                                    <TextView
+                                        android:id="@+id/tv_txs_pool"
+                                        style="@style/style_big_blue"
+                                        android:layout_width="0dp"
+                                        android:layout_weight="1"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center_vertical|center"
+                                        android:maxLines="1"
+                                        android:includeFontPadding="false"
+                                        app:autoSizeTextType="uniform"
+                                        app:autoSizeMaxTextSize="16dp"
+                                        app:autoSizeMinTextSize="6dp"
+                                        app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                                        android:text="@string/common_zero"/>
+
+                                    <TextView
+                                        android:id="@+id/tv_median_fee"
+                                        style="@style/style_big_blue"
+                                        android:layout_width="0dp"
+                                        android:layout_weight="1"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center_vertical|center"
+                                        android:maxLines="1"
+                                        android:includeFontPadding="false"
+                                        app:autoSizeTextType="uniform"
+                                        app:autoSizeMaxTextSize="16dp"
+                                        app:autoSizeMinTextSize="6dp"
+                                        app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                                        android:text="@string/common_zero"/>
+
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_weight="1.3"
+                                android:orientation="vertical"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    style="@style/style_small_grey_light"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="11dp"
+                                    android:gravity="center_horizontal|bottom"
+                                    android:includeFontPadding="false"
+                                    android:maxLines="1"
+                                    app:autoSizeTextType="uniform"
+                                    app:autoSizeMaxTextSize="10dp"
+                                    app:autoSizeMinTextSize="6dp"
+                                    app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                                    android:text="@string/home_miners_title"/>
+
+                                <TextView
+                                    android:id="@+id/tv_miners_online_title"
+                                    style="@style/style_small_grey_light"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_horizontal|center"
+                                    android:includeFontPadding="false"
+                                    android:textSize="8dp"
+                                    android:maxLines="1"
+                                    android:text="@string/home_miners_default_title"/>
+
+                                <TextView
+                                    android:id="@+id/tv_miners_online"
+                                    style="@style/style_big_blue"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="18dp"
+                                    android:gravity="center_vertical|center"
+                                    android:maxLines="1"
+                                    android:includeFontPadding="false"
+                                    app:autoSizeTextType="uniform"
+                                    app:autoSizeMaxTextSize="16dp"
+                                    app:autoSizeMinTextSize="4dp"
+                                    app:autoSizeStepGranularity="@dimen/dimen_size_05"
+                                    android:text="@string/common_zero"/>
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <TextView
+                            style="@style/style_small_blue"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="@string/home_what_is_power"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <include
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/white_rect_round_bg_no_border"
+                    layout="@layout/item_reward_forecast" />
+
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+</LinearLayout>

@@ -1,0 +1,34 @@
+{
+    "logs": [
+        {
+            "outputFile": "/home/CowTC/Codes/taucoin-mobile-mining/lib_foundation/build/intermediates/res/merged/release/values-v24/values-v24.xml",
+            "map": [
+                {
+                    "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0-rc01.aar/b42257f3a39c0cb4048a6c80686cb465/res/values-v24/values-v24.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,212",
+                        "endColumns": "156,134",
+                        "endOffsets": "207,342"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "/home/CowTC/Codes/taucoin-mobile-mining/lib_foundation/build/intermediates/incremental/mergeReleaseResources/merged.dir/values-v24/values-v24.xml",
+            "map": [
+                {
+                    "source": "/home/CowTC/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0-rc01.aar/b42257f3a39c0cb4048a6c80686cb465/res/values-v24/values-v24.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,212",
+                        "endColumns": "156,134",
+                        "endOffsets": "207,342"
+                    }
+                }
+            ]
+        }
+    ]
+}
