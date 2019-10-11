@@ -50,6 +50,7 @@ public class RemoteService extends TaucoinRemoteService {
     private NotificationCompat.Builder builder;
     private NotificationManager mNotificationManager;
     private ServiceConnection serviceConnection;
+    private IPFSManager mIPFSManager;
 
     public RemoteService() {
         super();
@@ -68,6 +69,9 @@ public class RemoteService extends TaucoinRemoteService {
         logger.debug("RemoteService onCreate");
         AppPowerManger.acquireWakeLock(this);
         AppWifiManger.acquireWakeLock(this);
+
+        mIPFSManager = new IPFSManager(this);
+        mIPFSManager.init();
     }
 
     @Override
@@ -99,6 +103,11 @@ public class RemoteService extends TaucoinRemoteService {
         super.onDestroy();
         AppPowerManger.releaseWakeLock();
         AppWifiManger.releaseWakeLock();
+        if(mIPFSManager != null){
+            mIPFSManager.stop();
+        }
+        stopSelf();
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     @Override
@@ -106,6 +115,9 @@ public class RemoteService extends TaucoinRemoteService {
         super.onTaskRemoved(rootIntent);
         AppPowerManger.releaseWakeLock();
         AppWifiManger.releaseWakeLock();
+        if(mIPFSManager != null){
+            mIPFSManager.stop();
+        }
     }
 
     private void sendNotify() {
