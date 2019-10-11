@@ -106,8 +106,6 @@ public class RemoteService extends TaucoinRemoteService {
         if(mIPFSManager != null){
             mIPFSManager.stop();
         }
-        stopSelf();
-        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     @Override
