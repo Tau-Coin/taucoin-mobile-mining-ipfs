@@ -3,7 +3,6 @@ package io.taucoin.android.wallet.module.view.manage;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -17,7 +16,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnItemClick;
 import butterknife.OnTextChanged;
 import io.taucoin.android.wallet.R;
 import io.taucoin.android.wallet.base.BaseActivity;
@@ -90,9 +88,7 @@ public class AddressBookActivity extends BaseActivity implements IAddressView {
         getData();
     }
 
-    @OnItemClick(R.id.list_view_help)
-    void onItemClick(AdapterView<?> parent, View view, int position, long id){
-        KeyValue keyValue = mDataList.get(position);
+    void switchAddress(KeyValue keyValue){
         mUserPresenter.switchAddress(AddressBookActivity.this, keyValue);
     }
 

@@ -33,9 +33,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import io.taucoin.android.service.events.NextBlockForgedPOTDetail;
-import io.taucoin.android.wallet.R;
-
 import io.taucoin.android.wallet.MyApplication;
+import io.taucoin.android.wallet.R;
 import io.taucoin.android.wallet.base.TransmitKey;
 import io.taucoin.android.wallet.db.entity.BlockInfo;
 import io.taucoin.android.wallet.db.entity.KeyValue;
@@ -530,7 +529,7 @@ public class UserUtil {
                     .append(FmtMicrometer.fmtPower(timeInternal))
                     .setForegroundColor(ResourcesUtil.getColor(R.color.color_blue))
                     .append(Html.fromHtml(")"))
-                    .append(Html.fromHtml("="))
+                    .append(Html.fromHtml("≈"))
                     .append(Html.fromHtml("("))
                     .append(rightStr)
                     .setForegroundColor(ResourcesUtil.getColor(R.color.color_blue));

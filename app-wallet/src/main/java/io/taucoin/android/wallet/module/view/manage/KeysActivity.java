@@ -5,21 +5,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import io.taucoin.android.wallet.R;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 import io.taucoin.android.wallet.MyApplication;
+import io.taucoin.android.wallet.R;
 import io.taucoin.android.wallet.base.BaseActivity;
-import io.taucoin.android.wallet.base.TransmitKey;
 import io.taucoin.android.wallet.db.entity.KeyValue;
 import io.taucoin.android.wallet.module.presenter.UserPresenter;
 import io.taucoin.android.wallet.module.view.manage.iview.IImportKeyView;
 import io.taucoin.android.wallet.util.CopyManager;
 import io.taucoin.android.wallet.util.ToastUtils;
-import io.taucoin.android.wallet.util.UserUtil;
 import io.taucoin.foundation.util.StringUtil;
 
 public class KeysActivity extends BaseActivity implements IImportKeyView {
@@ -52,13 +49,6 @@ public class KeysActivity extends BaseActivity implements IImportKeyView {
 
     @OnClick({R.id.btn_import_key, R.id.btn_generate_key})
     void onImportKeyClick(View view) {
-        if(UserUtil.isImportKey()){
-            KeyValue KeyValue = MyApplication.getKeyValue();
-            if(StringUtil.isSame(KeyValue.getMiningState(), TransmitKey.MiningState.Start)){
-                ToastUtils.showShortToast(R.string.mining_import_private_key);
-                return;
-            }
-        }
         if(view.getId() == R.id.btn_import_key){
             Intent intent = new Intent(this, ImportKeyActivity.class);
             startActivity(intent);

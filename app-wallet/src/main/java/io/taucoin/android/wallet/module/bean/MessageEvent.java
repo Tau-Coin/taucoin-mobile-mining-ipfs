@@ -1,6 +1,6 @@
 package io.taucoin.android.wallet.module.bean;
 
-public class MessageEvent{
+public class MessageEvent {
 
     public enum EventCode {
         ALL,
@@ -23,7 +23,8 @@ public class MessageEvent{
         APPLICATION_INFO,
         MINING_INCOME,
         IRREPARABLE_ERROR,
-        APP_BACK_TO_FRONT
+        APP_BACK_TO_FRONT,
+        SWITCH_STOP_MINING
     }
     private Object data;
 
