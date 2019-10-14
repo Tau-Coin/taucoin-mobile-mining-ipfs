@@ -72,6 +72,15 @@ public class RemoteService extends TaucoinRemoteService {
 
         mIPFSManager = new IPFSManager(this);
         mIPFSManager.init();
+
+        Thread closeChildThread = new Thread() {
+            @Override
+            public void run() {
+                logger.info("RemoteService {}", "ShutdownHook");
+                quitProcess();
+            }
+        };
+        Runtime.getRuntime().addShutdownHook(closeChildThread);
     }
 
     @Override
@@ -101,16 +110,17 @@ public class RemoteService extends TaucoinRemoteService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        AppPowerManger.releaseWakeLock();
-        AppWifiManger.releaseWakeLock();
-        if(mIPFSManager != null){
-            mIPFSManager.stop();
-        }
+        logger.info("RemoteService {}", "onDestroy");
+        quitProcess();
     }
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
+        logger.info("RemoteService {}", "onTaskRemoved");
+    }
+
+    private void quitProcess(){
         AppPowerManger.releaseWakeLock();
         AppWifiManger.releaseWakeLock();
         if(mIPFSManager != null){
