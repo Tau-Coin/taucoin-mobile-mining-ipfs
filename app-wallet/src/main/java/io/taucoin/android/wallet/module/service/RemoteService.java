@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
-import io.taucoin.android.ipfs.IPFSManager;
 import io.taucoin.android.service.TaucoinRemoteService;
 import io.taucoin.android.service.TaucoinServiceMessage;
 import io.taucoin.android.service.events.EventData;
@@ -50,7 +49,6 @@ public class RemoteService extends TaucoinRemoteService {
     private NotificationCompat.Builder builder;
     private NotificationManager mNotificationManager;
     private ServiceConnection serviceConnection;
-    private IPFSManager mIPFSManager;
 
     public RemoteService() {
         super();
@@ -69,9 +67,6 @@ public class RemoteService extends TaucoinRemoteService {
         logger.debug("RemoteService onCreate");
         AppPowerManger.acquireWakeLock(this);
         AppWifiManger.acquireWakeLock(this);
-
-        mIPFSManager = new IPFSManager(this);
-        mIPFSManager.init();
 
         Thread closeChildThread = new Thread() {
             @Override
@@ -123,9 +118,6 @@ public class RemoteService extends TaucoinRemoteService {
     private void quitProcess(){
         AppPowerManger.releaseWakeLock();
         AppWifiManger.releaseWakeLock();
-        if(mIPFSManager != null){
-            mIPFSManager.stop();
-        }
     }
 
     private void sendNotify() {

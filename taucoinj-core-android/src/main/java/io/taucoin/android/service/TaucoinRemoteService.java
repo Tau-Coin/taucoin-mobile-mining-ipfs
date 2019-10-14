@@ -19,6 +19,7 @@ import io.taucoin.android.di.components.DaggerTaucoinComponent;
 import io.taucoin.android.di.modules.TaucoinModule;
 import io.taucoin.android.interop.BlockTxReindex;
 import io.taucoin.android.interop.PeerInfo;
+import io.taucoin.android.ipfs.IPFSManager;
 import io.taucoin.android.service.events.*;
 import io.taucoin.android.settings.TaucoinSettings;
 import io.taucoin.android.util.LoggerManager;
@@ -70,6 +71,8 @@ public class TaucoinRemoteService extends TaucoinService {
     private ConnectivityManager connectivityManager;
 
     private RefWatcher refWatcher;
+
+    private IPFSManager mIPFSManager;
 
     public TaucoinRemoteService() {
 
@@ -125,6 +128,9 @@ public class TaucoinRemoteService extends TaucoinService {
             return;
         }
         refWatcher = LeakCanary.install(this.getApplication());
+
+        mIPFSManager = new IPFSManager(this);
+        mIPFSManager.init();
    }
 
     @Override
@@ -135,6 +141,9 @@ public class TaucoinRemoteService extends TaucoinService {
         //clearListeners();
         TaucoinModule.close();
         isTaucoinStarted = false;
+        if(mIPFSManager != null){
+            mIPFSManager.stop();
+        }
     }
 
     @Override
@@ -147,6 +156,9 @@ public class TaucoinRemoteService extends TaucoinService {
         //clearListeners();
         TaucoinModule.close();
         isTaucoinStarted = false;
+        if(mIPFSManager != null){
+            mIPFSManager.stop();
+        }
     }
 
     protected void broadcastEvent(EventFlag event, EventData data) {
