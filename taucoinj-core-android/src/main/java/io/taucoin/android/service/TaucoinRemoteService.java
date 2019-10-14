@@ -18,6 +18,7 @@ import android.text.TextUtils;
 import io.taucoin.android.di.components.DaggerTaucoinComponent;
 import io.taucoin.android.di.modules.TaucoinModule;
 import io.taucoin.android.interop.BlockTxReindex;
+import io.taucoin.android.interop.PeerInfo;
 import io.taucoin.android.service.events.*;
 import io.taucoin.android.settings.TaucoinSettings;
 import io.taucoin.android.util.LoggerManager;
@@ -275,6 +276,10 @@ public class TaucoinRemoteService extends TaucoinService {
 
             case TaucoinServiceMessage.MSG_STOP_DOWNLOAD:
                 stopDownload(message);
+                break;
+
+            case TaucoinServiceMessage.MSG_GET_IPFS_CONNECTED_PEERS:
+                getIPFSConnectedPeers(message);
                 break;
 
             default:
@@ -1411,6 +1416,53 @@ public class TaucoinRemoteService extends TaucoinService {
          } catch (RemoteException e) {
              logger.error("Exception sending chain height to client: " + e.getMessage());
          }
+    }
+
+    /**
+     * Get IPFS connected peers.
+     */
+    protected void getIPFSConnectedPeers(Message message) {
+
+        logger.info("get IPFS connected peers");
+        if (!isConnected) {
+            new RequestIPFSPeersTask(message).execute(taucoin);
+        } else {
+            logger.warn("Taucoin not connected.");
+        }
+    }
+
+    protected class RequestIPFSPeersTask extends AsyncTask<Taucoin, Void, List<PeerInfo>> {
+
+        Messenger messenger;
+        Object obj;
+
+        public RequestIPFSPeersTask(Message message) {
+
+            this.messenger = message.replyTo;
+            this.obj = message.obj;
+        }
+
+        protected List<PeerInfo> doInBackground(Taucoin... args) {
+            //return taucoin.submitTransaction(transaction);
+            // TODO: get IPFS connected peers.
+            return null;
+        }
+
+        protected void onPostExecute(List<PeerInfo> peers) {
+
+            Message replyMessage = Message.obtain(null, TaucoinClientMessage.MSG_GET_IPFS_CONNECTED_PEERS_RESP, 0, 0, obj);
+            Bundle replyData = new Bundle();
+            /**
+            try {
+                replyData.putParcelable("transaction", (io.taucoin.android.interop.Transaction)submittedTransaction);
+                replyMessage.setData(replyData);
+                messenger.send(replyMessage);
+                logger.info("Sent submitted transaction: " + (submittedTransaction != null ? submittedTransaction.toString() : "null"));
+            } catch (RemoteException e) {
+                logger.error("Exception sending submitted transaction to client: " + e.getMessage());
+            }
+            */
+        }
     }
 
     protected class TaucoinForgerListener implements io.taucoin.forge.ForgerListener {

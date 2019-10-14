@@ -111,4 +111,9 @@ public class TaucoinClientMessage {
      * Send stopping download result to client
      */
     public static final int MSG_STOP_DOWNLOAD_RESULT = 22;
+
+    /**
+     * Send IPFS connected peers to client
+     */
+    public static final int MSG_GET_IPFS_CONNECTED_PEERS_RESP = 23;
 }

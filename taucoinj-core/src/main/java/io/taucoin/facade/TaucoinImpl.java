@@ -18,6 +18,7 @@ import org.spongycastle.util.encoders.Hex;
 
 import java.net.InetAddress;
 import java.util.HashSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -230,11 +231,14 @@ public class TaucoinImpl implements Taucoin {
     @Override
     public Transaction submitTransaction(Transaction transaction) {
 
-         // boolean submitResult = pendingState.addWireTransactions(transaction);
-         boolean submitResult= true;
+         HashSet<Transaction> txs = new HashSet<Transaction>();
+         txs.add(transaction);
+         List<Transaction> txsAdded = pendingState.addWireTransactions(txs);
+         boolean submitResult = txsAdded != null && txs.size() > 0;
 
          if (submitResult) {
              boolean sendResult = requestManager.submitNewTransaction(transaction);
+             // TODO: publish tx into the ipfs network.
              if (sendResult) {
                  return transaction;
              }

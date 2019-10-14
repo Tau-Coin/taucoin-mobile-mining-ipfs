@@ -917,4 +917,32 @@ public class TaucoinConnector extends ServiceConnector {
         }
     }
 
+    /**
+     * Get IPFS connected peers.
+     * @param identifier String Caller identifier used to return the response
+     *
+     * For response, please handle TaucoinClientMessage.MSG_GET_IPFS_CONNECTED_PEERS_RESP:
+     *                {
+     *                    "peers": <ArrayList of io.taucoin.android.interop.PeerInfo>
+     *                }
+     */
+    public void getIPFSConnectedPeers(String identifier) {
+
+        if (!isBound)
+            return;
+
+        Message msg = Message.obtain(null,
+                TaucoinServiceMessage.MSG_GET_IPFS_CONNECTED_PEERS, 0, 0);
+        msg.replyTo = clientMessenger;
+        msg.obj = getIdentifierBundle(identifier);
+
+        Bundle data = new Bundle();
+        msg.setData(data);
+        try {
+            serviceMessenger.send(msg);
+        } catch (RemoteException e) {
+            logger.error("Exception sending message(getIPFSConnectedPeers) to service: " + e.getMessage());
+        }
+    }
+
 }

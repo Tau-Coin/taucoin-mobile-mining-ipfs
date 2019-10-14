@@ -174,4 +174,9 @@ public class TaucoinServiceMessage {
      */
     public static final int MSG_STOP_DOWNLOAD = 35;
 
+    /**
+     * Command to the service to get connected ipfs peers
+     */
+    public static final int MSG_GET_IPFS_CONNECTED_PEERS = 36;
+
 }
