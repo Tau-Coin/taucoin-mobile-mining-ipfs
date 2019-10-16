@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/white_rect_round_bg_no_border"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_title"
+        style="@style/style_normal_black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="@string/app_upgrade_fail" />
+
+    <TextView
+        android:id="@+id/tv_subheading"
+        style="@style/style_normal_blue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:text="@string/app_upgrade_fail" />
+
+    <TextView
+        android:id="@+id/tv_msg"
+        style="@style/style_normal_light_grey"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:text="@string/app_upgrade_fail" />
+
+</LinearLayout>

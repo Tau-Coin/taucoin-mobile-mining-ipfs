@@ -30,6 +30,7 @@ import io.taucoin.android.wallet.module.service.UpgradeService;
 import io.taucoin.android.wallet.module.view.main.iview.IManageView;
 import io.taucoin.android.wallet.module.view.manage.AddressBookActivity;
 import io.taucoin.android.wallet.module.view.manage.HelpActivity;
+import io.taucoin.android.wallet.module.view.manage.IPFSInfoActivity;
 import io.taucoin.android.wallet.module.view.manage.ImportKeyActivity;
 import io.taucoin.android.wallet.module.view.manage.KeysActivity;
 import io.taucoin.android.wallet.module.view.manage.ProfileActivity;
@@ -77,7 +78,8 @@ public class ManageFragment extends BaseFragment implements IManageView {
     }
 
     @OnClick({R.id.tv_nick, R.id.item_keys, R.id.item_address_book, R.id.item_help, R.id.tv_version,
-            R.id.item_reset_data, R.id.item_p2p_exchange, R.id.item_mining_group, R.id.item_transaction_expiry})
+            R.id.item_reset_data, R.id.item_p2p_exchange, R.id.item_mining_group, R.id.item_transaction_expiry,
+            R.id.item_ipfs_info})
     public void onClick(View view) {
        switch (view.getId()){
            case R.id.tv_nick:
@@ -129,6 +131,9 @@ public class ManageFragment extends BaseFragment implements IManageView {
                }else{
                    ActivityUtil.startActivity(getActivity(), ImportKeyActivity.class);
                }
+               break;
+           case R.id.item_ipfs_info:
+               ActivityUtil.startActivity(getActivity(), IPFSInfoActivity.class);
                break;
            default:
                break;

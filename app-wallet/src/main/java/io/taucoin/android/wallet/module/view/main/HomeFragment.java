@@ -38,6 +38,7 @@ import io.taucoin.android.wallet.module.view.main.iview.IHomeView;
 import io.taucoin.android.wallet.module.view.manage.ImportKeyActivity;
 import io.taucoin.android.wallet.net.callback.CommonObserver;
 import io.taucoin.android.wallet.util.ActivityUtil;
+import io.taucoin.android.wallet.util.DialogManager;
 import io.taucoin.android.wallet.util.EventBusUtil;
 import io.taucoin.android.wallet.util.ProgressManager;
 import io.taucoin.android.wallet.util.ResourcesUtil;
@@ -46,7 +47,6 @@ import io.taucoin.android.wallet.util.UserUtil;
 import io.taucoin.android.wallet.util.WifiSettings;
 import io.taucoin.android.wallet.widget.DashboardLayout;
 import io.taucoin.android.wallet.widget.LoadingTextView;
-import io.taucoin.android.wallet.widget.ProgressView;
 import io.taucoin.android.wallet.widget.ScrollDisabledListView;
 import io.taucoin.foundation.net.callback.LogicObserver;
 import io.taucoin.foundation.util.DrawablesUtil;
@@ -78,14 +78,10 @@ public class HomeFragment extends BaseFragment implements IHomeView {
     TextView tvMinersOnlineTitle;
     @BindView(R.id.tv_irreparable_error)
     TextView tvIrreparableError;
-    @BindView(R.id.tv_download)
-    TextView tvDownload;
-    @BindView(R.id.iv_download)
-    ProgressView ivDownload;
     @BindView(R.id.tv_verify)
     TextView tvVerify;
-    @BindView(R.id.iv_verify)
-    ProgressView ivVerify;
+    @BindView(R.id.tv_verify_percentage)
+    TextView tvVerifyPercentage;
     @BindView(R.id.tv_mining_rank)
     TextView tvMiningRank;
     @BindView(R.id.cb_wifi_only)
@@ -106,8 +102,6 @@ public class HomeFragment extends BaseFragment implements IHomeView {
     View llCurrentCondition;
     @BindView(R.id.miner_list_view)
     ScrollDisabledListView minerListView;
-    @BindView(R.id.tv_block_chain_data)
-    TextView tvBlockChainData;
     @BindView(R.id.tv_median_fee)
     TextView tvMedianFee;
     @BindView(R.id.tv_txs_pool)
@@ -145,7 +139,7 @@ public class HomeFragment extends BaseFragment implements IHomeView {
     }
 
     @OnClick({R.id.iv_mining_switch, R.id.cb_wifi_only, R.id.iv_right,
-            R.id.tv_mining_history})
+            R.id.tv_mining_history, R.id.tv_foundation_info, R.id.tv_learn_more})
     public void onClick(View view) {
         if (!UserUtil.isImportKey() && view.getId() != R.id.cb_wifi_only) {
             Intent intent = new Intent(getActivity(), ImportKeyActivity.class);
@@ -180,6 +174,13 @@ public class HomeFragment extends BaseFragment implements IHomeView {
                 }else{
                     ActivityUtil.startActivity(getActivity(), ImportKeyActivity.class);
                 }
+                break;
+            case R.id.tv_foundation_info:
+                DialogManager.showTipDialog(getActivity(), R.string.home_tau_forked_text, R.string.home_tau_foundation,
+                        R.string.home_tau_foundation_text);
+                break;
+            case R.id.tv_learn_more:
+                DialogManager.showTipDialog(getActivity(), R.string.home_peer_sync, R.string.home_learn_more_text);
                 break;
             default:
                 break;
@@ -350,9 +351,8 @@ public class HomeFragment extends BaseFragment implements IHomeView {
 
     private void showMiningView(BlockInfo blockInfo, boolean isRefreshMined, int handleNextBlock){
         mBlockInfo = blockInfo;
-        UserUtil.setMiningConditions(tvVerify, ivVerify, blockInfo);
+        UserUtil.setMiningConditions(tvVerify, tvVerifyPercentage, blockInfo);
         UserUtil.setPowerConditions(dashboardLayout, blockInfo, !isRefreshMined);
-        UserUtil.setDownloadConditions(tvDownload, ivDownload, tvBlockChainData, blockInfo);
         UserUtil.setMinersOnline(tvMinersOnline, tvMinersOnlineTitle, blockInfo);
         UserUtil.setMiningRankAndOther(tvMiningRank, tvTxsPool, tvMedianFee, tvCirculation, blockInfo);
 

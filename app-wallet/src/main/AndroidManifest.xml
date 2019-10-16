@@ -157,6 +157,9 @@
         <activity android:name="io.taucoin.android.wallet.module.view.manage.AddressBookActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"/>
 
+        <activity android:name="io.taucoin.android.wallet.module.view.manage.IPFSInfoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
+
     </application>
 
 </manifest>

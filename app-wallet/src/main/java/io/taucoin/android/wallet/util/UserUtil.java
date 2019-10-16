@@ -42,7 +42,6 @@ import io.taucoin.android.wallet.module.service.NotifyManager;
 import io.taucoin.android.wallet.module.service.TxService;
 import io.taucoin.android.wallet.widget.DashboardLayout;
 import io.taucoin.android.wallet.widget.LoadingTextView;
-import io.taucoin.android.wallet.widget.ProgressView;
 import io.taucoin.foundation.util.DimensionsUtil;
 import io.taucoin.foundation.util.DrawablesUtil;
 import io.taucoin.foundation.util.StringUtil;
@@ -221,22 +220,20 @@ public class UserUtil {
     /**
      * set state of mining conditions
      * */
-    public static void setMiningConditions(TextView tvVerify, ProgressView ivVerify, BlockInfo blockInfo) {
+    public static void setMiningConditions(TextView tvVerify, TextView tvVerifyPercentage, BlockInfo blockInfo) {
         try{
             if(blockInfo != null){
                 long chainHeight =  blockInfo.getBlockHeight();
                 long syncHeight =  blockInfo.getBlockSync();
-                long downloadHeight =  blockInfo.getBlockDownload();
 
-                String progressStr = FmtMicrometer.fmtPower(syncHeight);
-                tvVerify.setText(progressStr);
+                String syncStr = FmtMicrometer.fmtPower(syncHeight);
+                tvVerify.setText(syncStr);
                 tvVerify.setTag(syncHeight);
 
-                if(syncHeight < downloadHeight && syncHeight < chainHeight){
-                    ivVerify.setOn();
-                }else{
-                    ivVerify.setOff();
-                }
+                double progress = StringUtil.getProgress(syncHeight, chainHeight);
+                String progressStr = ResourcesUtil.getText(R.string.common_percentage);
+                progressStr = FmtMicrometer.fmtDecimal(progress) + progressStr;
+                tvVerifyPercentage.setText(progressStr);
             }
         }catch (Exception ignore){
 
@@ -307,35 +304,6 @@ public class UserUtil {
                 dashboardLayout.setError(isPowerError);
                 if(totalPower > 0 && totalPower > power){
                     dashboardLayout.changeValue(power, totalPower);
-                }
-            }
-        }catch (Exception ignore){
-
-        }
-    }
-
-    public static void setDownloadConditions(TextView tvDownload, ProgressView ivDownload, TextView tvBlockChainData, BlockInfo blockInfo) {
-        try{
-            if(blockInfo != null && isImportKey()){
-                String miningState = MyApplication.getKeyValue().getMiningState();
-                boolean isStart = StringUtil.isSame(miningState, TransmitKey.MiningState.Start);
-                int chainHeight =  blockInfo.getBlockHeight();
-                int downloadHeight =  blockInfo.getBlockDownload();
-                double progress = StringUtil.getProgress(downloadHeight, chainHeight);
-                String progressStr = ResourcesUtil.getText(R.string.common_percentage);
-                progressStr = FmtMicrometer.fmtDecimal(progress) + progressStr;
-                tvDownload.setText(progressStr);
-
-                // 6K / block
-                double data = (double) chainHeight * 6 / 1024;
-                String dataStr = ResourcesUtil.getText(R.string.home_full_data);
-                dataStr = String.format(dataStr, FmtMicrometer.fmtDecimal(data));
-                tvBlockChainData.setText(dataStr);
-
-                if(progress != 100 && isStart){
-                    ivDownload.setOn();
-                }else{
-                    ivDownload.setOff();
                 }
             }
         }catch (Exception ignore){
@@ -417,36 +385,10 @@ public class UserUtil {
         if(blockInfo == null || tvNextBlockNo == null){
             return;
         }
-        String nextBlockNoStr = ResourcesUtil.getText(R.string.home_total_blocks);
         long nextBlockNo = blockInfo.getBlockHeight() + 1;
-        nextBlockNoStr = String.format(nextBlockNoStr, FmtMicrometer.fmtPower(nextBlockNo));
+        String nextBlockNoStr = FmtMicrometer.fmtPower(nextBlockNo);
         tvNextBlockNo.setText(nextBlockNoStr);
         tvNextBlockNo.setTag(blockInfo.getBlockHeight());
-    }
-
-    public static void setHistoryParticipantReward(TextView tvHistoryMinerReward, TextView tvHistoryTxReward) {
-        if(tvHistoryMinerReward == null || tvHistoryTxReward == null || !isImportKey()){
-            return;
-        }
-        double minerReward = StringUtil.getDoubleString(MyApplication.getKeyValue().getMinerReward());
-        SpannableStringBuilder spannableMiner = new SpanUtils()
-                .append(FmtMicrometer.fmtDecimal(minerReward))
-                .setForegroundColor(ResourcesUtil.getColor(R.color.color_blue))
-                .append(" ")
-                .append(ResourcesUtil.getText(R.string.common_balance_unit))
-                .setForegroundColor(ResourcesUtil.getColor(R.color.color_home_grey_dark))
-                .create();
-        tvHistoryMinerReward.setText(spannableMiner);
-
-        double partReward = StringUtil.getDoubleString(MyApplication.getKeyValue().getPartReward());
-        SpannableStringBuilder spannableTx = new SpanUtils()
-                .append(FmtMicrometer.fmtDecimal(partReward))
-                .setForegroundColor(ResourcesUtil.getColor(R.color.color_blue))
-                .append(" ")
-                .append(ResourcesUtil.getText(R.string.common_balance_unit))
-                .setForegroundColor(ResourcesUtil.getColor(R.color.color_home_grey_dark))
-                .create();
-        tvHistoryTxReward.setText(spannableTx);
     }
 
     public static void setCountDown(TextView tvCurrentCondition, LoadingTextView tvForgedTime, Object data) {

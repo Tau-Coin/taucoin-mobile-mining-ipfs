@@ -21,7 +21,13 @@
     <string name="common_install_browser">Please install mobile browser first!</string>
     <string name="common_wifi_disconnected">WIFI connection time out</string>
     <string name="home_no_point">No.%s</string>
-    <string name="home_total_blocks">Total blocks %s</string>
+    <string name="home_total_blocks">Total Blocks</string>
+    <string name="home_verify_blocks">Verify Blocks</string>
+    <string name="home_verify_percentage">Verify Percentage</string>
+    <string name="home_tau_forked">TAU Forks Detected 1 ></string>
+    <string name="home_tau_forked_text">TAU Forks Detected</string>
+    <string name="home_tau_foundation">Foundation (&#8230;664e)</string>
+    <string name="home_tau_foundation_text">Foundation chain is supported by TAU official development team.</string>
 
     <string name="splash_title">TAU mWallet %s</string>
     <string name="splash_subheading">Mobile Mining Wallet</string>
@@ -166,7 +172,6 @@
     <string name="home_mining_sync">Synced</string>
     <string name="home_mining">Mining</string>
     <string name="home_download">Download</string>
-    <string name="home_full_data">Full&#160;Data:&#160;%sM</string>
     <string name="home_verify">Verify</string>
     <string name="home_sync_tip">Synchronizing</string>
     <string name="home_on">On</string>
@@ -213,6 +218,9 @@
     <string name="home_no_turn_on">Please turn on the mining function.</string>
     <string name="home_chain_height">Blockchain Height</string>
     <string name="home_what_is_power">Power is your total transaction history. The more transactions, the higher power is.</string>
+    <string name="home_peer_sync">Peer To Peer Sync</string>
+    <string name="home_learn_more">Learn more ></string>
+    <string name="home_learn_more_text">Obtain data from decentralized peers through IPFS. The data includes coins transactions and forum messages.</string>
 
     <string name="home_mining_hash">TX hash</string>
     <string name="home_mining_fee">TX Fee</string>
@@ -247,6 +255,7 @@
     <string name="setting_title">Settings</string>
     <string name="setting_transaction_expiry_limit">Transaction valid time range: %d - %d minutes.</string>
     <string name="setting_address_book">Keys Management</string>
+    <string name="setting_ipfs_info">IPFS Info</string>
     <string name="setting_transaction_expiry">Transaction Expiry</string>
     <string name="setting_transaction_expiry_tip">Please enter the transaction expiry</string>
     <string name="setting_reset_data">Restart Verify</string>
@@ -272,5 +281,8 @@
     <string name="address_book_deleted_sure" formatted="false"><Data><![CDATA[Are you sure you want to <font color="#fa0105">delete</font> this address?]]></Data></string>
     <string name="address_book_switch_sure">Confirm to use this address.</string>
     <string name="address_book_switch">Switch Mining Address</string>
+
+    <string name="ipfs_id">ID</string>
+    <string name="ipfs_version">Version</string>
 
 </resources>

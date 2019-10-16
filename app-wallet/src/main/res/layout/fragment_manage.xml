@@ -96,6 +96,16 @@
                     app:rightText="@string/setting_address_book"
                     app:rightTextColor="@color/color_black" />
 
+                <io.taucoin.android.wallet.widget.ItemLineView
+                    android:visibility="gone"
+                    android:id="@+id/item_ipfs_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="1dp"
+                    app:leftImage="@mipmap/icon_ipfs_info"
+                    app:rightText="@string/setting_ipfs_info"
+                    app:rightTextColor="@color/color_black" />
+
                 <RelativeLayout
                     android:background="@color/color_white"
                     android:layout_marginTop="1dp"
