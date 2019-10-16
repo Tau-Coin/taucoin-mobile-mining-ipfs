@@ -13,6 +13,7 @@ import android.widget.RadioButton;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import io.taucoin.android.ipfs.IPFSManager;
 import io.taucoin.android.wallet.R;
 
 import java.util.concurrent.TimeUnit;
@@ -175,6 +176,8 @@ public class MainActivity extends BaseActivity implements IMainView {
         UpgradeService.stopUpdateService();
         MyApplication.getRemoteConnector().cancelRemoteConnector();
         NotifyManager.getInstance().cancelNotify();
+        // Shutdown IPFS process
+        IPFSManager.Companion.stop();
         TxService.stopService();
 
         Observable.timer(100, TimeUnit.MILLISECONDS)

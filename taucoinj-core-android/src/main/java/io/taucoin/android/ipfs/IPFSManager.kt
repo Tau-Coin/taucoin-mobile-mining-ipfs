@@ -11,6 +11,11 @@ class IPFSManager(private var service: Service) {
     companion object{
         var daemon: Process? = null
         var logs: MutableList<String> = mutableListOf()
+
+        fun stop(){
+            daemon?.destroy()
+            daemon = null
+        }
     }
 
     fun init() {
@@ -106,6 +111,7 @@ class IPFSManager(private var service: Service) {
     }
 
     fun stop() {
+        logger.error("Stop Progress")
         daemon?.destroy()
         daemon = null
     }

@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
+import io.taucoin.android.ipfs.IPFSManager;
 import io.taucoin.android.wallet.MyApplication;
 import io.taucoin.android.wallet.R;
 import io.taucoin.android.wallet.base.TransmitKey;
@@ -63,6 +64,7 @@ public class TxService extends Service {
     private boolean mIsGetBlockHeight;
     private boolean mIsSending;
     private StateTagManager mStateTagManager;
+    private IPFSManager mIPFSManager;
 
     public TxService() {
     }
@@ -87,6 +89,9 @@ public class TxService extends Service {
         AppPowerManger.acquireWakeLock(this);
         AppWifiManger.acquireWakeLock(this);
         mStateTagManager = new StateTagManager();
+
+        mIPFSManager = new IPFSManager(this);
+        mIPFSManager.init();
     }
 
     @Override
@@ -419,19 +424,22 @@ public class TxService extends Service {
     @Override
     public void onDestroy() {
         Logger.i("TxService onDestroy");
-        NotifyManager.getInstance().cancelNotify();
-        AppPowerManger.releaseWakeLock();
-        AppWifiManger.releaseWakeLock();
+        exitTxService();
         super.onDestroy();
     }
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         Logger.i("TxService onTaskRemoved");
+        exitTxService();
+        super.onTaskRemoved(rootIntent);
+    }
+
+    private void exitTxService(){
         NotifyManager.getInstance().cancelNotify();
         AppPowerManger.releaseWakeLock();
         AppWifiManger.releaseWakeLock();
-        super.onTaskRemoved(rootIntent);
+        IPFSManager.Companion.stop();
     }
 
     public static void startTxService(String serviceType){

@@ -72,7 +72,7 @@ public class TaucoinRemoteService extends TaucoinService {
 
     private RefWatcher refWatcher;
 
-    private IPFSManager mIPFSManager;
+
 
     public TaucoinRemoteService() {
 
@@ -129,8 +129,7 @@ public class TaucoinRemoteService extends TaucoinService {
         }
         refWatcher = LeakCanary.install(this.getApplication());
 
-        mIPFSManager = new IPFSManager(this);
-        mIPFSManager.init();
+
    }
 
     @Override
@@ -141,9 +140,6 @@ public class TaucoinRemoteService extends TaucoinService {
         //clearListeners();
         TaucoinModule.close();
         isTaucoinStarted = false;
-        if(mIPFSManager != null){
-            mIPFSManager.stop();
-        }
     }
 
     @Override
@@ -156,9 +152,6 @@ public class TaucoinRemoteService extends TaucoinService {
         //clearListeners();
         TaucoinModule.close();
         isTaucoinStarted = false;
-        if(mIPFSManager != null){
-            mIPFSManager.stop();
-        }
     }
 
     protected void broadcastEvent(EventFlag event, EventData data) {
