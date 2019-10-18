@@ -617,9 +617,10 @@ public class TaucoinConnector extends ServiceConnector {
      * @param identifier String Caller identifier used to return the response
      * @param transaction Transaction Transaction to submit
      *
-     * Sends message parameters ( "key": type [description] ):
+     * For response, please handle TaucoinClientMessage.MSG_SUBMIT_TRANSACTION_RESULT:
      * {
-     *     "transaction": Parcelable(Transaction) [transaction to submit]
+     *     "id": string(tx id)
+     *     "result": int [result < 0, failed or >=0, success]
      * }
      */
     public void submitTransaction(String identifier, Transaction transaction) {
@@ -923,7 +924,7 @@ public class TaucoinConnector extends ServiceConnector {
      *
      * For response, please handle TaucoinClientMessage.MSG_GET_IPFS_CONNECTED_PEERS_RESP:
      *                {
-     *                    "peers": <ArrayList of io.taucoin.android.interop.PeerInfo>
+     *                    "peers": <ArrayList of io.taucoin.android.interop.IpfsPeerInfo>
      *                }
      */
     public void getIPFSConnectedPeers(String identifier) {
@@ -942,6 +943,34 @@ public class TaucoinConnector extends ServiceConnector {
             serviceMessenger.send(msg);
         } catch (RemoteException e) {
             logger.error("Exception sending message(getIPFSConnectedPeers) to service: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Get IPFS home node info.
+     * @param identifier String Caller identifier used to return the response
+     *
+     * For response, please handle TaucoinClientMessage.MSG_GET_IPFS_HOME_NODE_INFO_RESP:
+     *                {
+     *                    "homeNode": <io.taucoin.android.interop.IpfsHomeNodeInfo>
+     *                }
+     */
+    public void getIPFSHomeNodeInfo(String identifier) {
+
+        if (!isBound)
+            return;
+
+        Message msg = Message.obtain(null,
+                TaucoinServiceMessage.MSG_GET_IPFS_HOME_NODE_INFO, 0, 0);
+        msg.replyTo = clientMessenger;
+        msg.obj = getIdentifierBundle(identifier);
+
+        Bundle data = new Bundle();
+        msg.setData(data);
+        try {
+            serviceMessenger.send(msg);
+        } catch (RemoteException e) {
+            logger.error("Exception sending message(getIPFSHomeNodeInfo) to service: " + e.getMessage());
         }
     }
 

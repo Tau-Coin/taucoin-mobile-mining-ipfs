@@ -116,4 +116,10 @@ public class TaucoinClientMessage {
      * Send IPFS connected peers to client
      */
     public static final int MSG_GET_IPFS_CONNECTED_PEERS_RESP = 23;
+
+    /**
+     * Send IPFS home node info to client
+     */
+    public static final int MSG_GET_IPFS_HOME_NODE_INFO_RESP = 24;
+
 }
