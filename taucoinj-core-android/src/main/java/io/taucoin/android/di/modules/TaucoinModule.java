@@ -104,8 +104,10 @@ public class TaucoinModule {
     @Singleton
     Taucoin provideTaucoin(WorldManager worldManager,
                              io.taucoin.manager.BlockLoader blockLoader, PendingState pendingState,
-                             BlockForger blockForger, RequestManager requestManager, RefWatcher refWatcher) {
-        return new io.taucoin.android.Taucoin(worldManager, blockLoader, pendingState, blockForger, requestManager, refWatcher);
+                             BlockForger blockForger, RequestManager requestManager,
+                             IpfsService ipfsService, RefWatcher refWatcher) {
+        return new io.taucoin.android.Taucoin(worldManager, blockLoader, pendingState, blockForger,
+                requestManager, ipfsService, refWatcher);
     }
 
     @Provides
