@@ -41,6 +41,7 @@ import io.taucoin.http.tau.handler.TauHandler;
 import io.taucoin.listener.CompositeTaucoinListener;
 import io.taucoin.listener.TaucoinListener;
 import io.taucoin.manager.WorldManager;
+import io.taucoin.manager.IpfsService;
 import io.taucoin.sync2.SyncManager;
 import io.taucoin.sync2.SyncQueue;
 import io.taucoin.sync2.ChainInfoManager;
@@ -321,6 +322,12 @@ public class TaucoinModule {
     PoolSynchronizer providePoolSynchronizer(TaucoinListener listener,
             BlockForger blockForger, PendingState pendingState) {
         return new PoolSynchronizer(listener, blockForger, pendingState);
+    }
+
+    @Provides
+    @Singleton
+    IpfsService provideIpfsService() {
+        return new IpfsService();
     }
 
     @Provides
