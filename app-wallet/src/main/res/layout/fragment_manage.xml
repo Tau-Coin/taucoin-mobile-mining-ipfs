@@ -97,7 +97,6 @@
                     app:rightTextColor="@color/color_black" />
 
                 <io.taucoin.android.wallet.widget.ItemLineView
-                    android:visibility="gone"
                     android:id="@+id/item_ipfs_info"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"

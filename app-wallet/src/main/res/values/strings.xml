@@ -284,5 +284,6 @@
 
     <string name="ipfs_id">ID</string>
     <string name="ipfs_version">Version</string>
+    <string name="ipfs_all_peers">All Peers ID</string>
 
 </resources>

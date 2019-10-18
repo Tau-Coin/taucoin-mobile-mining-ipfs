@@ -2,19 +2,35 @@ package io.taucoin.android.ipfs
 
 import android.app.Service
 import android.os.Build.CPU_ABI
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.lang.Runtime.getRuntime
 
 class IPFSManager(private var service: Service) {
-    private val logger = LoggerFactory.getLogger("ipfs")
 
     companion object{
+        var logger: Logger = LoggerFactory.getLogger("ipfs")
         var daemon: Process? = null
-        var logs: MutableList<String> = mutableListOf()
 
         fun stop(){
+            logger.info("stop ipfs daemon")
             daemon?.destroy()
             daemon = null
+            shutdown()
+        }
+
+        private fun shutdown() {
+            logger.info("shutdown ipfs process")
+            getRuntime().exec("ps").apply {
+                read{
+                    if(it.contains("goipfs") && it.length > 15){
+                        val pid = it.substring(10, 15).trim()
+                        getRuntime().exec("kill -2 $pid")
+                        logger.info("shutdown cmd: kill -2 $pid")
+                    }
+                }
+                waitFor()
+            }
         }
     }
 
@@ -63,12 +79,9 @@ class IPFSManager(private var service: Service) {
     }
 
     fun start() {
-        logs.clear()
-
         service.exec("init").apply {
             read{
                 logger.info("init=$it")
-                logs.add(it)
             }
             waitFor()
         }
@@ -105,14 +118,7 @@ class IPFSManager(private var service: Service) {
             daemon = this
             read{
                 logger.info("daemon=$it")
-                logs.add(it)
             }
         }
-    }
-
-    fun stop() {
-        logger.error("Stop Progress")
-        daemon?.destroy()
-        daemon = null
     }
 }

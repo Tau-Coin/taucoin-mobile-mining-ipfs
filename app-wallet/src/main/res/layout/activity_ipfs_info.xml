@@ -81,6 +81,20 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"/>
 
+    <TextView
+        android:layout_marginStart="20dp"
+        style="@style/style_normal_light_grey"
+        android:minHeight="44dp"
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ipfs_all_peers"/>
+
+    <View
+        android:background="@color/color_main_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
