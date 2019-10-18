@@ -8,6 +8,8 @@ import io.taucoin.manager.WorldManager;
 import io.taucoin.listener.TaucoinListener;
 import io.taucoin.manager.BlockLoader;
 import io.taucoin.forge.BlockForger;
+import io.taucoin.ipfs.node.IpfsHomeNodeInfo;
+import io.taucoin.ipfs.node.IpfsPeerInfo;
 import io.taucoin.net.client.PeerClient;
 import io.taucoin.net.peerdiscovery.PeerInfo;
 import io.taucoin.net.rlpx.Node;
@@ -154,4 +156,8 @@ public interface Taucoin {
      *  Gets the Miner component
      */
     BlockForger getBlockForger();
+
+    List<IpfsPeerInfo> getIpfsSwarmPeers();
+
+    IpfsHomeNodeInfo getIpfsHomeNodeInfo();
 }

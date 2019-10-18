@@ -8,6 +8,8 @@ import io.taucoin.manager.BlockLoader;
 import io.taucoin.manager.WorldManager;
 import io.taucoin.forge.BlockForger;
 import io.taucoin.http.RequestManager;
+import io.taucoin.ipfs.node.IpfsHomeNodeInfo;
+import io.taucoin.ipfs.node.IpfsPeerInfo;
 import io.taucoin.manager.IpfsService;
 import io.taucoin.net.client.PeerClient;
 import io.taucoin.net.peerdiscovery.PeerInfo;
@@ -268,6 +270,16 @@ public class TaucoinImpl implements Taucoin {
     @Override
     public BlockLoader getBlockLoader(){
         return  blockLoader;
+    }
+
+    @Override
+    public List<IpfsPeerInfo> getIpfsSwarmPeers() {
+        return ipfsService.getPeers();
+    }
+
+    @Override
+    public IpfsHomeNodeInfo getIpfsHomeNodeInfo() {
+        return ipfsService.getIpfsHomeNode();
     }
 
 }

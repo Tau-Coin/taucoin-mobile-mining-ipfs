@@ -32,6 +32,8 @@ import io.taucoin.android.Taucoin;
 import io.taucoin.forge.ForgeStatus;
 import io.taucoin.forge.NextBlockForgedDetail;
 import io.taucoin.http.ConnectionManager;
+import io.taucoin.ipfs.node.IpfsHomeNodeInfo;
+import io.taucoin.ipfs.node.IpfsPeerInfo;
 import io.taucoin.util.ByteUtil;
 import io.taucoin.util.Utils;
 
@@ -285,6 +287,10 @@ public class TaucoinRemoteService extends TaucoinService {
 
             case TaucoinServiceMessage.MSG_GET_IPFS_CONNECTED_PEERS:
                 getIPFSConnectedPeers(message);
+                break;
+
+            case TaucoinServiceMessage.MSG_GET_IPFS_HOME_NODE_INFO:
+                getIPFSHomeNodeInfo(message);
                 break;
 
             default:
@@ -677,7 +683,12 @@ public class TaucoinRemoteService extends TaucoinService {
             Message replyMessage = Message.obtain(null, TaucoinClientMessage.MSG_SUBMIT_TRANSACTION_RESULT, 0, 0, obj);
             Bundle replyData = new Bundle();
             try {
-                replyData.putParcelable("transaction", (io.taucoin.android.interop.Transaction)submittedTransaction);
+                replyData.putString("id", transaction.getTxid());
+                if (submittedTransaction != null) {
+                    replyData.putInt("result", 0);
+                } else {
+                    replyData.putInt("result", -1);
+                }
                 replyMessage.setData(replyData);
                 messenger.send(replyMessage);
                 logger.info("Sent submitted transaction: " + (submittedTransaction != null ? submittedTransaction.toString() : "null"));
@@ -1436,7 +1447,7 @@ public class TaucoinRemoteService extends TaucoinService {
         }
     }
 
-    protected class RequestIPFSPeersTask extends AsyncTask<Taucoin, Void, List<PeerInfo>> {
+    protected class RequestIPFSPeersTask extends AsyncTask<Taucoin, Void, List<IpfsPeerInfo>> {
 
         Messenger messenger;
         Object obj;
@@ -1447,26 +1458,74 @@ public class TaucoinRemoteService extends TaucoinService {
             this.obj = message.obj;
         }
 
-        protected List<PeerInfo> doInBackground(Taucoin... args) {
-            //return taucoin.submitTransaction(transaction);
-            // TODO: get IPFS connected peers.
-            return null;
+        protected List<IpfsPeerInfo> doInBackground(Taucoin... args) {
+            return taucoin.getIpfsSwarmPeers();
         }
 
-        protected void onPostExecute(List<PeerInfo> peers) {
+        protected void onPostExecute(List<IpfsPeerInfo> peers) {
 
             Message replyMessage = Message.obtain(null, TaucoinClientMessage.MSG_GET_IPFS_CONNECTED_PEERS_RESP, 0, 0, obj);
             Bundle replyData = new Bundle();
-            /**
+            ArrayList<io.taucoin.android.interop.IpfsPeerInfo> swarmPeers
+                    = new ArrayList<io.taucoin.android.interop.IpfsPeerInfo>();
+
+            for (IpfsPeerInfo p : peers) {
+                swarmPeers.add(new io.taucoin.android.interop.IpfsPeerInfo(p));
+            }
+
             try {
-                replyData.putParcelable("transaction", (io.taucoin.android.interop.Transaction)submittedTransaction);
+                replyData.putParcelableArrayList("peers", swarmPeers);
                 replyMessage.setData(replyData);
                 messenger.send(replyMessage);
-                logger.info("Sent submitted transaction: " + (submittedTransaction != null ? submittedTransaction.toString() : "null"));
+                logger.info("Sent ipfs peers...");
             } catch (RemoteException e) {
-                logger.error("Exception sending submitted transaction to client: " + e.getMessage());
+                logger.error("Exception sending ipfs peers to client: " + e.getMessage());
             }
-            */
+        }
+    }
+
+    /**
+     * Get IPFS home node info.
+     */
+    protected void getIPFSHomeNodeInfo(Message message) {
+
+        logger.info("get IPFS home node info");
+        if (!isConnected) {
+            new RequestIPFSHomeNodeInfoTask(message).execute(taucoin);
+        } else {
+            logger.warn("Taucoin not connected.");
+        }
+    }
+
+    protected class RequestIPFSHomeNodeInfoTask extends AsyncTask<Taucoin, Void, IpfsHomeNodeInfo> {
+
+        Messenger messenger;
+        Object obj;
+
+        public RequestIPFSHomeNodeInfoTask(Message message) {
+
+            this.messenger = message.replyTo;
+            this.obj = message.obj;
+        }
+
+        protected IpfsHomeNodeInfo doInBackground(Taucoin... args) {
+            return taucoin.getIpfsHomeNodeInfo();
+        }
+
+        protected void onPostExecute(IpfsHomeNodeInfo info) {
+
+            Message replyMessage = Message.obtain(null, TaucoinClientMessage.MSG_GET_IPFS_HOME_NODE_INFO_RESP, 0, 0, obj);
+            Bundle replyData = new Bundle();
+
+            try {
+                replyData.putParcelable("homeNode",
+                    new io.taucoin.android.interop.IpfsHomeNodeInfo(info));
+                replyMessage.setData(replyData);
+                messenger.send(replyMessage);
+                logger.info("Sent ipfs home node {}", info);
+            } catch (RemoteException e) {
+                logger.error("Exception sending ipfs home node to client: " + e.getMessage());
+            }
         }
     }
 

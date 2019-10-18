@@ -179,4 +179,9 @@ public class TaucoinServiceMessage {
      */
     public static final int MSG_GET_IPFS_CONNECTED_PEERS = 36;
 
+    /**
+     * Command to the service to get ipfs home node info
+     */
+    public static final int MSG_GET_IPFS_HOME_NODE_INFO = 37;
+
 }
