@@ -617,7 +617,7 @@ public class TaucoinConnector extends ServiceConnector {
      * @param identifier String Caller identifier used to return the response
      * @param transaction Transaction Transaction to submit
      *
-     * Sends message parameters ( "key": type [description] ):
+     * For response, please handle TaucoinClientMessage.MSG_SUBMIT_TRANSACTION_RESULT:
      * {
      *     "id": string(tx id)
      *     "result": int [result < 0, failed or >=0, success]
