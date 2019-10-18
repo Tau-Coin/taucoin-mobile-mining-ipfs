@@ -1,5 +1,7 @@
 package io.taucoin.core;
 
+import io.ipfs.cid.Cid;
+import io.ipfs.multihash.Multihash;
 import io.taucoin.crypto.ECKey;
 import io.taucoin.crypto.ECKey.ECDSASignature;
 import io.taucoin.crypto.ECKey.MissingPrivateKeyException;
@@ -70,6 +72,8 @@ public class Transaction {
     private byte[] sendAddress = null;
     
     private byte[] hash;
+
+    private Cid cid = null;
 
     /**
      *account address that forger who confirm this last state change.
@@ -384,6 +388,20 @@ public class Transaction {
         byte[] plainMsg = this.getEncodedHash();
         hash = HashUtil.sha3(plainMsg);
         return hash;
+    }
+
+    /**
+     * get transaction cid
+     * cid version:0, cid codec:DagProtobuf
+     * @return
+     */
+    public Cid getCid() {
+        if (this.cid == null) {
+            byte[] encoded = getEncoded();
+            Multihash multihash = new Multihash(Multihash.Type.sha2_256, HashUtil.sha256(encoded));
+            cid = Cid.buildCidV0(multihash);
+        }
+        return cid;
     }
 
     //get txid for wallet

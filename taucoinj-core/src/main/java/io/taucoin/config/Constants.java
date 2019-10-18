@@ -19,6 +19,8 @@ public class Constants {
     public static final int FEE_TERMINATE_HEIGHT = 23050;
 
     public static final String GENESIS_BLOCK_HASH = "cff5ddb22f7f7f1a251c506ce85585353a99644e";
+    public static final String GENESIS_BLOCK_CID = "QmQ2NxZvmGpKkx9eZ8YqUbrBnZtyDRxcxPrvhyCJ9DkHUd";
+    public static final String GENESIS_HASHPAIR_CID = "QmPMvJarVkRhGDJvHxT9BMf8zrtAFLJUTJ86vRoZzy5vYr";
 
     public static BigInteger MINIMUM_DIFFICULTY = BigInteger.valueOf(131072);
     public static BigInteger DIFFICULTY_BOUND_DIVISOR = BigInteger.valueOf(2048);

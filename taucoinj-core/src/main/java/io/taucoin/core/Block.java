@@ -1,5 +1,7 @@
 package io.taucoin.core;
 
+import io.ipfs.cid.Cid;
+import io.ipfs.multihash.Multihash;
 import io.taucoin.crypto.ECKey;
 import io.taucoin.crypto.ECKey.ECDSASignature;
 import io.taucoin.crypto.HashUtil;
@@ -39,6 +41,8 @@ public class Block {
     //160 bits, The SHA256 previous block header and RIPEMD 160 second 160 bits
     private byte[] previousHeaderHash;
     private byte[] blockhash = null;
+
+    private Cid cid = null;
 
     /* Transactions */
     private List<Transaction> transactionsList = new CopyOnWriteArrayList<>();
@@ -226,6 +230,20 @@ public class Block {
             this.blockhash = HashUtil.ripemd160(HashUtil.sha256(this.getHashEncoded()));
         }
         return this.blockhash;
+    }
+
+    /**
+     * get block cid
+     * cid version:0, cid codec:DagProtobuf
+     * @return
+     */
+    public Cid getCid() {
+        if (this.cid == null) {
+            byte[] encoded = getEncodedMsg();
+            Multihash multihash = new Multihash(Multihash.Type.sha2_256, HashUtil.sha256(encoded));
+            cid = Cid.buildCidV0(multihash);
+        }
+        return cid;
     }
 
     public byte[] getPreviousHeaderHash() {
