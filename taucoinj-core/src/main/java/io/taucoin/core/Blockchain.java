@@ -5,47 +5,47 @@ import java.util.List;
 
 public interface Blockchain {
 
-    public static final byte[] GENESIS_HASH = Genesis.getInstance().getHash();
+    static final byte[] GENESIS_HASH = Genesis.getInstance().getHash();
 
-    public long getSize();
+    long getSize();
 
-    public boolean addBlock(Block block);
+    boolean addBlock(Block block);
 
-    public ImportResult tryToConnect(Block block);
+    ImportResult tryToConnect(Block block);
 
-    public void storeBlock(Block block);
+    void storeBlock(Block block, boolean isMainChain);
 
-    public Block getBlockByNumber(long blockNr);
+    Block getBlockByNumber(long blockNr);
 
     long getBlockTimeByNumber(long blockNumber);
 
-    public void setBestBlock(Block block);
+    void setBestBlock(Block block);
 
-    public Block getBestBlock();
+    Block getBestBlock();
 
-    public boolean hasParentOnTheChain(Block block);
+    boolean hasParentOnTheChain(Block block);
 
     void close();
 
-    public void updateTotalDifficulty(Block block);
+    void updateTotalDifficulty(Block block);
 
-    public BigInteger getTotalDifficulty();
+    BigInteger getTotalDifficulty();
 
-    public void setTotalDifficulty(BigInteger totalDifficulty);
+    void setTotalDifficulty(BigInteger totalDifficulty);
 
-    public byte[] getBestBlockHash();
+    byte[] getBestBlockHash();
 
-    public List<byte[]> getListOfHashesStartFrom(byte[] hash, int qty);
+    List<byte[]> getListOfHashesStartFrom(byte[] hash, int qty);
 
-    public List<byte[]> getListOfHashesStartFromBlock(long blockNumber, int qty);
+    List<byte[]> getListOfHashesStartFromBlock(long blockNumber, int qty);
 
-    public Block getBlockByHash(byte[] hash);
+    Block getBlockByHash(byte[] hash);
 
-    public List<Chain> getAltChains();
+    List<Chain> getAltChains();
 
-    public List<Block> getGarbage();
+    List<Block> getGarbage();
 
-    public void setExitOn(long exitOn);
+    void setExitOn(long exitOn);
 
     boolean isBlockExist(byte[] hash);
 

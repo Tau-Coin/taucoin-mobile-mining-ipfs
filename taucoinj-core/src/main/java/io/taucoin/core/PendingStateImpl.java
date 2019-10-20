@@ -1,18 +1,24 @@
 package io.taucoin.core;
 
+import io.ipfs.api.IPFS;
+import io.ipfs.cid.Cid;
+import io.ipfs.multihash.Multihash;
 import io.taucoin.config.Constants;
 import io.taucoin.db.BlockStore;
 import io.taucoin.listener.CompositeTaucoinListener;
 import io.taucoin.listener.TaucoinListener;
 import io.taucoin.listener.TaucoinListenerAdapter;
+import io.taucoin.manager.IpfsService;
 import io.taucoin.util.ByteUtil;
 import io.taucoin.db.ByteArrayWrapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.annotation.Resource;
 import javax.inject.Singleton;
@@ -21,6 +27,7 @@ import javax.inject.Inject;
 import org.apache.commons.collections4.map.LRUMap;
 
 import static io.taucoin.util.BIUtil.*;
+import static java.lang.Thread.sleep;
 
 
 /**
@@ -38,6 +45,7 @@ public class PendingStateImpl implements PendingState {
     private Repository repository;
     private BlockStore blockStore;
     private Blockchain blockchain;
+    private IpfsService ipfsService;
     private static final int MaxExpireTime = 144;
     private static final int MAXTNO= 50;
     private boolean isSyncdone = false;
@@ -49,6 +57,12 @@ public class PendingStateImpl implements PendingState {
     private final Map<String, HashSet<Long>> particleTx = new HashMap<>(50);
 
     private Repository pendingState;
+
+    private IPFS ipfs;
+
+    Thread transactionSubThread;
+
+    ConcurrentLinkedQueue<Object> res = new ConcurrentLinkedQueue<>();
 
     private Block best = null;
 
@@ -63,16 +77,79 @@ public class PendingStateImpl implements PendingState {
     }
 
     @Inject
-    public PendingStateImpl(TaucoinListener listener, Repository repository,BlockStore blockStore) {
+    public PendingStateImpl(TaucoinListener listener, Repository repository,BlockStore blockStore, IpfsService ipfsService) {
         this.listener = listener;
         ((CompositeTaucoinListener)this.listener).addListener(ProcessBlockListener);
         this.repository = repository;
         this.blockStore = blockStore;
+        this.ipfsService = ipfsService;
     }
 
     @Override
     public void init() {
         this.pendingState = repository.startTracking();
+
+        ipfs = ipfsService.getLocalIpfs();
+
+        try {
+            transactionSubThread = new Thread(() -> {
+                try {
+                    ipfs.pubsub.sub("idl", res::add, x -> logger.error(x.getMessage(), x));
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                    throw new RuntimeException(e);
+                }
+            });
+            transactionSubThread.start();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        TransactionsSubscriber();
+    }
+
+    private void TransactionsSubscriber(){
+        while (true) {
+            if (res.size() > 0) {
+                Map msg = (Map) res.poll();
+                if (msg.size() > 0) {
+//                    String from = Base58.encode(Base64.getDecoder().decode(msg.get("from").toString()));
+//                    String topicId = msg.get("topicIDs").toString();
+//                    String seqno = new BigInteger(Base64.getDecoder().decode(msg.get("seqno").toString())).toString();
+                    String data = new String(Base64.getDecoder().decode(msg.get("data").toString()));
+                    syncTransactions(data);
+                }
+            }
+
+            //sleep 1s
+            try {
+                sleep(1000);
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+    }
+
+    private synchronized void syncTransactions(String txPackageCid) {
+        try {
+            Cid cid = Cid.decode(txPackageCid);
+            logger.info("HASHL:{}", cid.toString());
+            Multihash multihash = new Multihash(cid);
+            byte[] rlpEncoded = ipfs.block.get(multihash);
+            TransactionCidList transactionCidList = new TransactionCidList(rlpEncoded);
+            Multihash txMultihash;
+            Transaction tx;
+            for (byte[] txCid : transactionCidList.getTxCidList()) {
+                txMultihash = new Multihash(txCid);
+                byte[] txRlp = ipfs.block.get(txMultihash);
+                tx = new Transaction(txRlp);
+                HashSet<Transaction> txs = new HashSet<Transaction>();
+                txs.add(tx);
+                addWireTransactions(txs);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
     public Repository getRepository() {

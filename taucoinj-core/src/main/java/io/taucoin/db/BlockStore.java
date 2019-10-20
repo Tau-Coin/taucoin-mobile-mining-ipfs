@@ -2,6 +2,7 @@ package io.taucoin.db;
 
 import io.taucoin.core.Block;
 import io.taucoin.core.BlockHeader;
+import io.taucoin.core.HashPair;
 import org.hibernate.SessionFactory;
 
 import java.math.BigInteger;
@@ -56,6 +57,18 @@ public interface BlockStore {
     void setSessionFactory(SessionFactory sessionFactory);
 
     long getBlockTimeByNumber(long blockNumber);
+
+    void saveBlockHashPair(Block block, HashPair hashPair, BigInteger cummDifficulty, boolean mainChain);
+
+    HashPair getHashPairByCid(byte[] cid);
+
+    HashPair getHashPairByBlock(Block block);
+
+    HashPair getHashPairByBlock(long blockNumber, byte[] blockHash);
+
+    List<HashPair> getListChainHashPairsEndWith(long blockNumber, long qty);
+
+    List<byte[]> getListChainHashPairCidBytesEndWith(long blockNumber, long qty);
 
     void close();
 

@@ -2,6 +2,7 @@ package io.taucoin.db;
 
 import io.taucoin.core.Block;
 import io.taucoin.core.BlockHeader;
+import io.taucoin.core.HashPair;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -30,6 +31,8 @@ public class InMemoryBlockStore implements BlockStore {
     Map<ByteArrayWrapper, Block> hashIndex = new HashMap<>();
     Map<Long, Block> numberIndex = new HashMap<>();
     List<Block> blocks = new ArrayList<>();
+
+    Map<ByteArrayWrapper, HashPair> hashPairIndex = new HashMap<>();
 
     SessionFactory sessionFactory;
 
@@ -61,6 +64,30 @@ public class InMemoryBlockStore implements BlockStore {
     }
 
     @Override
+    public HashPair getHashPairByBlock(Block block){
+        //TODO
+        return null;
+    }
+
+    @Override
+    public HashPair getHashPairByBlock(long blockNumber, byte[] blockHash){
+        //TODO
+        return null;
+    }
+
+    @Override
+    public List<HashPair> getListChainHashPairsEndWith(long blockNumber, long qty) {
+        //TODO
+        return null;
+    }
+
+    @Override
+    public List<byte[]> getListChainHashPairCidBytesEndWith(long blockNumber, long qty) {
+        //TODO
+        return null;
+    }
+
+    @Override
     public Block getBlockByHash(byte[] hash) {
 
         Block block = hashIndex.get(wrap(hash));
@@ -69,6 +96,14 @@ public class InMemoryBlockStore implements BlockStore {
             return dbGetBlockByHash(hash);
         else
             return block;
+    }
+
+    @Override
+    public HashPair getHashPairByCid(byte[] cid) {
+
+        //TODO:: block == null
+        HashPair hashPair = hashPairIndex.get(wrap(cid));
+        return hashPair;
     }
 
     @Override
@@ -116,6 +151,16 @@ public class InMemoryBlockStore implements BlockStore {
         totalDifficulty = totalDifficulty.add(block.getCumulativeDifficulty());
     }
 
+    @Override
+    public void saveBlockHashPair(Block block, HashPair hashPair, BigInteger cummDifficulty, boolean mainChain) {
+        ByteArrayWrapper wHash = wrap(block.getHash());
+        ByteArrayWrapper wHashPair = wrap(hashPair.getCid().toBytes());
+        blocks.add(block);
+        hashIndex.put(wHash, block);
+        numberIndex.put(block.getNumber(), block);
+        hashPairIndex.put(wHashPair, hashPair);
+        totalDifficulty = totalDifficulty.add(block.getCumulativeDifficulty());
+    }
 
     @Override
     public BigInteger getTotalDifficulty() {

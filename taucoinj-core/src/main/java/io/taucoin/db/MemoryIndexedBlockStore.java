@@ -1,6 +1,7 @@
 package io.taucoin.db;
 
 import io.taucoin.core.Block;
+import io.taucoin.core.HashPair;
 import io.taucoin.util.ByteUtil;
 
 import org.apache.commons.io.FileUtils;
@@ -373,6 +374,52 @@ public class MemoryIndexedBlockStore implements BlockStore {
         }
 
         return null;
+    }
+
+    @Override
+    public HashPair getHashPairByBlock(Block block){
+        //TODO
+        return null;
+    }
+
+    @Override
+    public HashPair getHashPairByBlock(long blockNumber, byte[] blockHash){
+        //TODO
+        return null;
+    }
+
+    @Override
+    public List<HashPair> getListChainHashPairsEndWith(long blockNumber, long qty) {
+        //TODO
+        return null;
+    }
+
+    @Override
+    public List<byte[]> getListChainHashPairCidBytesEndWith(long blockNumber, long qty) {
+        //TODO
+        return null;
+    }
+
+    @Override
+    public HashPair getHashPairByCid(byte[] cid) {
+
+        //TODO:: block == null
+//        HashPair hashPair = hashPairIndex.get(wrap(cid));
+//        return hashPair;
+        return null;
+    }
+
+    @Override
+    public void saveBlockHashPair(Block block, HashPair hashPair, BigInteger cummDifficulty, boolean mainChain) {
+/*
+        ByteArrayWrapper wHash = wrap(block.getHash());
+        ByteArrayWrapper wHashPair = wrap(hashPair.getCid().toBytes());
+        blocks.add(block);
+        hashIndex.put(wHash, block);
+        numberIndex.put(block.getNumber(), block);
+        hashPairIndex.put(wHashPair, hashPair);
+        totalDifficulty = totalDifficulty.add(block.getCumulativeDifficulty());
+*/
     }
 
     @Override

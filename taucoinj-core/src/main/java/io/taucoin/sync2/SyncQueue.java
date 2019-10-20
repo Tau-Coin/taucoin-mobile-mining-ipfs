@@ -1,5 +1,9 @@
 package io.taucoin.sync2;
 
+import io.ipfs.api.IPFS;
+import io.ipfs.cid.Cid;
+import io.ipfs.multihash.Multihash;
+import io.taucoin.config.Constants;
 import io.taucoin.config.SystemProperties;
 import io.taucoin.core.*;
 import io.taucoin.datasource.DBCorruptionException;
@@ -7,13 +11,16 @@ import io.taucoin.datasource.mapdb.MapDBFactory;
 import io.taucoin.db.*;
 import io.taucoin.db.file.BlockQueueFileSys;
 import io.taucoin.db.file.FileBlockStore;
+import io.taucoin.manager.IpfsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import java.io.IOException;
 import java.nio.channels.OverlappingFileLockException;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.*;
 
@@ -91,6 +98,14 @@ public class SyncQueue {
 
     private MapDBFactory mapDBFactory;
 
+    private IpfsService ipfsService;
+
+    ConcurrentLinkedQueue<Object> res = new ConcurrentLinkedQueue<>();
+
+    Thread blockChainSubThread;
+
+    private IPFS ipfs;
+
     private Thread worker = null;
 
     private byte[] genesisBlockHash = null;
@@ -115,10 +130,11 @@ public class SyncQueue {
     private AtomicBoolean isRequestClose = new AtomicBoolean(false);
 
     public SyncQueue(Blockchain blockchain, MapDBFactory mapDBFactory,
-            FileBlockStore fileBlockStore) {
+            FileBlockStore fileBlockStore, IpfsService ipfsService) {
         this.blockchain = blockchain;
         this.mapDBFactory = mapDBFactory;
         this.fileBlockStore = fileBlockStore;
+        this.ipfsService = ipfsService;
     }
 
     public void setSyncManager(SyncManager syncManager) {
@@ -155,6 +171,24 @@ public class SyncQueue {
         // Init thread of connecting blocks.
         this.worker = new Thread (queueProducer);
         worker.start();
+
+        ipfs = ipfsService.getLocalIpfs();
+
+        try {
+            blockChainSubThread = new Thread(() -> {
+                try {
+                    ipfs.pubsub.sub("idc", res::add, x -> logger.error(x.getMessage(), x));
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                    throw new RuntimeException(e);
+                }
+            });
+            blockChainSubThread.start();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        BlockChainSubscriber();
 
         inited.set(true);
     }
@@ -256,6 +290,94 @@ public class SyncQueue {
 
     private boolean isStoppedOrClosed() {
         return isRequestStopped.get() || isRequestClose.get();
+    }
+
+    private void BlockChainSubscriber(){
+        while (true) {
+            if (res.size() > 0) {
+                Map msg = (Map) res.poll();
+                if (msg.size() > 0) {
+//                    String from = Base58.encode(Base64.getDecoder().decode(msg.get("from").toString()));
+//                    String topicId = msg.get("topicIDs").toString();
+//                    String seqno = new BigInteger(Base64.getDecoder().decode(msg.get("seqno").toString())).toString();
+                    String data = new String(Base64.getDecoder().decode(msg.get("data").toString()));
+                    syncBlockChain(data);
+                }
+            }
+
+            //sleep 1s
+            try {
+                sleep(1000);
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+    }
+
+    private synchronized void syncBlockChain(String hashChainCid) {
+        try {
+            Cid cid = Cid.decode(hashChainCid);
+            logger.info("HASHC:{}", cid.toString());
+            Multihash multihash = new Multihash(cid);
+            byte[] rlpEncoded = ipfs.block.get(multihash);
+            HashChain hashChain = new HashChain(rlpEncoded);
+            List<byte[]> cidList = hashChain.getHashPairCidList();
+
+            //simple mode
+            Cid latestHashPairCid = Cid.cast(cidList.get(0));
+            logger.info("first cid in cid list:{}", latestHashPairCid.toString());
+            multihash = new Multihash(latestHashPairCid);
+            byte[] latestHashPairRlpEncoded = ipfs.block.get(multihash);
+            HashPair hashPair = new HashPair(latestHashPairRlpEncoded);
+            Block bestBlock = blockchain.getBestBlock();
+            long currentNumber = bestBlock.getNumber();
+            logger.info("current block number:{}, hash:{}", currentNumber, bestBlock.getHash());
+            List<HashPair> hashPairList = new ArrayList<>();
+            byte[] hashPairRlp;
+            while (hashPair.getNumber() > currentNumber) {
+                //sync hash pair list
+                logger.info("hash pair number:{}, cid:{}, block cid:{}, previous hash pair cid:{}",
+                        hashPair.getNumber(),
+                        hashPair.getCid().toString(),
+                        hashPair.getBlockCid().toString(),
+                        hashPair.getPreviousHashPairCid().toString());
+                hashPairList.add(hashPair);
+                cid = hashPair.getPreviousHashPairCid();
+                if (cid.toString().compareTo(Constants.GENESIS_HASHPAIR_CID) == 0) {
+                    logger.info("...sync to genesis hash pair...");
+                    break;
+                }
+                multihash = hashPair.getPreviousHashPairCid();
+                hashPairRlp = ipfs.block.get(multihash);
+                hashPair = new HashPair(hashPairRlp);
+            }
+
+            //sync block from hash pair list
+            logger.info("sync start from number:{}", hashPair.getNumber());
+            if (hashPair.getPreviousHashPairCid().toString().
+                    compareTo(Constants.GENESIS_HASHPAIR_CID) == 0 ||
+                    hashPair.getBlockCid().toString().
+                            compareTo(bestBlock.getCid().toString()) == 0) {
+                int size = hashPairList.size();
+                logger.info("There are {} blocks to sync", size);
+                for (int i = size - 1; i >= 0; i--) {
+                    hashPair = hashPairList.get(i);
+                    logger.info("block cid:{}", hashPair.getBlockCid().toString());
+                    multihash = hashPair.getBlockCid();
+                    while (!blockQueue.isEmpty()) {
+                        sleep(10);
+                    }
+                    byte[] blockRlp = ipfs.block.get(multihash);
+                    Block block = new Block(blockRlp, true);
+                    logger.info("sync block hash:{}", block.getHash());
+//                    BlockWrapper wrapper = new BlockWrapper(block, new byte[1], "127.0.0.1");
+//                    blockQueue.add(wrapper);
+                    addNew(block, new byte[0]);
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
     /**

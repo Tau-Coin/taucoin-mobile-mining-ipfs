@@ -1,6 +1,7 @@
 package io.taucoin.android.db;
 
 import io.taucoin.core.Block;
+import io.taucoin.core.HashPair;
 import io.taucoin.db.BlockStore;
 import io.taucoin.db.ByteArrayWrapper;
 import io.taucoin.util.*;
@@ -20,17 +21,11 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -117,6 +112,7 @@ public class MMKVIndexedBlockStore implements BlockStore {
         init();
     }
 
+    @Override
     public Block getBestBlock(){
 
         Long maxLevel = getMaxNumber();
@@ -170,6 +166,46 @@ public class MMKVIndexedBlockStore implements BlockStore {
         } finally {
             w.unlock();
         }
+    }
+
+    @Override
+    public void saveBlockHashPair(Block block, HashPair hashPair, BigInteger cummDifficulty, boolean mainChain){
+        /*if (cache == null)
+            addInternalBlockHashPair(block, hashPair, cummDifficulty, mainChain);
+        else
+            cache.saveBlockHashPair(block, hashPair, cummDifficulty, mainChain);
+
+        // If this block is on main chain, cache its timestamp.
+        if (mainChain) {
+            addBlockTime(block);
+        }*/
+    }
+
+    private void addInternalBlockHashPair(Block block, HashPair hashPair, BigInteger cummDifficulty, boolean mainChain){
+
+        /*List<BlockInfo> blockInfos = index.get(block.getNumber());
+        if (blockInfos == null) {
+            blockInfos = new ArrayList<>();
+        }
+
+        BlockInfo blockInfo = new BlockInfo();
+        blockInfo.setCummDifficulty(cummDifficulty);
+        blockInfo.setHash(block.getHash());
+        blockInfo.setHashPairCid(hashPair.getCid().toBytes());
+        blockInfo.setMainChain(mainChain); // FIXME:maybe here I should force reset main chain for all uncles on that level
+
+        blockInfos.add(blockInfo);
+
+        index.put(block.getNumber(), blockInfos);
+
+        blocksCache.put(new ByteArrayWrapper(block.getHash()), block);
+        indexCache.put(block.getNumber(), blockInfos);
+
+        index.put(block.getNumber(), blockInfos);
+
+        blocks.put(block.getHash(), block.getEncoded());
+        //save hash pair
+        blocks.put(hashPair.getCid().toBytes(), hashPair.getEncoded());*/
     }
 
     @Override
@@ -390,6 +426,147 @@ public class MMKVIndexedBlockStore implements BlockStore {
     }
 
     @Override
+    public HashPair getHashPairByBlock(Block block) {
+
+        /*if (cache != null) {
+            HashPair hashPair = cache.getHashPairByBlock(block);
+            if (hashPair != null) return hashPair;
+        }
+
+        List<BlockInfo> blockInfos = index.get(block.getNumber());
+        if (blockInfos == null){
+            return null;
+        }
+
+        for (BlockInfo blockInfo : blockInfos){
+
+            if (Arrays.equals(blockInfo.getHash(), block.getHash())){
+
+                byte[] hashPairCid = blockInfo.getHashPairCid();
+                byte[] hashPairRlp = blocks.get(hashPairCid);
+                return new HashPair(hashPairRlp);
+            }
+        }*/
+
+        return null;
+    }
+
+    @Override
+    public HashPair getHashPairByBlock(long blockNumber, byte[] blockHash) {
+
+        /*if (cache != null) {
+            HashPair hashPair = cache.getHashPairByBlock(blockNumber, blockHash);
+            if (hashPair != null) return hashPair;
+        }
+
+        List<BlockInfo> blockInfos = index.get(blockNumber);
+        if (blockInfos == null){
+            return null;
+        }
+
+        for (BlockInfo blockInfo : blockInfos){
+
+            if (Arrays.equals(blockInfo.getHash(), blockHash)){
+
+                byte[] hashPairCid = blockInfo.getHashPairCid();
+                byte[] hashPairRlp = blocks.get(hashPairCid);
+                return new HashPair(hashPairRlp);
+            }
+        }*/
+
+        return null;
+    }
+
+    @Override
+    public List<HashPair> getListChainHashPairsEndWith(long blockNumber, long qty) {
+
+        return null;
+        /*if (cache == null)
+            return getListChainHashPairsEndWithInner(blockNumber, qty);
+
+        List<HashPair> cachedHashPairs = cache.getListChainHashPairsEndWith(blockNumber, qty);
+
+        if (cachedHashPairs.size() == qty) return cachedHashPairs;
+
+        if (cachedHashPairs.isEmpty())
+            return getListChainHashPairsEndWithInner(blockNumber, qty);
+
+        HashPair latestCached = cachedHashPairs.get(cachedHashPairs.size() - 1);
+
+        List<HashPair> notCachedHashPairs = getListChainHashPairsEndWithInner(
+                latestCached.getNumber() - 1, qty - cachedHashPairs.size());
+        cachedHashPairs.addAll(notCachedHashPairs);
+
+        return cachedHashPairs;*/
+    }
+
+    private List<HashPair> getListChainHashPairsEndWithInner(long blockNumber, long qty) {
+
+        List<HashPair> hashPairs = new ArrayList<>((int) qty);
+
+        /*byte[] rlp;
+        for (int i = 0; i < qty; ++i) {
+            List<BlockInfo> blockInfos = index.get(blockNumber - i);
+            if (blockInfos != null) {
+                for (BlockInfo blockInfo : blockInfos) {
+                    if (blockInfo.isMainChain()) {
+                        rlp = this.blocks.get(blockInfo.getHashPairCid());
+                        if (null == rlp) {
+                            return hashPairs;
+                        }
+                        HashPair hashPair = new HashPair(rlp);
+                        hashPairs.add(hashPair);
+                    }
+                }
+            }
+        }*/
+
+        return hashPairs;
+    }
+
+    @Override
+    public List<byte[]> getListChainHashPairCidBytesEndWith(long blockNumber, long qty) {
+
+        return null;
+        /*if (cache == null)
+            return getListChainHashPairCidBytesEndWithInner(blockNumber, qty);
+
+        List<byte[]> cachedlist = cache.getListChainHashPairCidBytesEndWith(blockNumber, qty);
+
+        long size = cachedlist.size();
+
+        if (size == qty) return cachedlist;
+
+        if (cachedlist.isEmpty())
+            return getListChainHashPairCidBytesEndWithInner(blockNumber, qty);
+
+        List<byte[]> notCachedlist = getListChainHashPairCidBytesEndWithInner(
+                blockNumber - size, qty - size);
+        cachedlist.addAll(notCachedlist);
+
+        return cachedlist;*/
+    }
+
+    private List<byte[]> getListChainHashPairCidBytesEndWithInner(long blockNumber, long qty) {
+
+        return null;
+        /*List<byte[]> list = new ArrayList<>((int) qty);
+
+        for (int i = 0; i < qty; ++i) {
+            List<BlockInfo> blockInfos = index.get(blockNumber - i);
+            if (blockInfos != null) {
+                for (BlockInfo blockInfo : blockInfos) {
+                    if (blockInfo.isMainChain()) {
+                        list.add(blockInfo.getHashPairCid());
+                    }
+                }
+            }
+        }
+
+        return list;*/
+    }
+
+    @Override
     public Block getBlockByHash(byte[] hash) {
 
         r.lock();
@@ -408,6 +585,22 @@ public class MMKVIndexedBlockStore implements BlockStore {
         } finally {
             r.unlock();
         }
+    }
+
+    @Override
+    public HashPair getHashPairByCid(byte[] cid) {
+
+        return null;
+        /*if (cache != null) {
+            HashPair cachedHashPair = cache.getHashPairByCid(cid);
+            if (cachedHashPair != null) return cachedHashPair;
+        }
+
+        byte[] hashPairRlp = blocks.get(cid);
+        if (hashPairRlp == null)
+            return null;
+
+        return new HashPair(hashPairRlp);*/
     }
 
     @Override
@@ -673,6 +866,7 @@ public class MMKVIndexedBlockStore implements BlockStore {
     public static class BlockInfo implements Serializable {
         long number;
         byte[] hash;
+//        byte[] hashPairCid;
         BigInteger cummDifficulty;
         boolean mainChain;
 
@@ -699,6 +893,14 @@ public class MMKVIndexedBlockStore implements BlockStore {
             this.hash = hash;
         }
 
+        /*public byte[] getHashPairCid() {
+            return hashPairCid;
+        }
+
+        public void setHashPairCid(byte[] hashPairCid) {
+            this.hashPairCid = hashPairCid;
+        }*/
+
         public BigInteger getCummDifficulty() {
             return cummDifficulty;
         }
@@ -721,12 +923,14 @@ public class MMKVIndexedBlockStore implements BlockStore {
 
             byte[] numberBytes = info.get(0).getRLPData();
             byte[] hashBytes = info.get(1).getRLPData();
+//            byte[] hashPairCidBytes = info.get(2).getRLPData();
             byte[] cummDifficultyBytes = info.get(2).getRLPData();
             byte[] mainChainBytes = info.get(3).getRLPData();
 
             this.number = numberBytes == null ?
                     0 : new BigInteger(1, numberBytes).longValue();
             this.hash = hashBytes;
+//            this.hashPairCid = hashPairCidBytes;
             this.cummDifficulty = cummDifficultyBytes == null ?
                     BigInteger.ZERO : new BigInteger(1, cummDifficultyBytes);
             byte mainChain = mainChainBytes == null ? (byte)0 : mainChainBytes[0];
@@ -736,10 +940,11 @@ public class MMKVIndexedBlockStore implements BlockStore {
         public byte[] getEncoded() {
             byte[] numberBytes = RLP.encodeBigInteger(BigInteger.valueOf(this.number));
             byte[] hashBytes = RLP.encodeElement(this.hash);
+//            byte[] hashPairCidBytes = RLP.encodeElement(this.hashPairCid);
             byte[] cummDifficultyBytes = RLP.encodeBigInteger(this.cummDifficulty);
             byte[] mainChainBytes = RLP.encodeByte((byte) (mainChain ? 1 : 0));
 
-            return RLP.encodeList(numberBytes, hashBytes, cummDifficultyBytes,
+            return RLP.encodeList(numberBytes, hashBytes/*, hashPairCidBytes*/, cummDifficultyBytes,
                     mainChainBytes);
         }
     }

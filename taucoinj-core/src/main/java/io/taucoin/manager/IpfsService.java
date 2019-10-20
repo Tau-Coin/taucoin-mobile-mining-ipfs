@@ -42,6 +42,13 @@ public class IpfsService {
         ipfs = new IPFS(LOCAL_IPFS);
     }
 
+    public IPFS getLocalIpfs() {
+        if (null == ipfs) {
+            init();
+        }
+        return ipfs;
+    }
+
     public boolean sendTransaction(Transaction tx) {
         if (tx == null) {
             logger.warn("send null transaction");

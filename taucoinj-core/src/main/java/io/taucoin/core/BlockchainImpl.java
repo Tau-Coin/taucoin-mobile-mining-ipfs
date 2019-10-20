@@ -1,5 +1,7 @@
 package io.taucoin.core;
 
+import io.ipfs.api.IPFS;
+import io.ipfs.api.MerkleNode;
 import io.taucoin.config.Constants;
 import io.taucoin.config.SystemProperties;
 import io.taucoin.core.transaction.TransactionOptions;
@@ -9,6 +11,7 @@ import io.taucoin.db.BlockStore;
 import io.taucoin.db.file.FileBlockStore;
 import io.taucoin.debug.RefWatcher;
 import io.taucoin.listener.TaucoinListener;
+import io.taucoin.manager.IpfsService;
 import io.taucoin.sync2.ChainInfoManager;
 import io.taucoin.util.AdvancedDeviceUtils;
 import io.taucoin.util.ByteUtil;
@@ -74,7 +77,17 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
 
     private BlockStore blockStore;
 
+    private IpfsService ipfsService;
+
     private Block bestBlock;
+
+    private HashChain bestHashChain;
+
+    private IPFS ipfs;
+
+    private String topicB = "idb";
+
+    private String topicC = "idc";
 
     private BigInteger totalDifficulty = ZERO;
 
@@ -111,7 +124,7 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
     public BlockchainImpl(BlockStore blockStore, Repository repository,
             PendingState pendingState, TaucoinListener listener,
             ChainInfoManager chainInfoManager, FileBlockStore fileBlockStore,
-            RefWatcher refWatcher) {
+            RefWatcher refWatcher, IpfsService ipfsService) {
         this.blockStore = blockStore;
         this.repository = repository;
         this.pendingState = pendingState;
@@ -121,6 +134,8 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
         this.refWatcher = refWatcher;
         this.executor = new TransactionExecutor(this, listener);
         this.stakeHolderIdentityUpdate = new StakeHolderIdentityUpdate();
+        this.ipfsService = ipfsService;
+        this.ipfs = ipfsService.getLocalIpfs();
     }
 
     @Override
@@ -281,7 +296,7 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
                 logger.info("Beginning to re-branch.");
                 track.commit();
 
-                blockStore.saveBlock(block, totalDifficulty, true);
+                storeBlock(block, true);
                 setBestBlock(block);
 
                 blockStore.reBranchBlocks(undoBlocks, newBlocks);
@@ -316,7 +331,7 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
                 return INVALID_BLOCK;
             }
 
-            blockStore.saveBlock(block, totalDifficulty, false);
+            storeBlock(block, false);
             blockStore.flush();
 
             return IMPORTED_NOT_BEST;
@@ -515,7 +530,7 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
 //            track.commit();
 //        }
 
-        storeBlock(block);
+        storeBlock(block, true);
 
         //if (needFlush(block)) {
             repository.flush(block.getNumber());
@@ -932,20 +947,67 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
     }
 
     @Override
-    public synchronized void storeBlock(Block block) {
+    public synchronized void storeBlock(Block block, boolean isMainChain) {
 
-        if (fork)
-            blockStore.saveBlock(block, totalDifficulty, false);
-        else
-            blockStore.saveBlock(block, totalDifficulty, true);
+        logger.info("block number:{}, cid:{}", block.getNumber(), block.getCid().toString());
 
-        logger.debug("Block saved: number: {}, hash: {}, TD: {}",
+        HashPair previousHashPair = blockStore.
+                getHashPairByBlock(block.getNumber() - 1, block.getPreviousHeaderHash());
+        HashPair hashPair = new HashPair(block.getNumber(), block.getCid(), previousHashPair.getCid());
+        logger.info("hash pair number:{}, cid:{}", hashPair.getNumber(),
+                hashPair.getCid().toString());
+
+        //store block and hash pair on ipfs
+        List<byte[]> dataList = new ArrayList<>(2);
+        dataList.add(block.getEncodedMsg());
+        dataList.add(hashPair.getEncoded());
+        try {
+            List<MerkleNode> merkleNodeList = ipfs.block.put(dataList);
+            logger.info("block cid:{}, size:{}",
+                    merkleNodeList.get(0).hash.toString(), merkleNodeList.size());
+            logger.info("hash pair cid:{}, size:{}",
+                    merkleNodeList.get(1).hash.toString(), merkleNodeList.size());
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        if (isMainChain) {
+            //save block
+            blockStore.saveBlockHashPair(block, hashPair, totalDifficulty, true);
+
+            //set best block
+            setBestBlock(block);
+
+            //set best hash chain
+            List<byte[]> hashPairCidList =
+                    blockStore.getListChainHashPairCidBytesEndWith(block.getNumber(), 5);
+            bestHashChain = new HashChain(hashPairCidList);
+            logger.info("best hash chain: HASHC:{}", bestHashChain.getHashC().toString());
+
+            //store best hash chain content on ipfs
+            List<byte[]> bestHashChainBytes = new ArrayList<>(1);
+            logger.info("best hash chain bytes:{}", bestHashChain.getEncoded());
+            bestHashChainBytes.add(bestHashChain.getEncoded());
+            try {
+                ipfs.block.put(bestHashChainBytes);
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+
+            //broadcast block cid and HASHC
+            try {
+                ipfs.pubsub.pub(topicB, block.getCid().toString());
+                ipfs.pubsub.pub(topicC, bestHashChain.getHashC().toString());
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        } else {
+            blockStore.saveBlockHashPair(block, hashPair, totalDifficulty, false);
+        }
+
+        logger.info("Block saved: number: {}, hash: {}, TD: {}",
                 block.getNumber(), block.getShortHash(), totalDifficulty);
 
-        setBestBlock(block);
-
-        if (logger.isDebugEnabled())
-            logger.debug("block added to the blockChain: index: [{}]", block.getNumber());
         if (block.getNumber() % 100 == 0)
             logger.info("*** Last block added [ #{} ]", block.getNumber());
 
