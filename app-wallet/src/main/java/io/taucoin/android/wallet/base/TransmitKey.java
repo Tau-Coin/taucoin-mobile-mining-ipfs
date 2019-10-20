@@ -69,6 +69,8 @@ public class TransmitKey {
         public static final String BLOCK = "block";
         public static final String TRANSACTION = "transaction";
         public static final String IS_FINISH = "isfinish";
+        public static final String PEERS = "peers";
+        public static final String HOME_NODE = "homeNode";
 
     }
     public static final String TYPE = "type";

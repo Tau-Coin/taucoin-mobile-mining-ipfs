@@ -20,7 +20,10 @@ import android.os.Bundle;
 import android.os.Message;
 
 import java.util.Date;
+import java.util.List;
 
+import io.taucoin.android.interop.IpfsHomeNodeInfo;
+import io.taucoin.android.interop.IpfsPeerInfo;
 import io.taucoin.android.service.ConnectorHandler;
 import io.taucoin.android.service.TaucoinClientMessage;
 import io.taucoin.android.service.events.BlockEventData;
@@ -305,6 +308,18 @@ public class RemoteConnectorManager extends ConnectorManager implements Connecto
             case TaucoinClientMessage.MSG_CLOSE_DONE:
                 cancelLocalConnector();
                 EventBusUtil.post(MessageEvent.EventCode.MINING_STATE);
+                break;
+            case TaucoinClientMessage.MSG_GET_IPFS_CONNECTED_PEERS_RESP:
+                replyData = message.getData();
+                replyData.setClassLoader(IpfsPeerInfo.class.getClassLoader());
+                List<IpfsPeerInfo> peers = replyData.getParcelableArrayList(TransmitKey.RemoteResult.PEERS);
+                EventBusUtil.post(MessageEvent.EventCode.PEERS_LIST, peers);
+                break;
+            case TaucoinClientMessage.MSG_GET_IPFS_HOME_NODE_INFO_RESP:
+                replyData = message.getData();
+                replyData.setClassLoader(IpfsHomeNodeInfo.class.getClassLoader());
+                IpfsHomeNodeInfo homeNode = replyData.getParcelable(TransmitKey.RemoteResult.HOME_NODE);
+                EventBusUtil.post(MessageEvent.EventCode.HOME_NODE, homeNode);
                 break;
             default:
                 isClaimed = false;

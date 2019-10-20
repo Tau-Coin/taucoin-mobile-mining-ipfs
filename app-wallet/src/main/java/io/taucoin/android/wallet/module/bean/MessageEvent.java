@@ -24,7 +24,10 @@ public class MessageEvent {
         MINING_INCOME,
         IRREPARABLE_ERROR,
         APP_BACK_TO_FRONT,
-        SWITCH_STOP_MINING
+        SWITCH_STOP_MINING,
+
+        PEERS_LIST,
+        HOME_NODE
     }
     private Object data;
 

@@ -11,22 +11,23 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.taucoin.android.interop.IpfsPeerInfo;
 import io.taucoin.android.wallet.R;
 import io.taucoin.android.wallet.db.entity.KeyValue;
 
 public class PeersAdapter extends BaseAdapter {
 
-    private List<KeyValue> list = new ArrayList<>();
+    private List<IpfsPeerInfo> list = new ArrayList<>();
 
-    void setListData(List<KeyValue> list) {
-        this.list = list;
+    void setListData(List<IpfsPeerInfo> list) {
+        this.list.clear();
+        this.list.addAll(list);
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-//        return list.size();
-        return 5;
+        return list.size();
     }
 
     @Override
@@ -49,6 +50,8 @@ public class PeersAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+        IpfsPeerInfo peer = list.get(position);
+        viewHolder.tvId.setText(peer.getPeerId());
         return convertView;
     }
 
