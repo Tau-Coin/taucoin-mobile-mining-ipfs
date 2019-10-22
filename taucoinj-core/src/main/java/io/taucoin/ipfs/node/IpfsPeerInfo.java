@@ -51,7 +51,7 @@ public class IpfsPeerInfo {
     }
 
     private void parsePeerId(Multihash id) {
-        this.peerId = id.toHex();
+        this.peerId = id.toBase58();
     }
 
     @Override
