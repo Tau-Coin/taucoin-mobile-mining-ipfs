@@ -116,7 +116,7 @@ public class WorldManager {
         isSyncDownloading = true;
 
         // First of all, start net components
-        requestManager.start();
+        //requestManager.start();
         // Then start sync module
         syncManager.start();
     }
