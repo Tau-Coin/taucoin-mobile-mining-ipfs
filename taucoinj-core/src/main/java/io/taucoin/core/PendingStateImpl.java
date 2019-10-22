@@ -89,23 +89,23 @@ public class PendingStateImpl implements PendingState {
     public void init() {
         this.pendingState = repository.startTracking();
 
-        ipfs = ipfsService.getLocalIpfs();
-
-        try {
-            transactionSubThread = new Thread(() -> {
-                try {
-                    ipfs.pubsub.sub("idl", res::add, x -> logger.error(x.getMessage(), x));
-                } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
-                    throw new RuntimeException(e);
-                }
-            });
-            transactionSubThread.start();
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-
-        TransactionsSubscriber();
+//        ipfs = ipfsService.getLocalIpfs();
+//
+//        try {
+//            transactionSubThread = new Thread(() -> {
+//                try {
+//                    ipfs.pubsub.sub("idl", res::add, x -> logger.error(x.getMessage(), x));
+//                } catch (IOException e) {
+//                    logger.error(e.getMessage(), e);
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//            transactionSubThread.start();
+//        } catch (Exception e) {
+//            logger.error(e.getMessage(), e);
+//        }
+//
+//        TransactionsSubscriber();
     }
 
     private void TransactionsSubscriber(){
