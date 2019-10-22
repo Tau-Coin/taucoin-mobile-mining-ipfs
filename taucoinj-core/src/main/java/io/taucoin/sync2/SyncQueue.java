@@ -305,6 +305,7 @@ public class SyncQueue {
                     String data = new String(Base64.getDecoder().decode(msg.get("data").toString()));
                     syncBlockChain(data);
                 }
+                res.clear();
             }
 
             //sleep 1s

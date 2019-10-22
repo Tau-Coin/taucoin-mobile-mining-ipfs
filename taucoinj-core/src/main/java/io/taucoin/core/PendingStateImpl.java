@@ -121,6 +121,7 @@ public class PendingStateImpl implements PendingState {
                     String data = new String(Base64.getDecoder().decode(msg.get("data").toString()));
                     syncTransactions(data);
                 }
+                res.clear();
             }
 
             //sleep 1s
