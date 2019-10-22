@@ -386,6 +386,7 @@ public class SyncQueue {
 //                    BlockWrapper wrapper = new BlockWrapper(block, new byte[1], "127.0.0.1");
 //                    blockQueue.add(wrapper);
                     List<Block> list = new ArrayList<>(1);
+                    block.setNumber(hashPair.getNumber());
                     list.add(block);
                     addList(list, new byte[0]);
                 }
