@@ -45,10 +45,10 @@ public class IpfsService {
     private boolean isInit = false;
 
     @Inject
-    public IpfsService(Blockchain blockchain, SyncQueue queue, PendingState pendingState) {
-        this.blockchain = blockchain;
-        this.queue = queue;
-        this.pendingState = pendingState;
+    public IpfsService(/*Blockchain blockchain, SyncQueue queue, PendingState pendingState*/) {
+//        this.blockchain = blockchain;
+//        this.queue = queue;
+//        this.pendingState = pendingState;
 //        init();
     }
 
