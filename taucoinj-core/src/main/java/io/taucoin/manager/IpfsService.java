@@ -33,23 +33,30 @@ public class IpfsService {
 
     private IPFS ipfs;
 
+    private boolean isInit = false;
+
     @Inject
     public IpfsService() {
-        init();
+//        init();
     }
 
     private void init() {
         ipfs = new IPFS(LOCAL_IPFS);
+        isInit = true;
     }
 
     public IPFS getLocalIpfs() {
-        if (null == ipfs) {
+        if (!isInit || null == ipfs) {
             init();
         }
         return ipfs;
     }
 
     public boolean sendTransaction(Transaction tx) {
+        if (!isInit || null == ipfs) {
+            init();
+        }
+
         if (tx == null) {
             logger.warn("send null transaction");
             return false;
@@ -67,6 +74,10 @@ public class IpfsService {
     }
 
     public IpfsHomeNodeInfo getIpfsHomeNode() {
+        if (!isInit || null == ipfs) {
+            init();
+        }
+
         if (ipfsHomeNodeInfo != null) {
             return ipfsHomeNodeInfo;
         }
@@ -101,6 +112,10 @@ public class IpfsService {
     }
 
     public List<IpfsPeerInfo> getPeers() {
+        if (!isInit || null == ipfs) {
+            init();
+        }
+
         List<IpfsPeerInfo> peers = new ArrayList<IpfsPeerInfo>();
         List<Peer> swarmPeers = null;
 
