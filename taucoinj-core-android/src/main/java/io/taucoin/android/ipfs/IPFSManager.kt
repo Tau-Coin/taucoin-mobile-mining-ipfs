@@ -109,7 +109,7 @@ class IPFSManager(private var service: Service) {
                     iterator.next()
                     iterator.remove()
                 }
-                val nodeA = json("/dnsaddr/ipfs.taucoin.io/ipfs/QmNu9vByGwjdnvRuyqTMi35FQvznEQ6qNLVnBFNxvJA2ip")
+                val nodeA = json("/ip4/52.10.204.93/tcp/6001/ipfs/QmNu9vByGwjdnvRuyqTMi35FQvznEQ6qNLVnBFNxvJA2ip")
                 if(nodeA !in methods) methods.add(nodeA)
             }
         }
