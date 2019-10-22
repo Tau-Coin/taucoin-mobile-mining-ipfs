@@ -23,8 +23,12 @@ import com.trello.rxlifecycle2.android.ActivityEvent;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import io.taucoin.ipfs.node.IpfsPeerInfo;
+import io.taucoin.ipfs.node.IpfsHomeNodeInfo;
 import io.taucoin.android.wallet.MyApplication;
 import io.taucoin.android.wallet.base.TransmitKey;
 import io.taucoin.android.wallet.module.bean.HelpBean;
@@ -33,14 +37,15 @@ import io.taucoin.android.wallet.module.bean.VersionBean;
 import io.taucoin.android.wallet.net.callback.TAUObserver;
 import io.taucoin.android.wallet.net.callback.TxObserver;
 import io.taucoin.android.wallet.net.service.AppService;
+import io.taucoin.android.wallet.net.service.LocalIpfsService;
 import io.taucoin.android.wallet.net.service.TransactionService;
 import io.taucoin.android.wallet.util.SharedPreferencesHelper;
 import io.taucoin.foundation.net.NetWorkManager;
 import io.taucoin.foundation.net.callback.DataResult;
+import io.taucoin.foundation.net.callback.LogicObserver;
 import io.taucoin.foundation.util.AppUtil;
 
 public class AppModel implements IAppModel{
-
     @Override
     public void getInfo() {
         String publicKey = SharedPreferencesHelper.getInstance().getString(TransmitKey.PUBLIC_KEY, "");
@@ -85,6 +90,30 @@ public class AppModel implements IAppModel{
                 .getStatesTag()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
+                .subscribe(observer);
+    }
+
+    @Override
+    public void getPeersList(LogicObserver<List<IpfsPeerInfo>> observer) {
+        Observable.create((ObservableOnSubscribe<List<IpfsPeerInfo>>) emitter -> {
+            LocalIpfsService service = LocalIpfsService.getInstance();
+            List<IpfsPeerInfo> data = service.getPeers();
+            emitter.onNext(data);
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(observer);
+    }
+
+    @Override
+    public void getIpfsNode(LogicObserver<IpfsHomeNodeInfo> observer) {
+        Observable.create((ObservableOnSubscribe<IpfsHomeNodeInfo>) emitter -> {
+            LocalIpfsService service = LocalIpfsService.getInstance();
+            IpfsHomeNodeInfo node = service.getIpfsHomeNode();
+            emitter.onNext(node);
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .subscribe(observer);
     }
 }

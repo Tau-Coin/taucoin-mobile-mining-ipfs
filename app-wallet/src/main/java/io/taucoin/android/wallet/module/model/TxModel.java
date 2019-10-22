@@ -61,6 +61,7 @@ import io.taucoin.android.wallet.module.bean.TransactionBean;
 import io.taucoin.android.wallet.module.bean.TxDataBean;
 import io.taucoin.android.wallet.module.bean.TxStatusBean;
 import io.taucoin.android.wallet.net.callback.TxObserver;
+import io.taucoin.android.wallet.net.service.LocalIpfsService;
 import io.taucoin.android.wallet.net.service.TransactionService;
 import io.taucoin.android.wallet.util.DateUtil;
 import io.taucoin.android.wallet.util.EventBusUtil;
@@ -408,42 +409,19 @@ public class TxModel implements ITxModel {
         String txHash = Hex.toHexString(transaction.getEncoded());
         String txId = transaction.getTxid();
         Logger.d("txId=" + txId  + "\ttxHash=" + txHash);
-        Map<String,String> map = new ArrayMap<>();
-        map.put("transaction", txHash);
-        NetWorkManager.createMainApiService(TransactionService.class)
-            .sendRawTransaction(map)
+        Observable.create((ObservableOnSubscribe<Boolean>) emitter -> {
+            boolean isSuccess = LocalIpfsService.getInstance().sendTransaction(transaction);
+            emitter.onNext(isSuccess);
+        }).observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(scheduler)
             .unsubscribeOn(scheduler)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new TxObserver<NewTxBean>() {
+            .subscribe(new TxObserver<Boolean>() {
+
                 @Override
                 public void handleError(String msg, int msgCode) {
                     String result = ResourcesUtil.getText(R.string.send_tx_network_error);
                     handleError(result);
                     super.handleError(result, msgCode);
-                }
-
-                @Override
-                public void handleData(NewTxBean dataResult) {
-                    super.handleData(dataResult);
-                    if(dataResult != null){
-                        if(dataResult.getStatus() == NetResultCode.MAIN_SUCCESS_CODE){
-                            Logger.d("sendRawTransaction.handleData=" +dataResult);
-                            insertTransactionHistory(transactionHistory, new LogicObserver<Boolean>() {
-                                @Override
-                                public void handleData(Boolean aBoolean) {
-                                    ToastUtils.showShortToast(R.string.send_tx_success);
-                                    EventBusUtil.post(MessageEvent.EventCode.TRANSACTION);
-                                    EventBusUtil.post(MessageEvent.EventCode.BALANCE);
-                                    MiningUtil.checkRawTransaction();
-                                }
-                            });
-                            observer.onNext(true);
-                        }else{
-                            String result = StringUtil.isEmpty(dataResult.getMessage()) ? "" : dataResult.getMessage();
-                            handleError(result);
-                        }
-                    }
                 }
 
                 void handleError(String result) {
@@ -456,6 +434,27 @@ public class TxModel implements ITxModel {
                         }
                     });
                     observer.onNext(false);
+                }
+
+                @Override
+                public void handleData(Boolean dataResult) {
+                    if(dataResult){
+                        // Enter local transaction pool
+                        MyApplication.getRemoteConnector().submitTransaction(transaction);
+                        Logger.d("sendRawTransaction.handleData=true");
+                        insertTransactionHistory(transactionHistory, new LogicObserver<Boolean>() {
+                            @Override
+                            public void handleData(Boolean aBoolean) {
+                                ToastUtils.showShortToast(R.string.send_tx_success);
+                                EventBusUtil.post(MessageEvent.EventCode.TRANSACTION);
+                                EventBusUtil.post(MessageEvent.EventCode.BALANCE);
+                                MiningUtil.checkRawTransaction();
+                            }
+                        });
+                        observer.onNext(true);
+                    }else{
+                        handleError(null, -1);
+                    }
                 }
             });
     }

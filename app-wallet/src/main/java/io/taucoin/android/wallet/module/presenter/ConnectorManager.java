@@ -450,22 +450,4 @@ public abstract class ConnectorManager implements ConnectorHandler {
             mTaucoinConnector.startDownload();
         }
     }
-
-    public boolean getIpfsPeers(){
-        if(mTaucoinConnector != null && isInit()){
-            Logger.d("getIpfsPeers");
-            mTaucoinConnector.getIPFSConnectedPeers(mHandlerIdentifier);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean getHomeNodeInfo(){
-        if(mTaucoinConnector != null && isInit()){
-            Logger.d("getHomeNodeInfo");
-            mTaucoinConnector.getIPFSHomeNodeInfo(mHandlerIdentifier);
-            return true;
-        }
-        return false;
-    }
 }

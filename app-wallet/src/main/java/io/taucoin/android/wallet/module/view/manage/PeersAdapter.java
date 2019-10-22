@@ -11,9 +11,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.taucoin.android.interop.IpfsPeerInfo;
 import io.taucoin.android.wallet.R;
-import io.taucoin.android.wallet.db.entity.KeyValue;
+import io.taucoin.ipfs.node.IpfsPeerInfo;
 
 public class PeersAdapter extends BaseAdapter {
 

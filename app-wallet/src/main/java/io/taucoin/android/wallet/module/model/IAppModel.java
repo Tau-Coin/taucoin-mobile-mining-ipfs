@@ -20,12 +20,15 @@ import com.trello.rxlifecycle2.android.ActivityEvent;
 
 import java.util.List;
 
+import io.taucoin.ipfs.node.IpfsHomeNodeInfo;
+import io.taucoin.ipfs.node.IpfsPeerInfo;
 import io.taucoin.android.wallet.module.bean.HelpBean;
 import io.taucoin.android.wallet.module.bean.StatesTagBean;
 import io.taucoin.android.wallet.module.bean.VersionBean;
 import io.taucoin.android.wallet.net.callback.TAUObserver;
 import io.taucoin.android.wallet.net.callback.TxObserver;
 import io.taucoin.foundation.net.callback.DataResult;
+import io.taucoin.foundation.net.callback.LogicObserver;
 
 public interface IAppModel {
 
@@ -39,4 +42,8 @@ public interface IAppModel {
     void checkAppVersion(TAUObserver<DataResult<VersionBean>> observer);
 
     void checkStateTag(TxObserver<StatesTagBean> observer);
+
+    void getPeersList(LogicObserver<List<IpfsPeerInfo>> listLogicObserver);
+
+    void getIpfsNode(LogicObserver<IpfsHomeNodeInfo> ipfsHomeNodeInfoLogicObserver);
 }

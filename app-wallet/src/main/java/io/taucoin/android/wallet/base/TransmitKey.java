@@ -28,6 +28,7 @@ public class TransmitKey {
         public static final String GET_REWARD_INFO = "get_reward_info";
         public static final String SEND_BUDGET_TX = "send_budget_tx";
         public static final String DOWNLOAD_STATE_TAG = "download_state_tag";
+        public static final String RESTART_IPFS_PROCESS = "restart_ipfs_process";
     }
 
     public static final String PUBLIC_KEY = "PubKey";

@@ -154,6 +154,12 @@ public class TxService extends Service {
                         mStateTagManager.initAndCheckStateTag(this);
                     }
                     break;
+                case TransmitKey.ServiceType.RESTART_IPFS_PROCESS:
+                    Logger.d("restart ipfs process");
+                    if(mIPFSManager != null){
+                        mIPFSManager.restart();
+                    }
+                    break;
                 default:
                     break;
             }

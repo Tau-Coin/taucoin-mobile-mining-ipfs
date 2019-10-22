@@ -36,6 +36,7 @@ class IPFSManager(private var service: Service) {
 
     fun init() {
         install()
+        stop()
         start()
     }
 
@@ -102,7 +103,15 @@ class IPFSManager(private var service: Service) {
                     if(post !in methods) methods.add(post)
                 }
             }
-
+            array("Bootstrap").also { methods ->
+                val iterator = methods.iterator()
+                while (iterator.hasNext()){
+                    iterator.next()
+                    iterator.remove()
+                }
+                val nodeA = json("/dnsaddr/ipfs.taucoin.io/ipfs/QmNu9vByGwjdnvRuyqTMi35FQvznEQ6qNLVnBFNxvJA2ip")
+                if(nodeA !in methods) methods.add(nodeA)
+            }
         }
 
         val closeChildThread = object : Thread() {
@@ -120,5 +129,10 @@ class IPFSManager(private var service: Service) {
                 logger.info("daemon=$it")
             }
         }
+    }
+
+    fun restart() {
+        stop()
+        start()
     }
 }

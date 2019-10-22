@@ -7,23 +7,20 @@ import android.widget.TextView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.taucoin.android.interop.IpfsHomeNodeInfo;
-import io.taucoin.android.interop.IpfsPeerInfo;
-import io.taucoin.android.wallet.MyApplication;
 import io.taucoin.android.wallet.R;
 import io.taucoin.android.wallet.base.BaseActivity;
-import io.taucoin.android.wallet.module.bean.MessageEvent;
+import io.taucoin.android.wallet.module.presenter.AppPresenter;
+import io.taucoin.android.wallet.module.view.manage.iview.IIpfsView;
 import io.taucoin.android.wallet.util.ProgressManager;
 import io.taucoin.android.wallet.util.ResourcesUtil;
+import io.taucoin.ipfs.node.IpfsHomeNodeInfo;
+import io.taucoin.ipfs.node.IpfsPeerInfo;
 
-public class IPFSInfoActivity extends BaseActivity {
+public class IPFSInfoActivity extends BaseActivity implements IIpfsView {
 
     @BindView(R.id.list_view_help)
     ListView listViewHelp;
@@ -37,45 +34,27 @@ public class IPFSInfoActivity extends BaseActivity {
     TextView tvTotalPeers;
 
     private PeersAdapter mAdapter;
+    private AppPresenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ipfs_info);
         ButterKnife.bind(this);
+        mPresenter = new AppPresenter(this);
         initView();
         ProgressManager.showProgressDialog(this);
         getData();
     }
 
     private void getData() {
-        if(!MyApplication.getRemoteConnector().isInit()){
-            ProgressManager.closeProgressDialog();
-        }
-       MyApplication.getRemoteConnector().getIpfsPeers();
-       MyApplication.getRemoteConnector().getHomeNodeInfo();
+        mPresenter.getPeersList();
+        mPresenter.getIpfsNode();
     }
 
     @Override
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(MessageEvent object) {
-        if (object == null || object.getData() == null) {
-            return;
-        }
-        switch (object.getCode()) {
-            case PEERS_LIST:
-                loadPeerData(object.getData());
-                break;
-            case HOME_NODE:
-                loadHomeNodeData(object.getData());
-                break;
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void loadPeerData(Object data) {
+    public void loadPeerData(List<IpfsPeerInfo> peers) {
         ProgressManager.closeProgressDialog();
-        List<IpfsPeerInfo> peers = (List<IpfsPeerInfo>) data;
         if(peers == null || mAdapter == null || refreshLayout == null){
             return;
         }
@@ -84,9 +63,9 @@ public class IPFSInfoActivity extends BaseActivity {
         loadPeerView(peers.size());
     }
 
-    private void loadHomeNodeData(Object data) {
+    @Override
+    public void loadHomeNodeData(IpfsHomeNodeInfo homeNode) {
         ProgressManager.closeProgressDialog();
-        IpfsHomeNodeInfo homeNode = (IpfsHomeNodeInfo) data;
         if(homeNode != null && tvId != null && tvVersion != null){
             tvId.setText(homeNode.getId());
             String version = ResourcesUtil.getText(R.string.ipfs_go_ipfs_version);

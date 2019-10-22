@@ -20,23 +20,35 @@ import com.trello.rxlifecycle2.android.ActivityEvent;
 
 import java.util.List;
 
+import io.taucoin.ipfs.node.IpfsHomeNodeInfo;
+import io.taucoin.ipfs.node.IpfsPeerInfo;
 import io.taucoin.android.wallet.module.bean.HelpBean;
 import io.taucoin.android.wallet.module.model.AppModel;
 import io.taucoin.android.wallet.module.model.IAppModel;
 import io.taucoin.android.wallet.module.view.manage.HelpActivity;
+import io.taucoin.android.wallet.module.view.manage.IPFSInfoActivity;
 import io.taucoin.android.wallet.module.view.manage.iview.IHelpView;
+import io.taucoin.android.wallet.module.view.manage.iview.IIpfsView;
 import io.taucoin.android.wallet.net.callback.TAUObserver;
 import io.taucoin.android.wallet.util.ProgressManager;
 import io.taucoin.foundation.net.callback.DataResult;
+import io.taucoin.foundation.net.callback.LogicObserver;
 
 public class AppPresenter {
     private IHelpView mHelpView;
+    private IIpfsView mIpfsView;
     private IAppModel mAppModel;
     private LifecycleProvider<ActivityEvent> provider;
 
     public AppPresenter(HelpActivity activity) {
         mAppModel = new AppModel();
         mHelpView = activity;
+        provider = activity;
+    }
+
+    public AppPresenter(IPFSInfoActivity activity) {
+        mAppModel = new AppModel();
+        mIpfsView = activity;
         provider = activity;
     }
 
@@ -54,6 +66,30 @@ public class AppPresenter {
                 ProgressManager.closeProgressDialog();
                 if(listDataResult != null && listDataResult.getData() != null){
                     mHelpView.loadHelpData(listDataResult.getData());
+                }
+            }
+        });
+    }
+
+    public void getPeersList() {
+        mAppModel.getPeersList(new LogicObserver<List<IpfsPeerInfo>>(){
+
+            @Override
+            public void handleData(List<IpfsPeerInfo> peers) {
+                if(mIpfsView != null){
+                    mIpfsView.loadPeerData(peers);
+                }
+            }
+        });
+    }
+
+    public void getIpfsNode() {
+        mAppModel.getIpfsNode(new LogicObserver<IpfsHomeNodeInfo>(){
+
+            @Override
+            public void handleData(IpfsHomeNodeInfo node) {
+                if(mIpfsView != null){
+                    mIpfsView.loadHomeNodeData(node);
                 }
             }
         });
