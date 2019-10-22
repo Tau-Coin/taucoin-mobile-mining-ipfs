@@ -134,7 +134,7 @@ public class SyncManager {
 
     public void start() {
         startImport();
-        startSyncWithPeer();
+        //startSyncWithPeer();
     }
 
     public void stop() {
