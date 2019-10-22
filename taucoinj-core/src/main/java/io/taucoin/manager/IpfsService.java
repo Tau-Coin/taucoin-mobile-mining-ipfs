@@ -1,5 +1,7 @@
 package io.taucoin.manager;
 
+import io.taucoin.core.Blockchain;
+import io.taucoin.core.PendingState;
 import io.taucoin.core.Transaction;
 import io.taucoin.http.tau.message.NewTxMessage;
 import io.taucoin.ipfs.config.Topic;
@@ -9,6 +11,7 @@ import io.taucoin.ipfs.node.IpfsPeerInfo;
 import io.ipfs.api.IPFS;
 import io.ipfs.api.Peer;
 
+import io.taucoin.sync2.SyncQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +27,12 @@ public class IpfsService {
 
     private static final Logger logger = LoggerFactory.getLogger("IpfsService");
 
+    private Blockchain blockchain;
+
+    private SyncQueue queue;
+
+    private PendingState pendingState;
+
     private static final String LOCAL_IPFS = "/ip4/127.0.0.1/tcp/5001";
 
     // temp home node id, just for test.
@@ -36,7 +45,10 @@ public class IpfsService {
     private boolean isInit = false;
 
     @Inject
-    public IpfsService() {
+    public IpfsService(Blockchain blockchain, SyncQueue queue, PendingState pendingState) {
+        this.blockchain = blockchain;
+        this.queue = queue;
+        this.pendingState = pendingState;
 //        init();
     }
 

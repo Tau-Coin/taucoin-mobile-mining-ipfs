@@ -130,7 +130,6 @@ public class TaucoinModule {
     BlockStore provideBlockStore(MapDBFactory mapDBFactory) {
         //OrmLiteBlockStoreDatabase database = OrmLiteBlockStoreDatabase.getHelper(context);
         //return new InMemoryBlockStore(database, storeAllBlocks);
-        /**
         if (sBlockStore != null) {
             return sBlockStore;
         }
@@ -161,9 +160,8 @@ public class TaucoinModule {
         sBlockStore = indexedBlockStore;
 
         return sBlockStore;
-        */
         //return new MemoryIndexedBlockStore();
-        return new MMKVIndexedBlockStore();
+//        return new MMKVIndexedBlockStore();
     }
 
     @Provides
@@ -328,8 +326,8 @@ public class TaucoinModule {
 
     @Provides
     @Singleton
-    IpfsService provideIpfsService() {
-        return new IpfsService();
+    IpfsService provideIpfsService(Blockchain blockchain, SyncQueue queue, PendingState pendingState) {
+        return new IpfsService(blockchain, queue, pendingState);
     }
 
     @Provides

@@ -172,23 +172,25 @@ public class SyncQueue {
         this.worker = new Thread (queueProducer);
         worker.start();
 
-//        ipfs = ipfsService.getLocalIpfs();
-//
-//        try {
-//            blockChainSubThread = new Thread(() -> {
-//                try {
-//                    ipfs.pubsub.sub("idc", res::add, x -> logger.error(x.getMessage(), x));
-//                } catch (IOException e) {
-//                    logger.error(e.getMessage(), e);
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//            blockChainSubThread.start();
-//        } catch (Exception e) {
-//            logger.error(e.getMessage(), e);
-//        }
-//
-//        BlockChainSubscriber();
+        try {
+            blockChainSubThread = new Thread(() -> {
+                try {
+                    sleep(30000);
+                    ipfs = ipfsService.getLocalIpfs();
+                    ipfs.pubsub.sub("idc", res::add, x -> logger.error(x.getMessage(), x));
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                    throw new RuntimeException(e);
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
+            });
+            blockChainSubThread.start();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        BlockChainSubscriber();
 
         inited.set(true);
     }
