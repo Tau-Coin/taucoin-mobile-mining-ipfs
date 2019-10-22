@@ -223,10 +223,15 @@ public class WorldManager {
                 long endTime0 = System.nanoTime();
                 logger.info("Import accounts time: {}",((endTime0 - startTime0) / 1000000));
                 logger.info("genesis block hash: {}",Hex.toHexString(Genesis.getInstance(config).getHash()));
+                logger.info("genesis block cid: {}", Genesis.getInstance(config).getCid().toString());
                 Object object= blockStore.getClass();
                 logger.info("blockStore class : {}",((Class) object).getName());
 
-                blockStore.saveBlock(Genesis.getInstance(config), Genesis.getInstance(config).getCumulativeDifficulty(), true);
+                HashPair genesisHashPair = new HashPair(Genesis.getInstance(config).getNumber(),
+                        Genesis.getInstance(config).getCid(), Genesis.getInstance(config).getCid());
+                logger.info("genesis hash pair cid: {}", genesisHashPair.getCid().toString());
+
+                blockStore.saveBlockHashPair(Genesis.getInstance(config), genesisHashPair, Genesis.getInstance(config).getCumulativeDifficulty(), true);
                 blockStore.flush();
                 blockchain.setBestBlock(Genesis.getInstance(config));
                 blockchain.setTotalDifficulty(Genesis.getInstance(config).getCumulativeDifficulty());
