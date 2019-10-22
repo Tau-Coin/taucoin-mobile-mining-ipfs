@@ -289,18 +289,18 @@ public abstract class ConnectorManager implements ConnectorHandler {
      * 3、get block list (update my mining block)
      * */
     void startSyncAll(){
-        if(mTaucoinConnector != null && isInit()){
-            logger.info("startSyncAll");
-            mTaucoinConnector.startSync();
-            getChainHeight();
-        }
+//        if(mTaucoinConnector != null && isInit()){
+//            logger.info("startSyncAll");
+//            mTaucoinConnector.startSync();
+//            getChainHeight();
+//        }
     }
 
     public void stopSyncAll(){
-        if(mTaucoinConnector != null && isInit()){
-            logger.info("stopSyncAll");
-            mTaucoinConnector.stopSync();
-        }
+//        if(mTaucoinConnector != null && isInit()){
+//            logger.info("stopSyncAll");
+//            mTaucoinConnector.stopSync();
+//        }
     }
 
     public boolean submitTransaction(Transaction transaction){
@@ -324,14 +324,14 @@ public abstract class ConnectorManager implements ConnectorHandler {
 
     private void startBlockForging(int targetAmount){
         miningSwitch = true;
-        initializer.schedule(new ForgingTask(mTaucoinConnector, targetAmount),
-                BOOT_UP_DELAY_FORGE_SECONDS, TimeUnit.SECONDS);
+//        initializer.schedule(new ForgingTask(mTaucoinConnector, targetAmount),
+//                BOOT_UP_DELAY_FORGE_SECONDS, TimeUnit.SECONDS);
     }
 
     public void stopBlockForging(){
-        stopDownload();
-        mExceptionStop = null;
-        stopBlockForging(-1);
+//        stopDownload();
+//        mExceptionStop = null;
+//        stopBlockForging(-1);
     }
 
     private void stopBlockForging(int targetAmount){
@@ -438,16 +438,16 @@ public abstract class ConnectorManager implements ConnectorHandler {
     }
 
     public void stopDownload(){
-        if(mTaucoinConnector != null && isInit()){
-            Logger.d("stopDownload");
-            mTaucoinConnector.stopDownload();
-        }
+//        if(mTaucoinConnector != null && isInit()){
+//            Logger.d("stopDownload");
+//            mTaucoinConnector.stopDownload();
+//        }
     }
 
     public void startDownload(){
-        if(mTaucoinConnector != null && isInit()){
-            Logger.d("startDownload");
-            mTaucoinConnector.startDownload();
-        }
+//        if(mTaucoinConnector != null && isInit()){
+//            Logger.d("startDownload");
+//            mTaucoinConnector.startDownload();
+//        }
     }
 }
