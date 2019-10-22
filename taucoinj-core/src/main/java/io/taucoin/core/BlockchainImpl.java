@@ -135,7 +135,6 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
         this.executor = new TransactionExecutor(this, listener);
         this.stakeHolderIdentityUpdate = new StakeHolderIdentityUpdate();
         this.ipfsService = ipfsService;
-        this.ipfs = ipfsService.getLocalIpfs();
     }
 
     @Override
@@ -957,6 +956,7 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
         logger.info("hash pair number:{}, cid:{}", hashPair.getNumber(),
                 hashPair.getCid().toString());
 
+        this.ipfs = ipfsService.getLocalIpfs();
         //store block and hash pair on ipfs
         List<byte[]> dataList = new ArrayList<>(2);
         dataList.add(block.getEncodedMsg());

@@ -292,7 +292,7 @@ public class SyncQueue {
         return isRequestStopped.get() || isRequestClose.get();
     }
 
-    private void BlockChainSubscriber(){
+    private void BlockChainSubscriber() {
         while (true) {
             if (res.size() > 0) {
                 Map msg = (Map) res.poll();
