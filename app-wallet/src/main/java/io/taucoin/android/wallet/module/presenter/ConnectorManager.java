@@ -289,18 +289,18 @@ public abstract class ConnectorManager implements ConnectorHandler {
      * 3、get block list (update my mining block)
      * */
     void startSyncAll(){
-//        if(mTaucoinConnector != null && isInit()){
-//            logger.info("startSyncAll");
-//            mTaucoinConnector.startSync();
-//            getChainHeight();
-//        }
+        if(mTaucoinConnector != null && isInit()){
+            logger.info("startSyncAll");
+            mTaucoinConnector.startSync();
+            getChainHeight();
+        }
     }
 
     public void stopSyncAll(){
-//        if(mTaucoinConnector != null && isInit()){
-//            logger.info("stopSyncAll");
-//            mTaucoinConnector.stopSync();
-//        }
+        if(mTaucoinConnector != null && isInit()){
+            logger.info("stopSyncAll");
+            mTaucoinConnector.stopSync();
+        }
     }
 
     public boolean submitTransaction(Transaction transaction){
