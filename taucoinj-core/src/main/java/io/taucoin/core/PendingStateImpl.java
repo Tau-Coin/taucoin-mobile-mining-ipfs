@@ -89,6 +89,17 @@ public class PendingStateImpl implements PendingState {
     public void init() {
         this.pendingState = repository.startTracking();
 
+        Runnable txWorker = new Runnable(){
+
+            @Override
+            public void run() {
+                TransactionsSubscriber();
+            }
+        };
+
+        Thread thread = new Thread (txWorker);
+        thread.start();
+
         try {
             transactionSubThread = new Thread(() -> {
                 try {
@@ -106,8 +117,6 @@ public class PendingStateImpl implements PendingState {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-
-        TransactionsSubscriber();
     }
 
     private void TransactionsSubscriber(){
@@ -119,6 +128,7 @@ public class PendingStateImpl implements PendingState {
 //                    String topicId = msg.get("topicIDs").toString();
 //                    String seqno = new BigInteger(Base64.getDecoder().decode(msg.get("seqno").toString())).toString();
                     String data = new String(Base64.getDecoder().decode(msg.get("data").toString()));
+                    logger.info("tx queue:{}", data);
                     syncTransactions(data);
                 }
                 res.clear();

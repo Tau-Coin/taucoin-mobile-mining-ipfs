@@ -172,6 +172,17 @@ public class SyncQueue {
         this.worker = new Thread (queueProducer);
         worker.start();
 
+        Runnable blockWorker = new Runnable(){
+
+            @Override
+            public void run() {
+                BlockChainSubscriber();
+            }
+        };
+
+        Thread thread = new Thread (blockWorker);
+        thread.start();
+
         try {
             blockChainSubThread = new Thread(() -> {
                 try {
@@ -189,8 +200,6 @@ public class SyncQueue {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-
-        BlockChainSubscriber();
 
         inited.set(true);
     }
@@ -303,6 +312,7 @@ public class SyncQueue {
 //                    String topicId = msg.get("topicIDs").toString();
 //                    String seqno = new BigInteger(Base64.getDecoder().decode(msg.get("seqno").toString())).toString();
                     String data = new String(Base64.getDecoder().decode(msg.get("data").toString()));
+                    logger.info("block queue:{}", data);
                     syncBlockChain(data);
                 }
                 res.clear();
