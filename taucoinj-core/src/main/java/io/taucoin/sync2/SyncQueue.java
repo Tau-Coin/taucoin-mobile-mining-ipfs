@@ -382,10 +382,12 @@ public class SyncQueue {
                     }
                     byte[] blockRlp = ipfs.block.get(multihash);
                     Block block = new Block(blockRlp, true);
-                    logger.info("sync block hash:{}", block.getHash());
+                    logger.info("sync block hash:{}", Hex.toHexString(block.getHash()));
 //                    BlockWrapper wrapper = new BlockWrapper(block, new byte[1], "127.0.0.1");
 //                    blockQueue.add(wrapper);
-                    addNew(block, new byte[0]);
+                    List<Block> list = new ArrayList<>(1);
+                    list.add(block);
+                    addList(list, new byte[0]);
                 }
             }
         } catch (Exception e) {
