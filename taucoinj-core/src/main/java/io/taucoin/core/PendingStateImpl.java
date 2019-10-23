@@ -152,14 +152,14 @@ public class PendingStateImpl implements PendingState {
             TransactionCidList transactionCidList = new TransactionCidList(rlpEncoded);
             Multihash txMultihash;
             Transaction tx;
+            HashSet<Transaction> txs = new HashSet<Transaction>();
             for (byte[] txCid : transactionCidList.getTxCidList()) {
                 txMultihash = new Multihash(txCid);
                 byte[] txRlp = ipfs.block.get(txMultihash);
                 tx = new Transaction(txRlp);
-                HashSet<Transaction> txs = new HashSet<Transaction>();
                 txs.add(tx);
-                addWireTransactions(txs);
             }
+            addWireTransactions(txs);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

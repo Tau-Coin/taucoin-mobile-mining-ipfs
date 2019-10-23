@@ -348,7 +348,20 @@ public class SyncQueue {
                     currentNumber, Hex.toHexString(bestBlock.getHash()), bestBlock.getCid().toString());
             List<HashPair> hashPairList = new ArrayList<>();
             byte[] hashPairRlp;
+            byte[] rawBlock;
             while (hashPair.getNumber() > currentNumber) {
+                //test block tic
+                Cid blockCid = hashPair.getBlockCid();
+                rawBlock = ipfs.block.get(blockCid);
+                Block block = new Block(rawBlock, true);
+                String blockCidFromHashPair = blockCid.toString();
+                String blockCidFromBlock = block.getCid().toString();
+                logger.info("blockCidFromHashPair:{}, blockCidFromBlock:{}",
+                        blockCidFromHashPair, blockCidFromBlock);
+                if (blockCidFromHashPair.compareTo(blockCidFromBlock) != 0) {
+                    logger.error("Block hash:{}", Hex.toHexString(block.getHash()));
+                    break;
+                }
                 //sync hash pair list
                 logger.info("hash pair number:{}, cid:{}, block cid:{}, previous hash pair cid:{}",
                         hashPair.getNumber(),

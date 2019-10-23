@@ -240,6 +240,7 @@ public class Block {
     public Cid getCid() {
         if (this.cid == null) {
             byte[] encoded = getEncodedMsg();
+            logger.info("block string:{}", Hex.toHexString(encoded));
             Multihash multihash = new Multihash(Multihash.Type.sha2_256, HashUtil.sha256(encoded));
             cid = Cid.buildCidV0(multihash);
         }
