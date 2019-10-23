@@ -344,7 +344,8 @@ public class SyncQueue {
             HashPair hashPair = new HashPair(latestHashPairRlpEncoded);
             Block bestBlock = blockchain.getBestBlock();
             long currentNumber = bestBlock.getNumber();
-            logger.info("current block number:{}, hash:{}", currentNumber, bestBlock.getHash());
+            logger.info("current block number:{}, hash:{}, cid:{}",
+                    currentNumber, Hex.toHexString(bestBlock.getHash()), bestBlock.getCid().toString());
             List<HashPair> hashPairList = new ArrayList<>();
             byte[] hashPairRlp;
             while (hashPair.getNumber() > currentNumber) {
@@ -367,6 +368,19 @@ public class SyncQueue {
 
             //sync block from hash pair list
             logger.info("sync start from number:{}", hashPair.getNumber());
+            logger.info("Hash Pair number:{}, cid:{}, block cid:{}, previous hash pair cid:{}",
+                    hashPair.getNumber(),
+                    hashPair.getCid().toString(),
+                    hashPair.getBlockCid().toString(),
+                    hashPair.getPreviousHashPairCid().toString());
+
+            logger.info("Best Block number:{}, hash:{}, block cid:{}",
+                    bestBlock.getNumber(),
+                    Hex.toHexString(bestBlock.getHash()),
+                    bestBlock.getCid().toString());
+            logger.info("In the same height, Cid from hash pair:{}, Cid from best block:{}",
+                    hashPair.getBlockCid().toString(),
+                    bestBlock.getCid().toString());
             if (hashPair.getPreviousHashPairCid().toString().
                     compareTo(Constants.GENESIS_HASHPAIR_CID) == 0 ||
                     hashPair.getBlockCid().toString().
