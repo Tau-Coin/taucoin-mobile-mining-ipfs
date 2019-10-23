@@ -557,9 +557,6 @@ public class SyncQueue {
                         wrapper.getNumber() % HIBERNATION_CYCLE == 0) {
                     logger.warn("Hibernation starts at block {}", wrapper.getNumber());
                     syncManager.notifyHibernation(wrapper.getNumber());
-                    if (wrapper.getNumber() % REBOOT_CYCLE == 0) {
-                        syncManager.stopSyncWithPeer();
-                    }
 
                     try {
                         Thread.sleep(HIBERNATION_DURATION);
@@ -638,7 +635,6 @@ public class SyncQueue {
     }
 
     private void rollbackBlockQueue() {
-        syncManager.stopSyncWithPeer();
         try {
             Thread.sleep(5000);
         } catch (InterruptedException ie) {

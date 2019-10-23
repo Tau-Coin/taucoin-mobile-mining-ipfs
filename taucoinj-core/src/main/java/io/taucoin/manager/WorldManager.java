@@ -6,7 +6,6 @@ import io.taucoin.db.BlockStore;
 import io.taucoin.db.ByteArrayWrapper;
 import io.taucoin.db.state.StateLoader;
 import io.taucoin.debug.RefWatcher;
-import io.taucoin.http.RequestManager;
 import io.taucoin.listener.CompositeTaucoinListener;
 import io.taucoin.listener.TaucoinListener;
 import io.taucoin.net.client.PeerClient;
@@ -48,8 +47,6 @@ public class WorldManager {
 
     private PendingState pendingState;
 
-    private RequestManager requestManager;
-
     private PoolSynchronizer poolSynchronizer;
 
     private StateLoader stateLoader;
@@ -65,7 +62,7 @@ public class WorldManager {
     @Inject
     public WorldManager(TaucoinListener listener, Blockchain blockchain, Repository repository
                         , BlockStore blockStore, SyncManager syncManager
-                        , PendingState pendingState, RequestManager requestManager
+                        , PendingState pendingState
                         , PoolSynchronizer poolSynchronizer, StateLoader stateLoader
                         , RefWatcher refWatcher) {
         logger.info("World manager instantiated");
@@ -75,12 +72,9 @@ public class WorldManager {
         this.blockStore = blockStore;
         this.syncManager = syncManager;
         this.pendingState = pendingState;
-        this.requestManager = requestManager;
         this.poolSynchronizer = poolSynchronizer;
         this.stateLoader = stateLoader;
         this.refWatcher = refWatcher;
-        this.syncManager.setRequestManager(requestManager);
-        this.poolSynchronizer.setRequestManager(requestManager);
     }
 
     public void init() {
@@ -115,9 +109,7 @@ public class WorldManager {
         isSyncRunning = true;
         isSyncDownloading = true;
 
-        // First of all, start net components
-        //requestManager.start();
-        // Then start sync module
+        // start sync module
         syncManager.start();
     }
 
@@ -129,7 +121,6 @@ public class WorldManager {
         isSyncDownloading = false;
 
         syncManager.stop();
-        requestManager.stop();
         poolSynchronizer.stop();
     }
 
@@ -142,8 +133,6 @@ public class WorldManager {
             return;
         }
         isSyncDownloading = true;
-
-        syncManager.startSyncWithPeer();
     }
 
     public void stopDownload() {
@@ -151,8 +140,6 @@ public class WorldManager {
             return;
         }
         isSyncDownloading = false;
-
-        syncManager.stopSyncWithPeer();
     }
 
     public TaucoinListener getListener() {
@@ -185,10 +172,6 @@ public class WorldManager {
 
     public SyncManager getSyncManager() {
         return syncManager;
-    }
-
-    public RequestManager getRequestManager() {
-        return requestManager;
     }
 
     public void loadBlockchain() {
@@ -289,7 +272,6 @@ public class WorldManager {
 
         poolSynchronizer.close();
         syncManager.close();
-        requestManager.close();
         repository.close();
         blockchain.close();
 
@@ -300,7 +282,6 @@ public class WorldManager {
         refWatcher.watch(blockStore);
         refWatcher.watch(syncManager);
         refWatcher.watch(pendingState);
-        refWatcher.watch(requestManager);
         refWatcher.watch(poolSynchronizer);
     }
 }

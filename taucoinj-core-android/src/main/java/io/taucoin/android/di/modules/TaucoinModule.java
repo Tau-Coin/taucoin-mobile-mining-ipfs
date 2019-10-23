@@ -34,7 +34,6 @@ import io.taucoin.http.client.HttpClient;
 import io.taucoin.http.client.HttpClientInitializer;
 import io.taucoin.http.ConnectionManager;
 import io.taucoin.http.discovery.PeersManager;
-import io.taucoin.http.RequestManager;
 import io.taucoin.http.RequestQueue;
 import io.taucoin.http.tau.codec.TauMessageCodec;
 import io.taucoin.http.tau.handler.TauHandler;
@@ -93,21 +92,21 @@ public class TaucoinModule {
     @Singleton
     WorldManager provideWorldManager(TaucoinListener listener, Blockchain blockchain, Repository repository,
             BlockStore blockStore, SyncManager syncManager, PendingState pendingState,
-            RequestManager requestManager, PoolSynchronizer poolSynchronizer, StateLoader stateLoader,
+            PoolSynchronizer poolSynchronizer, StateLoader stateLoader,
             RefWatcher refWatcher) {
 
         return new WorldManager(listener, blockchain, repository, blockStore, syncManager,
-                pendingState, requestManager, poolSynchronizer, stateLoader, refWatcher);
+                pendingState, poolSynchronizer, stateLoader, refWatcher);
     }
 
     @Provides
     @Singleton
     Taucoin provideTaucoin(WorldManager worldManager,
                              io.taucoin.manager.BlockLoader blockLoader, PendingState pendingState,
-                             BlockForger blockForger, RequestManager requestManager,
+                             BlockForger blockForger,
                              IpfsService ipfsService, RefWatcher refWatcher) {
         return new io.taucoin.android.Taucoin(worldManager, blockLoader, pendingState, blockForger,
-                requestManager, ipfsService, refWatcher);
+                ipfsService, refWatcher);
     }
 
     @Provides
@@ -250,17 +249,6 @@ public class TaucoinModule {
     }
 
     @Provides
-    @Singleton
-    RequestManager provideRequestManager(Blockchain blockchain,
-            BlockStore blockstore, TaucoinListener listener,
-            SyncManager syncManager, SyncQueue queue, ClientsPool clientsPool,
-            ChainInfoManager chainInfoManager, PeersManager peersManager,
-            ConnectionManager connectionManager) {
-        return new RequestManager(blockchain, blockstore, listener, syncManager,
-                queue, clientsPool, chainInfoManager, peersManager, connectionManager);
-    }
-
-    @Provides
     RequestQueue provideRequestQueue(TaucoinListener listener) {
         return new RequestQueue(listener);
     }
@@ -294,9 +282,9 @@ public class TaucoinModule {
     @Provides
     TauHandler provideTauHandler(Blockchain blockchain, BlockStore blockstore,
             SyncManager syncManager, SyncQueue queue, PendingState pendingState,
-            TaucoinListener tauListener, RequestManager requestManager) {
+            TaucoinListener tauListener) {
         return new TauHandler(blockchain, blockstore, syncManager, queue, pendingState,
-                tauListener, requestManager);
+                tauListener);
     }
 
     @Provides

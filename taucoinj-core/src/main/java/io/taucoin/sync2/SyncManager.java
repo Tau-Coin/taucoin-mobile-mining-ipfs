@@ -5,7 +5,6 @@ import io.taucoin.core.Block;
 import io.taucoin.core.BlockWrapper;
 import io.taucoin.core.Blockchain;
 import io.taucoin.http.ConnectionManager;
-import io.taucoin.http.RequestManager;
 import io.taucoin.listener.CompositeTaucoinListener;
 import io.taucoin.listener.TaucoinListener;
 import io.taucoin.listener.TaucoinListenerAdapter;
@@ -54,8 +53,6 @@ public class SyncManager {
 
     TaucoinListener taucoinListener;
 
-    RequestManager requestManager;
-
     ChainInfoManager chainInfoManager;
 
     PoolSynchronizer poolSynchronizer;
@@ -95,7 +92,6 @@ public class SyncManager {
         this.queue = queue;
         this.queue.setSyncManager(this);
         this.taucoinListener = taucoinListener;
-        this.requestManager = requestManager;
         this.chainInfoManager = chainInfoManager;
         this.poolSynchronizer = poolSynchronizer;
         this.connectionManager = connectionManager;
@@ -114,15 +110,6 @@ public class SyncManager {
         }
     }
 
-    public void setRequestManager(RequestManager requestManager) {
-        this.requestManager = requestManager;
-        this.poolSynchronizer.setRequestManager(requestManager);
-
-        for (SyncState state : syncStates.values()) {
-            ((AbstractSyncState)state).setRequestManager(requestManager);
-        }
-    }
-
     public void init() {
         // Init sync queue
         this.queue.init();
@@ -134,11 +121,9 @@ public class SyncManager {
 
     public void start() {
         startImport();
-        //startSyncWithPeer();
     }
 
     public void stop() {
-        stopSyncWithPeer();
         stopImport();
     }
 
@@ -248,7 +233,7 @@ public class SyncManager {
             state = newState;
         }
 
-        requestManager.changeSyncState(newStateName);
+        //requestManager.changeSyncState(newStateName);
         if (newStateName == CHAININFO_RETRIEVING) {
             savePullChainInfoTime();
         }

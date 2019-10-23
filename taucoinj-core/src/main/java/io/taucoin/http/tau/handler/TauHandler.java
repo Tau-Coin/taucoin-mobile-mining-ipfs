@@ -9,7 +9,6 @@ import io.taucoin.listener.TaucoinListenerAdapter;
 import io.taucoin.http.client.HttpClient;
 import io.taucoin.http.message.Message;
 import io.taucoin.http.RequestQueue;
-import io.taucoin.http.RequestManager;
 import io.taucoin.http.tau.message.*;
 import io.taucoin.sync2.SyncStateEnum;
 import io.taucoin.sync2.SyncManager;
@@ -55,23 +54,19 @@ public class TauHandler extends SimpleChannelInboundHandler<Message> {
 
     protected PendingState pendingState;
 
-    protected RequestManager requestManager;
-
     protected HttpClient httpClient;
 
     private RequestQueue requestQueue;
 
     @Inject
     public TauHandler(Blockchain blockchain, BlockStore blockstore, SyncManager syncManager,
-            SyncQueue queue, PendingState pendingState, TaucoinListener tauListener,
-            RequestManager requestManager) {
+            SyncQueue queue, PendingState pendingState, TaucoinListener tauListener) {
         this.blockchain = blockchain;
         this.blockstore = blockstore;
         this.syncManager = syncManager;
         this.queue = queue;
         this.pendingState = pendingState;
         this.tauListener = (CompositeTaucoinListener)tauListener;
-        this.requestManager = requestManager;
     }
 
     public void setHttpClient(HttpClient httpClient) {
@@ -104,7 +99,7 @@ public class TauHandler extends SimpleChannelInboundHandler<Message> {
         if (msg instanceof PoolTxsMessage) {
             processPoolTxsMessage((PoolTxsMessage)msg);
         } else {
-            requestManager.processMessage(msg);
+            //requestManager.processMessage(msg);
         }
     }
 

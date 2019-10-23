@@ -7,7 +7,6 @@ import io.taucoin.listener.TaucoinListener;
 import io.taucoin.manager.BlockLoader;
 import io.taucoin.manager.WorldManager;
 import io.taucoin.forge.BlockForger;
-import io.taucoin.http.RequestManager;
 import io.taucoin.ipfs.node.IpfsHomeNodeInfo;
 import io.taucoin.ipfs.node.IpfsPeerInfo;
 import io.taucoin.manager.IpfsService;
@@ -47,8 +46,6 @@ public class TaucoinImpl implements Taucoin {
 
     protected BlockForger blockForger;
 
-    protected RequestManager requestManager;
-
     protected IpfsService ipfsService;
 
     protected RefWatcher refWatcher;
@@ -56,12 +53,11 @@ public class TaucoinImpl implements Taucoin {
     @Inject
     public TaucoinImpl(WorldManager worldManager,
             BlockLoader blockLoader, PendingState pendingState, BlockForger blockForger,
-            RequestManager requestManager, IpfsService ipfsService, RefWatcher refWatcher) {
+            IpfsService ipfsService, RefWatcher refWatcher) {
         this.worldManager = worldManager;
         this.blockLoader = blockLoader;
         this.pendingState = pendingState;
         this.blockForger = blockForger;
-        this.requestManager = requestManager;
         this.ipfsService = ipfsService;
         this.refWatcher = refWatcher;
         this.blockForger.setTaucoin(this);
@@ -184,7 +180,7 @@ public class TaucoinImpl implements Taucoin {
     public ImportResult addNewMinedBlock(Block block) {
         ImportResult importResult = worldManager.getBlockchain().tryToConnect(block);
         if (importResult == ImportResult.IMPORTED_BEST) {
-            requestManager.submitNewBlock(block);
+            // TODO: ipfsService publish block.
         }
         return importResult;
     }

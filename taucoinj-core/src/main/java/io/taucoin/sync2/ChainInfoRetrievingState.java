@@ -24,11 +24,13 @@ public class ChainInfoRetrievingState extends AbstractSyncState {
             return;
         }
 
+        /*
         if(syncManager.requestManager.isChainInfoRetrievingDone() &&
                 syncManager.blockchain.getTotalDifficulty()
                         .compareTo(syncManager.chainInfoManager.getTotalDiff()) < 0){
             syncManager.changeState(HASH_RETRIEVING);
             return;
         }
+         */
     }
 }
