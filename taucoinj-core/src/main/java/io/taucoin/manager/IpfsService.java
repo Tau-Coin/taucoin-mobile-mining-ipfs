@@ -75,6 +75,7 @@ public class IpfsService {
         }
 
         String txPayload = new NewTxMessage(tx).toJsonString();
+        logger.info("send tx {}, payload {}", tx.getTxid(), txPayload);
         try {
             ipfs.pubsub.pub(Topic.getTransactionId(HOME_NODE_ID), txPayload);
         } catch (Exception e) {
