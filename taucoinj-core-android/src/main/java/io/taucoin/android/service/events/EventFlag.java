@@ -155,5 +155,10 @@ public enum EventFlag {
     /**
      * States loaded successfully.
      */
-    EVENT_STATES_LOADED_FAILED
+    EVENT_STATES_LOADED_FAILED,
+
+    /**
+     * Ipfs daemon dead.
+     */
+    EVENT_IPFS_DAEMON_DEAD
 }

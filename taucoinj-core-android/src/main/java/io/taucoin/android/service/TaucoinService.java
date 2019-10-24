@@ -305,5 +305,10 @@ public class TaucoinService extends Service {
             broadcastEvent(EventFlag.EVENT_STATES_LOADED_FAILED,
                     new StatesLoadedResult(false, tagHeight));
         }
+
+        @Override
+        public void onIpfsDaemonDead() {
+            broadcastEvent(EventFlag.EVENT_IPFS_DAEMON_DEAD, new EventData());
+        }
     }
 }

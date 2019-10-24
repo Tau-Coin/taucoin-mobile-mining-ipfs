@@ -205,4 +205,11 @@ public class CompositeTaucoinListener implements TaucoinListener {
             listener.onStatesLoadedFailed(tagHeight);
         }
     }
+
+    @Override
+    public void onIpfsDaemonDead() {
+        for (TaucoinListener listener : listeners) {
+            listener.onIpfsDaemonDead();
+        }
+    }
 }

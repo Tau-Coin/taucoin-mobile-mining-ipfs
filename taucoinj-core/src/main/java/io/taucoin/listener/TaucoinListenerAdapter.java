@@ -126,4 +126,8 @@ public class TaucoinListenerAdapter implements TaucoinListener {
     @Override
     public void onStatesLoadedFailed(long tagHeight) {
     }
+
+    @Override
+    public void onIpfsDaemonDead() {
+    }
 }

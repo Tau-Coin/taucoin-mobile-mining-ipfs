@@ -41,7 +41,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
 
     private TaucoinListener tauListener;
 
-    private IpfsHomeNodeInfo ipfsHomeNodeInfo = null;
+    protected IpfsHomeNodeInfo ipfsHomeNodeInfo = null;
 
     private IPFS ipfs;
 
@@ -129,12 +129,18 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
         }
     }
 
-    private void onIpfsDaemonDisconnected() {
+    protected void onIpfsDaemonDisconnected() {
+        logger.warn("Ipfs daemon dead");
+
         initLock.lock();
         initDone = false;
         isConnecting.set(false);
         isConnected.set(false);
         initLock.unlock();
+
+        if (tauListener != null) {
+            tauListener.onIpfsDaemonDead();
+        }
 
         tryToConnectToIpfsDaemon();
     }
