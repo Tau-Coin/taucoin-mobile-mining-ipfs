@@ -1,2 +1,0 @@
-com.google.bitcoin
-string app_name
