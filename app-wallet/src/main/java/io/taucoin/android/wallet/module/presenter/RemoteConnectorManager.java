@@ -46,6 +46,7 @@ import io.taucoin.android.wallet.module.model.IMiningModel;
 import io.taucoin.android.wallet.module.model.MiningModel;
 import io.taucoin.android.wallet.module.service.StateTagManager;
 import io.taucoin.android.wallet.module.service.TxService;
+import io.taucoin.android.wallet.net.service.IpfsRPCManager;
 import io.taucoin.android.wallet.util.EventBusUtil;
 import io.taucoin.android.wallet.util.MiningUtil;
 import io.taucoin.foundation.net.callback.LogicObserver;
@@ -259,6 +260,9 @@ public class RemoteConnectorManager extends ConnectorManager implements Connecto
                                 MiningUtil.deleteStatesTagFileDir();
                             }
                         }
+                        break;
+                    case EVENT_IPFS_DAEMON_DEAD:
+                        IpfsRPCManager.getInstance().restartIpfsProgress();
                         break;
                 }
                 break;

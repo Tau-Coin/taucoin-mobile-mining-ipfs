@@ -37,7 +37,7 @@ import io.taucoin.android.wallet.module.bean.VersionBean;
 import io.taucoin.android.wallet.net.callback.TAUObserver;
 import io.taucoin.android.wallet.net.callback.TxObserver;
 import io.taucoin.android.wallet.net.service.AppService;
-import io.taucoin.android.wallet.net.service.LocalIpfsService;
+import io.taucoin.android.wallet.net.service.IpfsRPCManager;
 import io.taucoin.android.wallet.net.service.TransactionService;
 import io.taucoin.android.wallet.util.SharedPreferencesHelper;
 import io.taucoin.foundation.net.NetWorkManager;
@@ -96,7 +96,7 @@ public class AppModel implements IAppModel{
     @Override
     public void getPeersList(LogicObserver<List<IpfsPeerInfo>> observer) {
         Observable.create((ObservableOnSubscribe<List<IpfsPeerInfo>>) emitter -> {
-            LocalIpfsService service = LocalIpfsService.getInstance();
+            IpfsRPCManager service = IpfsRPCManager.getInstance();
             List<IpfsPeerInfo> data = service.getPeers();
             emitter.onNext(data);
         }).observeOn(AndroidSchedulers.mainThread())
@@ -108,7 +108,7 @@ public class AppModel implements IAppModel{
     @Override
     public void getIpfsNode(LogicObserver<IpfsHomeNodeInfo> observer) {
         Observable.create((ObservableOnSubscribe<IpfsHomeNodeInfo>) emitter -> {
-            LocalIpfsService service = LocalIpfsService.getInstance();
+            IpfsRPCManager service = IpfsRPCManager.getInstance();
             IpfsHomeNodeInfo node = service.getIpfsHomeNode();
             emitter.onNext(node);
         }).observeOn(AndroidSchedulers.mainThread())

@@ -53,7 +53,6 @@ import io.taucoin.android.wallet.module.bean.IncomeInfoBean;
 import io.taucoin.android.wallet.module.bean.MessageEvent;
 import io.taucoin.android.wallet.module.bean.MinerInfoBean;
 import io.taucoin.android.wallet.module.bean.RankInfoBean;
-import io.taucoin.android.wallet.module.bean.NewTxBean;
 import io.taucoin.android.wallet.module.bean.RawTxBean;
 import io.taucoin.android.wallet.module.bean.RawTxList;
 import io.taucoin.android.wallet.module.bean.RewardInfoBean;
@@ -61,7 +60,7 @@ import io.taucoin.android.wallet.module.bean.TransactionBean;
 import io.taucoin.android.wallet.module.bean.TxDataBean;
 import io.taucoin.android.wallet.module.bean.TxStatusBean;
 import io.taucoin.android.wallet.net.callback.TxObserver;
-import io.taucoin.android.wallet.net.service.LocalIpfsService;
+import io.taucoin.android.wallet.net.service.IpfsRPCManager;
 import io.taucoin.android.wallet.net.service.TransactionService;
 import io.taucoin.android.wallet.util.DateUtil;
 import io.taucoin.android.wallet.util.EventBusUtil;
@@ -410,7 +409,7 @@ public class TxModel implements ITxModel {
         String txId = transaction.getTxid();
         Logger.d("txId=" + txId  + "\ttxHash=" + txHash);
         Observable.create((ObservableOnSubscribe<Boolean>) emitter -> {
-            boolean isSuccess = LocalIpfsService.getInstance().sendTransaction(transaction);
+            boolean isSuccess = IpfsRPCManager.getInstance().sendTransaction(transaction);
             emitter.onNext(isSuccess);
         }).observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(scheduler)
