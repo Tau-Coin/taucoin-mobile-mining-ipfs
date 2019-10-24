@@ -1,9 +1,11 @@
 package io.taucoin.ipfs;
 
+import io.taucoin.core.Block;
 import io.taucoin.core.Blockchain;
 import io.taucoin.core.PendingState;
 import io.taucoin.core.Transaction;
 import io.taucoin.facade.IpfsAPI;
+import io.taucoin.http.tau.message.NewBlockMessage;
 import io.taucoin.http.tau.message.NewTxMessage;
 import io.taucoin.ipfs.config.Topic;
 import io.taucoin.ipfs.node.IpfsHomeNodeInfo;
@@ -19,6 +21,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -63,6 +67,22 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
 
     private Thread connectWorker = new Thread(ipfsConnector);
 
+    /**
+     * these 2 thread used to publish transaction and block coming from client to reduce the blocking time of main thread.
+     */
+    private Thread txPubThread;
+    private Thread blockPubThread;
+
+    /**
+     * Queue with new blocks forged.
+     */
+    private BlockingQueue<Block> newBlocks = new LinkedBlockingQueue<>();
+
+    /**
+     * Queue with new transactions.
+     */
+    private BlockingQueue<Transaction> newTransactions = new LinkedBlockingQueue<>();
+
     @Inject
     public IpfsAPIRPCImpl(TaucoinListener tauListener) {
         this.tauListener = tauListener;
@@ -86,6 +106,25 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
         isConnecting.set(true);
 
         connectWorker.start();
+
+        /**
+         * create above definete thread and start them to loop publish tx and block.
+         */
+        this.txPubThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                newTxDistributeLoop();
+            }
+        },"newTxPublishThread");
+        this.txPubThread.start();
+
+        this.blockPubThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                newBlockDistributeLoop();
+            }
+        },"newBlockPublishThread");
+        this.blockPubThread.start();
     }
 
     private void connectToIpfs() {
@@ -174,22 +213,22 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
             return false;
         }
 
-        String txPayload = new NewTxMessage(tx).toJsonString();
-        logger.info("send tx {}, payload {}", tx.getTxid(), txPayload);
-        try {
-            ipfs.pubsub.pub(Topic.getTransactionId(HOME_NODE_ID), txPayload);
-        } catch (Exception e) {
-            logger.error("pub tx exception: {}", e);
+        /**
+         * here is ipfs publish strategry although there will be 0 peer to sub in worst situation
+         * this queue doesn't become large and large.
+         */
+        return this.newTransactions.add(tx);
+    }
 
-            if (isDaemonDisconnected(e)) {
-                onIpfsDaemonDisconnected();
-                return sendTransaction(tx);
-            } else {
-                return false;
-            }
+    public boolean sendNewBlock(Block block){
+        awaitInit();
+
+        if (block == null) {
+            logger.warn("send null block");
+            return false;
         }
 
-        return true;
+        return this.newBlocks.add(block);
     }
 
     public IpfsHomeNodeInfo getIpfsHomeNode() {
@@ -267,6 +306,62 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
             }
         } finally {
             initLock.unlock();
+        }
+    }
+    /**
+     * Sends all pending txs from wallet to new active peers
+     */
+    private void newTxDistributeLoop() {
+        while (!Thread.currentThread().isInterrupted()) {
+            Transaction tx = null;
+            try {
+                tx = newTransactions.take();
+                String txPayload = new NewTxMessage(tx).toJsonString();
+                ipfs.pubsub.pub(Topic.getTransactionId(HOME_NODE_ID), txPayload);
+            } catch (InterruptedException e) {
+                break;
+            } catch (Exception e) {
+                if (tx != null) {
+                    logger.error("Error publishing transaction {}: ",  e);
+                } else {
+                    logger.error("null tx error when publishing transaction {}", e);
+                }
+                if (isDaemonDisconnected(e)) {
+                    onIpfsDaemonDisconnected();
+                    sendTransaction(tx);
+                } else {
+
+                }
+            }
+        }
+    }
+
+    /**
+     * TODO: 10/24/19
+     * Sends all new blocks forged to peer when IDB topic ready.
+     */
+    private void newBlockDistributeLoop() {
+        while (!Thread.currentThread().isInterrupted()) {
+            Block block = null;
+            try {
+                block = newBlocks.take();
+                String blockPayload = new NewBlockMessage(block.getNumber(),block.getCumulativeDifficulty(),block).toJsonString();
+                //ipfs.pubsub.pub(Topic.getBlockId(HOME_NODE_ID),blockPayload);
+            } catch (InterruptedException e) {
+                break;
+            } catch (Exception e) {
+                if (block != null) {
+                    logger.error("Error publishing block {}: ",  e);
+                } else {
+                    logger.error("null block error when publishing block {}", e);
+                }
+                if (isDaemonDisconnected(e)) {
+                    onIpfsDaemonDisconnected();
+                    sendNewBlock(block);
+                } else {
+
+                }
+            }
         }
     }
 }
