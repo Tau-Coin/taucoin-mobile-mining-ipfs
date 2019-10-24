@@ -9,7 +9,7 @@ import io.taucoin.manager.WorldManager;
 import io.taucoin.forge.BlockForger;
 import io.taucoin.ipfs.node.IpfsHomeNodeInfo;
 import io.taucoin.ipfs.node.IpfsPeerInfo;
-import io.taucoin.manager.IpfsService;
+import io.taucoin.facade.IpfsAPI;
 import io.taucoin.net.client.PeerClient;
 import io.taucoin.net.peerdiscovery.PeerInfo;
 import io.taucoin.net.rlpx.Node;
@@ -46,19 +46,19 @@ public class TaucoinImpl implements Taucoin {
 
     protected BlockForger blockForger;
 
-    protected IpfsService ipfsService;
+    protected IpfsAPI ipfsAPI;
 
     protected RefWatcher refWatcher;
 
     @Inject
     public TaucoinImpl(WorldManager worldManager,
             BlockLoader blockLoader, PendingState pendingState, BlockForger blockForger,
-            IpfsService ipfsService, RefWatcher refWatcher) {
+            IpfsAPI ipfsAPI, RefWatcher refWatcher) {
         this.worldManager = worldManager;
         this.blockLoader = blockLoader;
         this.pendingState = pendingState;
         this.blockForger = blockForger;
-        this.ipfsService = ipfsService;
+        this.ipfsAPI = ipfsAPI;
         this.refWatcher = refWatcher;
         this.blockForger.setTaucoin(this);
         this.blockForger.init();
@@ -239,7 +239,7 @@ public class TaucoinImpl implements Taucoin {
          boolean submitResult = txsAdded != null && txs.size() > 0;
 
          if (submitResult) {
-             boolean sendResult = ipfsService.sendTransaction(transaction);
+             boolean sendResult = ipfsAPI.sendTransaction(transaction);
              if (sendResult) {
                  return transaction;
              }
@@ -270,12 +270,12 @@ public class TaucoinImpl implements Taucoin {
 
     @Override
     public List<IpfsPeerInfo> getIpfsSwarmPeers() {
-        return ipfsService.getPeers();
+        return ipfsAPI.getPeers();
     }
 
     @Override
     public IpfsHomeNodeInfo getIpfsHomeNodeInfo() {
-        return ipfsService.getIpfsHomeNode();
+        return ipfsAPI.getIpfsHomeNode();
     }
 
 }

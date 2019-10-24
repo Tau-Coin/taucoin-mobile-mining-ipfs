@@ -11,7 +11,7 @@ import io.taucoin.datasource.mapdb.MapDBFactory;
 import io.taucoin.db.*;
 import io.taucoin.db.file.BlockQueueFileSys;
 import io.taucoin.db.file.FileBlockStore;
-import io.taucoin.manager.IpfsService;
+import io.taucoin.facade.IpfsAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
@@ -98,7 +98,7 @@ public class SyncQueue {
 
     private MapDBFactory mapDBFactory;
 
-    private IpfsService ipfsService;
+    private IpfsAPI ipfsAPI;
 
     ConcurrentLinkedQueue<Object> res = new ConcurrentLinkedQueue<>();
 
@@ -130,11 +130,11 @@ public class SyncQueue {
     private AtomicBoolean isRequestClose = new AtomicBoolean(false);
 
     public SyncQueue(Blockchain blockchain, MapDBFactory mapDBFactory,
-            FileBlockStore fileBlockStore, IpfsService ipfsService) {
+            FileBlockStore fileBlockStore, IpfsAPI ipfsAPI) {
         this.blockchain = blockchain;
         this.mapDBFactory = mapDBFactory;
         this.fileBlockStore = fileBlockStore;
-        this.ipfsService = ipfsService;
+        this.ipfsAPI = ipfsAPI;
     }
 
     public void setSyncManager(SyncManager syncManager) {
@@ -187,7 +187,7 @@ public class SyncQueue {
             blockChainSubThread = new Thread(() -> {
                 try {
                     sleep(30000);
-                    ipfs = ipfsService.getLocalIpfs();
+                    ipfs = ipfsAPI.getLocalIpfs();
                     ipfs.pubsub.sub("idc", res::add, x -> logger.error(x.getMessage(), x));
                 } catch (IOException e) {
                     logger.error(e.getMessage(), e);

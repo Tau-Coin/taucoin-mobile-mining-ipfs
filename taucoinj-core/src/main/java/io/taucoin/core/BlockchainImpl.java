@@ -11,7 +11,7 @@ import io.taucoin.db.BlockStore;
 import io.taucoin.db.file.FileBlockStore;
 import io.taucoin.debug.RefWatcher;
 import io.taucoin.listener.TaucoinListener;
-import io.taucoin.manager.IpfsService;
+import io.taucoin.facade.IpfsAPI;
 import io.taucoin.sync2.ChainInfoManager;
 import io.taucoin.util.AdvancedDeviceUtils;
 import io.taucoin.util.ByteUtil;
@@ -77,7 +77,7 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
 
     private BlockStore blockStore;
 
-    private IpfsService ipfsService;
+    private IpfsAPI ipfsAPI;
 
     private Block bestBlock;
 
@@ -124,7 +124,7 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
     public BlockchainImpl(BlockStore blockStore, Repository repository,
             PendingState pendingState, TaucoinListener listener,
             ChainInfoManager chainInfoManager, FileBlockStore fileBlockStore,
-            RefWatcher refWatcher, IpfsService ipfsService) {
+            RefWatcher refWatcher, IpfsAPI ipfsAPI) {
         this.blockStore = blockStore;
         this.repository = repository;
         this.pendingState = pendingState;
@@ -134,7 +134,7 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
         this.refWatcher = refWatcher;
         this.executor = new TransactionExecutor(this, listener);
         this.stakeHolderIdentityUpdate = new StakeHolderIdentityUpdate();
-        this.ipfsService = ipfsService;
+        this.ipfsAPI = ipfsAPI;
     }
 
     @Override
@@ -956,7 +956,7 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
         logger.info("hash pair number:{}, cid:{}", hashPair.getNumber(),
                 hashPair.getCid().toString());
 
-        this.ipfs = ipfsService.getLocalIpfs();
+        this.ipfs = ipfsAPI.getLocalIpfs();
         //store block and hash pair on ipfs
         List<byte[]> dataList = new ArrayList<>(2);
         dataList.add(block.getEncodedMsg());

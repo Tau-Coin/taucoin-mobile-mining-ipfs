@@ -1,8 +1,9 @@
-package io.taucoin.manager;
+package io.taucoin.ipfs;
 
 import io.taucoin.core.Blockchain;
 import io.taucoin.core.PendingState;
 import io.taucoin.core.Transaction;
+import io.taucoin.facade.IpfsAPI;
 import io.taucoin.http.tau.message.NewTxMessage;
 import io.taucoin.ipfs.config.Topic;
 import io.taucoin.ipfs.node.IpfsHomeNodeInfo;
@@ -27,7 +28,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class IpfsService {
+public class IpfsAPIRPCImpl implements IpfsAPI {
 
     private static final Logger logger = LoggerFactory.getLogger("IpfsService");
 
@@ -63,12 +64,12 @@ public class IpfsService {
     private Thread connectWorker = new Thread(ipfsConnector);
 
     @Inject
-    public IpfsService(TaucoinListener tauListener) {
+    public IpfsAPIRPCImpl(TaucoinListener tauListener) {
         this.tauListener = tauListener;
         init();
     }
 
-    public IpfsService() {
+    public IpfsAPIRPCImpl() {
         init();
     }
 

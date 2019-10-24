@@ -30,12 +30,12 @@ import io.taucoin.foundation.net.callback.LogicObserver;
 import io.taucoin.foundation.util.StringUtil;
 import io.taucoin.ipfs.node.IpfsHomeNodeInfo;
 import io.taucoin.ipfs.node.IpfsPeerInfo;
-import io.taucoin.manager.IpfsService;
+import io.taucoin.ipfs.IpfsAPIRPCImpl;
 
 /**
  * Local Ipfs Service
  * */
-public class LocalIpfsService extends IpfsService {
+public class LocalIpfsService extends IpfsAPIRPCImpl {
     private static LocalIpfsService mInstance;
     private final Object mIpfsLocked = new Object();
     private final Logger logger = LoggerFactory.getLogger("LocalIpfsService");

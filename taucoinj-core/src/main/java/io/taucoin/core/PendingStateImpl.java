@@ -8,7 +8,7 @@ import io.taucoin.db.BlockStore;
 import io.taucoin.listener.CompositeTaucoinListener;
 import io.taucoin.listener.TaucoinListener;
 import io.taucoin.listener.TaucoinListenerAdapter;
-import io.taucoin.manager.IpfsService;
+import io.taucoin.facade.IpfsAPI;
 import io.taucoin.util.ByteUtil;
 import io.taucoin.db.ByteArrayWrapper;
 
@@ -45,7 +45,7 @@ public class PendingStateImpl implements PendingState {
     private Repository repository;
     private BlockStore blockStore;
     private Blockchain blockchain;
-    private IpfsService ipfsService;
+    private IpfsAPI ipfsAPI;
     private static final int MaxExpireTime = 144;
     private static final int MAXTNO= 50;
     private boolean isSyncdone = false;
@@ -77,12 +77,12 @@ public class PendingStateImpl implements PendingState {
     }
 
     @Inject
-    public PendingStateImpl(TaucoinListener listener, Repository repository,BlockStore blockStore, IpfsService ipfsService) {
+    public PendingStateImpl(TaucoinListener listener, Repository repository,BlockStore blockStore, IpfsAPI ipfsAPI) {
         this.listener = listener;
         ((CompositeTaucoinListener)this.listener).addListener(ProcessBlockListener);
         this.repository = repository;
         this.blockStore = blockStore;
-        this.ipfsService = ipfsService;
+        this.ipfsAPI = ipfsAPI;
     }
 
     @Override
@@ -104,7 +104,7 @@ public class PendingStateImpl implements PendingState {
             transactionSubThread = new Thread(() -> {
                 try {
                     sleep(30000);
-                    ipfs = ipfsService.getLocalIpfs();
+                    ipfs = ipfsAPI.getLocalIpfs();
                     ipfs.pubsub.sub("idl", res::add, x -> logger.error(x.getMessage(), x));
                 } catch (IOException e) {
                     logger.error(e.getMessage(), e);

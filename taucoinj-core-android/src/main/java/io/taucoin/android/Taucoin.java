@@ -6,7 +6,7 @@ import io.taucoin.crypto.ECKey;
 import io.taucoin.crypto.HashUtil;
 import io.taucoin.debug.RefWatcher;
 import io.taucoin.forge.BlockForger;
-import io.taucoin.manager.IpfsService;
+import io.taucoin.facade.IpfsAPI;
 import io.taucoin.manager.WorldManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +25,10 @@ public class Taucoin extends io.taucoin.facade.TaucoinImpl {
     @Inject
     public Taucoin(WorldManager worldManager,
                     io.taucoin.manager.BlockLoader blockLoader, PendingState pendingState,
-                    BlockForger blockForger, IpfsService ipfsService, RefWatcher refWatcher) {
+                    BlockForger blockForger, IpfsAPI ipfsAPI, RefWatcher refWatcher) {
 
         super(worldManager, blockLoader, pendingState, blockForger,
-                ipfsService, refWatcher);
+                ipfsAPI, refWatcher);
     }
 
     public void init(List<String> privateKeys) {
