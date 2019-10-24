@@ -314,8 +314,8 @@ public class TaucoinModule {
 
     @Provides
     @Singleton
-    IpfsService provideIpfsService(/*Blockchain blockchain, SyncQueue queue, PendingState pendingState*/) {
-        return new IpfsService(/*blockchain, queue, pendingState*/);
+    IpfsService provideIpfsService(TaucoinListener tauListener) {
+        return new IpfsService(tauListener);
     }
 
     @Provides
