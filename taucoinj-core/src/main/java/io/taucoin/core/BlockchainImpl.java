@@ -11,7 +11,6 @@ import io.taucoin.db.BlockStore;
 import io.taucoin.db.file.FileBlockStore;
 import io.taucoin.debug.RefWatcher;
 import io.taucoin.listener.TaucoinListener;
-import io.taucoin.facade.IpfsAPI;
 import io.taucoin.sync2.ChainInfoManager;
 import io.taucoin.util.AdvancedDeviceUtils;
 import io.taucoin.util.ByteUtil;
@@ -77,8 +76,6 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
 
     private BlockStore blockStore;
 
-    private IpfsAPI ipfsAPI;
-
     private Block bestBlock;
 
     private HashChain bestHashChain;
@@ -124,7 +121,7 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
     public BlockchainImpl(BlockStore blockStore, Repository repository,
             PendingState pendingState, TaucoinListener listener,
             ChainInfoManager chainInfoManager, FileBlockStore fileBlockStore,
-            RefWatcher refWatcher, IpfsAPI ipfsAPI) {
+            RefWatcher refWatcher) {
         this.blockStore = blockStore;
         this.repository = repository;
         this.pendingState = pendingState;
@@ -134,7 +131,6 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
         this.refWatcher = refWatcher;
         this.executor = new TransactionExecutor(this, listener);
         this.stakeHolderIdentityUpdate = new StakeHolderIdentityUpdate();
-        this.ipfsAPI = ipfsAPI;
     }
 
     @Override
@@ -956,20 +952,19 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
         logger.info("hash pair number:{}, cid:{}", hashPair.getNumber(),
                 hashPair.getCid().toString());
 
-        this.ipfs = ipfsAPI.getLocalIpfs();
         //store block and hash pair on ipfs
-        List<byte[]> dataList = new ArrayList<>(2);
-        dataList.add(block.getEncodedMsg());
-        dataList.add(hashPair.getEncoded());
-        try {
-            List<MerkleNode> merkleNodeList = ipfs.block.put(dataList);
-            logger.info("block cid:{}, size:{}",
-                    merkleNodeList.get(0).hash.toString(), merkleNodeList.size());
-            logger.info("hash pair cid:{}, size:{}",
-                    merkleNodeList.get(1).hash.toString(), merkleNodeList.size());
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
+//        List<byte[]> dataList = new ArrayList<>(2);
+//        dataList.add(block.getEncodedMsg());
+//        dataList.add(hashPair.getEncoded());
+//        try {
+//            List<MerkleNode> merkleNodeList = ipfs.block.put(dataList);
+//            logger.info("block cid:{}, size:{}",
+//                    merkleNodeList.get(0).hash.toString(), merkleNodeList.size());
+//            logger.info("hash pair cid:{}, size:{}",
+//                    merkleNodeList.get(1).hash.toString(), merkleNodeList.size());
+//        } catch (Exception e) {
+//            logger.error(e.getMessage(), e);
+//        }
 
         if (isMainChain) {
             //save block
@@ -985,22 +980,22 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
             logger.info("best hash chain: HASHC:{}", bestHashChain.getHashC().toString());
 
             //store best hash chain content on ipfs
-            List<byte[]> bestHashChainBytes = new ArrayList<>(1);
-            logger.info("best hash chain bytes:{}", bestHashChain.getEncoded());
-            bestHashChainBytes.add(bestHashChain.getEncoded());
-            try {
-                ipfs.block.put(bestHashChainBytes);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-
-            //broadcast block cid and HASHC
-            try {
-                ipfs.pubsub.pub(topicB, block.getCid().toString());
-                ipfs.pubsub.pub(topicC, bestHashChain.getHashC().toString());
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
+//            List<byte[]> bestHashChainBytes = new ArrayList<>(1);
+//            logger.info("best hash chain bytes:{}", bestHashChain.getEncoded());
+//            bestHashChainBytes.add(bestHashChain.getEncoded());
+//            try {
+//                ipfs.block.put(bestHashChainBytes);
+//            } catch (Exception e) {
+//                logger.error(e.getMessage(), e);
+//            }
+//
+//            //broadcast block cid and HASHC
+//            try {
+//                ipfs.pubsub.pub(topicB, block.getCid().toString());
+//                ipfs.pubsub.pub(topicC, bestHashChain.getHashC().toString());
+//            } catch (Exception e) {
+//                logger.error(e.getMessage(), e);
+//            }
         } else {
             blockStore.saveBlockHashPair(block, hashPair, totalDifficulty, false);
         }

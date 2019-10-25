@@ -10,8 +10,6 @@ import java.util.List;
 
 public interface IpfsAPI {
 
-    IPFS getLocalIpfs();
-
     boolean sendTransaction(Transaction tx);
 
     IpfsHomeNodeInfo getIpfsHomeNode();

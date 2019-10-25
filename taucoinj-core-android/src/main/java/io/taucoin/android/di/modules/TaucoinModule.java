@@ -120,9 +120,9 @@ public class TaucoinModule {
     @Singleton
     io.taucoin.core.Blockchain provideBlockchain(BlockStore blockStore, io.taucoin.core.Repository repository,
             PendingState pendingState, TaucoinListener listener, ChainInfoManager chainInfoManager,
-            FileBlockStore fileBlockStore, RefWatcher refWatcher, IpfsAPI ipfsAPI) {
+            FileBlockStore fileBlockStore, RefWatcher refWatcher) {
         return new BlockchainImpl(blockStore, repository, pendingState, listener,
-                chainInfoManager, fileBlockStore, refWatcher, ipfsAPI);
+                chainInfoManager, fileBlockStore, refWatcher);
     }
 
     @Provides
@@ -200,8 +200,8 @@ public class TaucoinModule {
     @Provides
     @Singleton
     SyncQueue provideSyncQueue(Blockchain blockchain, MapDBFactory mapDBFactory,
-            FileBlockStore fileBlockStore, IpfsAPI ipfsAPI) {
-        return new SyncQueue(blockchain, mapDBFactory, fileBlockStore, ipfsAPI);
+            FileBlockStore fileBlockStore) {
+        return new SyncQueue(blockchain, mapDBFactory, fileBlockStore);
     }
 
     @Provides
@@ -225,8 +225,8 @@ public class TaucoinModule {
 
     @Provides
     @Singleton
-    PendingState providePendingState(TaucoinListener listener, Repository repository,BlockStore blockStore, IpfsAPI ipfsAPI) {
-        return new PendingStateImpl(listener, repository,blockStore, ipfsAPI);
+    PendingState providePendingState(TaucoinListener listener, Repository repository,BlockStore blockStore) {
+        return new PendingStateImpl(listener, repository,blockStore);
     }
 
     @Provides
@@ -315,8 +315,8 @@ public class TaucoinModule {
 
     @Provides
     @Singleton
-    IpfsAPI provideIpfsAPI(TaucoinListener tauListener) {
-        return new IpfsAPIRPCImpl(tauListener);
+    IpfsAPI provideIpfsAPI(Blockchain blockchain, SyncQueue queue, PendingState pendingState, TaucoinListener tauListener) {
+        return new IpfsAPIRPCImpl(blockchain, queue, pendingState, tauListener);
     }
 
     @Provides
