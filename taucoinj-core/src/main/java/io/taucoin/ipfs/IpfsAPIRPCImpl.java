@@ -404,7 +404,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
             try {
                 block = newBlocks.take();
                 String blockPayload = new NewBlockMessage(block.getNumber(),block.getCumulativeDifficulty(),block).toJsonString();
-                //ipfs.pubsub.pub(Topic.getBlockId(HOME_NODE_ID),blockPayload);
+                ipfs.pubsub.pub(Topic.getBlockId(HOME_NODE_ID),blockPayload);
             } catch (InterruptedException e) {
                 break;
             } catch (Exception e) {
