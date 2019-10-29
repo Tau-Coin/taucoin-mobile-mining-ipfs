@@ -211,23 +211,22 @@ public class BlockForger {
     }
 
     public ForgeStatus restartForging() {
-
         Block bestBlock;
         BigInteger baseTarget;
         byte[] generationSignature;
         BigInteger cumulativeDifficulty;
 
         bestBlock = blockchain.getBestBlock();
-        if (!Utils.hashEquals(bestBlock.getHash(), chainInfoManager.getCurrentBlockHash())) {
-            try {
-                waitForSyncDone();
-            } catch (InterruptedException e) {
-                logger.warn("Forging task is interrupted when waiting for sync done");
-                isWaitingSyncDone.set(false);
-                return ForgeStatus.FORGE_TASK_INTERRUPTED_NOT_SYNCED;
-            }
-            return ForgeStatus.BLOCK_SYNC_PROCESSING;
-        }
+        //if (!Utils.hashEquals(bestBlock.getHash(), chainInfoManager.getCurrentBlockHash())) {
+//            try {
+//                waitForSyncDone();
+//            } catch (InterruptedException e) {
+//                logger.warn("Forging task is interrupted when waiting for sync done");
+//                isWaitingSyncDone.set(false);
+//                return ForgeStatus.FORGE_TASK_INTERRUPTED_NOT_SYNCED;
+//            }
+        //    return ForgeStatus.BLOCK_SYNC_PROCESSING;
+        //}
 
         baseTarget = ProofOfTransaction.calculateRequiredBaseTarget(bestBlock, blockStore);
         BigInteger forgingPower = repository.getforgePower(CONFIG.getForgerCoinbase());
@@ -278,7 +277,7 @@ public class BlockForger {
             nextBlockForgedTimePoint = timePreBlock + timeInterval;
             long sleepTime = nextBlockForgedTimePoint - timeNow;
             logger.debug("Sleeping " + sleepTime + " s before importing...");
-            fireNextBlockForgedInternal(sleepTime);
+            //fireNextBlockForgedInternal(sleepTime);
             fireNextBlockForgedDetail(new NextBlockForgedDetail(baseTarget,
                     new BigInteger(1, generationSignature),
                     bestBlock.getCumulativeDifficulty(), forgingPower, hit,
@@ -286,7 +285,7 @@ public class BlockForger {
 
             synchronized (blockchain.getLockObject()) {
                 try {
-                    resetPullTxPoolFlag();
+                    //resetPullTxPoolFlag();
                     blockchain.getLockObject().wait(sleepTime * 1000);
                 } catch (InterruptedException e) {
                     logger.warn("Forging task is interrupted");
@@ -295,10 +294,10 @@ public class BlockForger {
             }
         } else {
             logger.info("Forged time has lapsed");
-            fireNextBlockForgedInternal(0);
+            //fireNextBlockForgedInternal(0);
             synchronized (blockchain.getLockObject()) {
                 try {
-                    resetPullTxPoolFlag();
+                    //resetPullTxPoolFlag();
                     blockchain.getLockObject().wait(10 * 1000);
                 } catch (InterruptedException e) {
                     logger.warn("Forging task is interrupted");
@@ -323,12 +322,14 @@ public class BlockForger {
 
         logger.info("Forging thread wakeup...");
 
+        /*
         synchronized(pullTxPoolLock) {
             if (!txsGot) {
                 logger.warn("Pull pool tx timeout, retry again.");
                 return ForgeStatus.PULL_POOL_TX_TIMEOUT;
             }
         }
+        **/
 
         cumulativeDifficulty = ProofOfTransaction.
                 calculateCumulativeDifficulty(bestBlock.getCumulativeDifficulty(), baseTarget);

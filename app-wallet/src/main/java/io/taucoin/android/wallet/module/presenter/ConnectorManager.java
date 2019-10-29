@@ -324,14 +324,14 @@ public abstract class ConnectorManager implements ConnectorHandler {
 
     private void startBlockForging(int targetAmount){
         miningSwitch = true;
-//        initializer.schedule(new ForgingTask(mTaucoinConnector, targetAmount),
-//                BOOT_UP_DELAY_FORGE_SECONDS, TimeUnit.SECONDS);
+        initializer.schedule(new ForgingTask(mTaucoinConnector, targetAmount),
+                BOOT_UP_DELAY_FORGE_SECONDS, TimeUnit.SECONDS);
     }
 
     public void stopBlockForging(){
-//        stopDownload();
-//        mExceptionStop = null;
-//        stopBlockForging(-1);
+        stopDownload();
+        mExceptionStop = null;
+        stopBlockForging(-1);
     }
 
     private void stopBlockForging(int targetAmount){

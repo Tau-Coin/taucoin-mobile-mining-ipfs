@@ -180,7 +180,7 @@ public class TaucoinImpl implements Taucoin {
     public ImportResult addNewMinedBlock(Block block) {
         ImportResult importResult = worldManager.getBlockchain().tryToConnect(block);
         if (importResult == ImportResult.IMPORTED_BEST) {
-            // TODO: ipfsService publish block.
+            ipfsAPI.sendNewBlock(block);
         }
         return importResult;
     }
