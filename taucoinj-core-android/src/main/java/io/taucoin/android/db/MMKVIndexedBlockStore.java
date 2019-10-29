@@ -53,8 +53,8 @@ public class MMKVIndexedBlockStore implements BlockStore {
     private MMKV indexesDB;
 
     // Blocks and blockinfo cache.
-    private Map<ByteArrayWrapper, Block> blocksCache
-            = new HashMap<ByteArrayWrapper, Block>();
+    private Map<ByteArrayWrapper, byte[]> blocksCache
+            = new HashMap<>();
     private Map<Long, ArrayList<BlockInfo>> indexCache
             = new HashMap<Long, ArrayList<BlockInfo>>();
 
@@ -145,8 +145,8 @@ public class MMKVIndexedBlockStore implements BlockStore {
         try {
             long t1 = System.nanoTime();
 
-            for (Block block : blocksCache.values()) {
-                saveBlockIntoDB(block);
+            for (Map.Entry<ByteArrayWrapper, byte[]> entry : blocksCache.entrySet()) {
+                saveToBlocksDB(entry.getKey().getData(), entry.getValue());
             }
 
             for (Map.Entry<Long, ArrayList<BlockInfo>> e : indexCache.entrySet()) {
@@ -237,7 +237,7 @@ public class MMKVIndexedBlockStore implements BlockStore {
         blockInfo.setMainChain(mainChain); // FIXME:maybe here I should force reset main chain for all uncles on that level
         blockInfos.add(blockInfo);
 
-        blocksCache.put(new ByteArrayWrapper(block.getHash()), block);
+        blocksCache.put(new ByteArrayWrapper(block.getHash()), block.getEncoded());
         indexCache.put(block.getNumber(), blockInfos);
 
         index.put(block.getNumber(), blockInfos);
@@ -571,9 +571,9 @@ public class MMKVIndexedBlockStore implements BlockStore {
 
         r.lock();
         try {
-            Block block = blocksCache.get(new ByteArrayWrapper(hash));
-            if (block != null) {
-                return block;
+            byte[] blockRlp = blocksCache.get(new ByteArrayWrapper(hash));
+            if (blockRlp != null) {
+                return new Block(blockRlp);
             }
 
             byte[] blocksBytes = blocksDB.decodeBytes(Hex.toHexString(hash));
@@ -1123,8 +1123,8 @@ public class MMKVIndexedBlockStore implements BlockStore {
         }
     }
 
-    private void saveBlockIntoDB(Block block) {
-        blocksDB.encode(Hex.toHexString(block.getHash()), block.getEncoded());
+    private void saveToBlocksDB(byte[] hash, byte[] data) {
+        blocksDB.encode(Hex.toHexString(hash), data);
     }
 
     private void saveBlockInfoIntoDB(long number, ArrayList<BlockInfo> infoList) {
