@@ -533,31 +533,34 @@ public class TxModel implements ITxModel {
     @Override
     public void saveTxRecords(RawTxList rawTxList, LogicObserver<Boolean> observer) {
         Observable.create((ObservableOnSubscribe<Boolean>) emitter -> {
-            if(null != rawTxList){
-                List<RawTxBean> txList = rawTxList.getRecords();
-                if(null != txList && txList.size() > 0){
-                    for (RawTxBean bean : txList) {
-                        TransactionHistory tx = TransactionHistoryDaoUtils.getInstance().queryTransactionById(bean.getTxId());
-                        if(tx == null){
-                            tx = new TransactionHistory();
-                            tx.setFromAddress(bean.getSender());
-                            tx.setToAddress(bean.getReceiver());
+            synchronized (TxModel.class){
+                if(null != rawTxList){
+                    List<RawTxBean> txList = rawTxList.getRecords();
+                    if(null != txList && txList.size() > 0){
+                        for (RawTxBean bean : txList) {
+                            TransactionHistory tx = TransactionHistoryDaoUtils.getInstance().queryTransactionById(bean.getTxId());
+                            Logger.d("type=%s, txId=%s", Thread.currentThread(), bean.getTxId());
+                            if(tx == null){
+                                tx = new TransactionHistory();
+                                tx.setFromAddress(bean.getSender());
+                                tx.setToAddress(bean.getReceiver());
 
-                            tx.setTxId(bean.getTxId());
-                            tx.setAmount(FmtMicrometer.fmtTxValue(bean.getAmount()));
-                            tx.setFee(FmtMicrometer.fmtTxValue(bean.getFee()));
-                            tx.setTransExpiry(bean.getExpiredHeight());
+                                tx.setTxId(bean.getTxId());
+                                tx.setAmount(FmtMicrometer.fmtTxValue(bean.getAmount()));
+                                tx.setFee(FmtMicrometer.fmtTxValue(bean.getFee()));
+                                tx.setTransExpiry(bean.getExpiredHeight());
+                            }
+                            // createTime and blockTime need set value here!
+                            tx.setCreateTime(DateUtil.formatUTCTime(bean.getTxTime()));
+                            tx.setTimeBasis(1);
+                            tx.setBlockHeight(bean.getBlockHeight());
+                            tx.setResult(TransmitKey.TxResult.SUCCESSFUL);
+                            TransactionHistoryDaoUtils.getInstance().insertOrReplace(tx);
                         }
-                        // createTime and blockTime need set value here!
-                        tx.setCreateTime(DateUtil.formatUTCTime(bean.getTxTime()));
-                        tx.setTimeBasis(1);
-                        tx.setBlockHeight(bean.getBlockHeight());
-                        tx.setResult(TransmitKey.TxResult.SUCCESSFUL);
-                        TransactionHistoryDaoUtils.getInstance().insertOrReplace(tx);
                     }
                 }
+                emitter.onNext(true);
             }
-            emitter.onNext(true);
         }).observeOn(Schedulers.io())
                 .subscribeOn(scheduler)
                 .unsubscribeOn(scheduler)
