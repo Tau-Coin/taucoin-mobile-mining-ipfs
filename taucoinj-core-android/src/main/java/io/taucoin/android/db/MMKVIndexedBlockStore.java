@@ -170,42 +170,44 @@ public class MMKVIndexedBlockStore implements BlockStore {
 
     @Override
     public void saveBlockHashPair(Block block, HashPair hashPair, BigInteger cummDifficulty, boolean mainChain){
-        /*if (cache == null)
-            addInternalBlockHashPair(block, hashPair, cummDifficulty, mainChain);
-        else
-            cache.saveBlockHashPair(block, hashPair, cummDifficulty, mainChain);
-
-        // If this block is on main chain, cache its timestamp.
-        if (mainChain) {
-            addBlockTime(block);
-        }*/
+//        w.lock();
+//        try {
+//            addInternalBlockHashPair(block, hashPair, cummDifficulty, mainChain);
+//        } finally {
+//            w.unlock();
+//        }
+//
+//        // If this block is on main chain, cache its timestamp.
+//        if (mainChain) {
+//            addBlockTime(block);
+//        }
     }
 
     private void addInternalBlockHashPair(Block block, HashPair hashPair, BigInteger cummDifficulty, boolean mainChain){
 
-        /*List<BlockInfo> blockInfos = index.get(block.getNumber());
-        if (blockInfos == null) {
-            blockInfos = new ArrayList<>();
-        }
-
-        BlockInfo blockInfo = new BlockInfo();
-        blockInfo.setCummDifficulty(cummDifficulty);
-        blockInfo.setHash(block.getHash());
-        blockInfo.setHashPairCid(hashPair.getCid().toBytes());
-        blockInfo.setMainChain(mainChain); // FIXME:maybe here I should force reset main chain for all uncles on that level
-
-        blockInfos.add(blockInfo);
-
-        index.put(block.getNumber(), blockInfos);
-
-        blocksCache.put(new ByteArrayWrapper(block.getHash()), block);
-        indexCache.put(block.getNumber(), blockInfos);
-
-        index.put(block.getNumber(), blockInfos);
-
-        blocks.put(block.getHash(), block.getEncoded());
-        //save hash pair
-        blocks.put(hashPair.getCid().toBytes(), hashPair.getEncoded());*/
+//        List<BlockInfo> blockInfos = index.get(block.getNumber());
+//        if (blockInfos == null) {
+//            blockInfos = new ArrayList<>();
+//        }
+//
+//        BlockInfo blockInfo = new BlockInfo();
+//        blockInfo.setCummDifficulty(cummDifficulty);
+//        blockInfo.setHash(block.getHash());
+//        blockInfo.setHashPairCid(hashPair.getCid().toBytes());
+//        blockInfo.setMainChain(mainChain); // FIXME:maybe here I should force reset main chain for all uncles on that level
+//
+//        blockInfos.add(blockInfo);
+//
+//        index.put(block.getNumber(), blockInfos);
+//
+//        blocksCache.put(new ByteArrayWrapper(block.getHash()), block);
+//        indexCache.put(block.getNumber(), blockInfos);
+//
+//        index.put(block.getNumber(), blockInfos);
+//
+//        blocks.put(block.getHash(), block.getEncoded());
+//        //save hash pair
+//        blocks.put(hashPair.getCid().toBytes(), hashPair.getEncoded());
     }
 
     @Override
@@ -231,7 +233,7 @@ public class MMKVIndexedBlockStore implements BlockStore {
         }
 
         BlockInfo blockInfo = new BlockInfo();
-        blockInfo.setNumber(block.getNumber());
+//        blockInfo.setNumber(block.getNumber());
         blockInfo.setCummDifficulty(cummDifficulty);
         blockInfo.setHash(block.getHash());
         blockInfo.setMainChain(mainChain); // FIXME:maybe here I should force reset main chain for all uncles on that level
@@ -864,9 +866,9 @@ public class MMKVIndexedBlockStore implements BlockStore {
     }
 
     public static class BlockInfo implements Serializable {
-        long number;
+//        long number;
         byte[] hash;
-//        byte[] hashPairCid;
+        byte[] hashPairCid;
         BigInteger cummDifficulty;
         boolean mainChain;
 
@@ -877,13 +879,13 @@ public class MMKVIndexedBlockStore implements BlockStore {
             parse(bytes);
         }
 
-        public long getNumber() {
-            return number;
-        }
+//        public long getNumber() {
+//            return number;
+//        }
 
-        public void setNumber(long number) {
-            this.number = number;
-        }
+//        public void setNumber(long number) {
+//            this.number = number;
+//        }
 
         public byte[] getHash() {
             return hash;
@@ -893,13 +895,13 @@ public class MMKVIndexedBlockStore implements BlockStore {
             this.hash = hash;
         }
 
-        /*public byte[] getHashPairCid() {
+        public byte[] getHashPairCid() {
             return hashPairCid;
         }
 
         public void setHashPairCid(byte[] hashPairCid) {
             this.hashPairCid = hashPairCid;
-        }*/
+        }
 
         public BigInteger getCummDifficulty() {
             return cummDifficulty;
@@ -921,16 +923,16 @@ public class MMKVIndexedBlockStore implements BlockStore {
             List<RLPElement> params = RLP.decode2(bytes);
             List<RLPElement> info = (RLPList) params.get(0);
 
-            byte[] numberBytes = info.get(0).getRLPData();
-            byte[] hashBytes = info.get(1).getRLPData();
-//            byte[] hashPairCidBytes = info.get(2).getRLPData();
+//            byte[] numberBytes = info.get(0).getRLPData();
+            byte[] hashBytes = info.get(0).getRLPData();
+            byte[] hashPairCidBytes = info.get(1).getRLPData();
             byte[] cummDifficultyBytes = info.get(2).getRLPData();
             byte[] mainChainBytes = info.get(3).getRLPData();
 
-            this.number = numberBytes == null ?
-                    0 : new BigInteger(1, numberBytes).longValue();
+//            this.number = numberBytes == null ?
+//                    0 : new BigInteger(1, numberBytes).longValue();
             this.hash = hashBytes;
-//            this.hashPairCid = hashPairCidBytes;
+            this.hashPairCid = hashPairCidBytes;
             this.cummDifficulty = cummDifficultyBytes == null ?
                     BigInteger.ZERO : new BigInteger(1, cummDifficultyBytes);
             byte mainChain = mainChainBytes == null ? (byte)0 : mainChainBytes[0];
@@ -938,13 +940,13 @@ public class MMKVIndexedBlockStore implements BlockStore {
         }
 
         public byte[] getEncoded() {
-            byte[] numberBytes = RLP.encodeBigInteger(BigInteger.valueOf(this.number));
+//            byte[] numberBytes = RLP.encodeBigInteger(BigInteger.valueOf(this.number));
             byte[] hashBytes = RLP.encodeElement(this.hash);
-//            byte[] hashPairCidBytes = RLP.encodeElement(this.hashPairCid);
+            byte[] hashPairCidBytes = RLP.encodeElement(this.hashPairCid);
             byte[] cummDifficultyBytes = RLP.encodeBigInteger(this.cummDifficulty);
             byte[] mainChainBytes = RLP.encodeByte((byte) (mainChain ? 1 : 0));
 
-            return RLP.encodeList(numberBytes, hashBytes/*, hashPairCidBytes*/, cummDifficultyBytes,
+            return RLP.encodeList(/*numberBytes, */hashBytes, hashPairCidBytes, cummDifficultyBytes,
                     mainChainBytes);
         }
     }
@@ -1022,9 +1024,9 @@ public class MMKVIndexedBlockStore implements BlockStore {
             ArrayList<BlockInfo> infos = e.getValue();
             for (BlockInfo blockInfo : infos){
                 if (blockInfo.isMainChain()) {
-                    logger.info(blockInfo.getNumber() + " [" + shortHash(blockInfo.getHash()) + "] ");
+                    logger.info(number + " [" + shortHash(blockInfo.getHash()) + "] ");
                 } else
-                    logger.info(blockInfo.getNumber() + " " + shortHash(blockInfo.getHash()) + " ");
+                    logger.info(number + " " + shortHash(blockInfo.getHash()) + " ");
                 }
         }
 
@@ -1135,9 +1137,9 @@ public class MMKVIndexedBlockStore implements BlockStore {
         blocksDB.removeValueForKey(Hex.toHexString(info.getHash()));
     }
 
-    private void removeBlockInfoFromDB(BlockInfo info) {
-        removeBlockInfoFromDB(info.getNumber());
-    }
+//    private void removeBlockInfoFromDB(BlockInfo info) {
+//        removeBlockInfoFromDB(info.getNumber());
+//    }
 
     private void removeBlockInfoFromDB(long number) {
         indexesDB.removeValueForKey(String.valueOf(number));
@@ -1150,6 +1152,7 @@ public class MMKVIndexedBlockStore implements BlockStore {
 
     private void checkSanity() {
         for (Map.Entry<Long, ArrayList<BlockInfo>> entry : index.entrySet()) {
+            Long number = entry.getKey();
             ArrayList<BlockInfo> list = entry.getValue();
             if (list != null && !list.isEmpty()) {
                 for (BlockInfo info : list) {
@@ -1157,7 +1160,7 @@ public class MMKVIndexedBlockStore implements BlockStore {
                     if (blocksDB.decodeBytes(key) == null) {
                         String errorString = String.format(
                                 "Block %d %s not exist.",
-                                info.getNumber(),
+                                number,
                                 Hex.toHexString(info.getHash()));
                         logger.error(errorString);
                         //throw new RuntimeException(errorString);
