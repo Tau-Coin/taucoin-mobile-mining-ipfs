@@ -26,11 +26,10 @@ import android.support.annotation.NonNull;
 
 import com.github.naturs.logger.Logger;
 
-import java.math.BigInteger;
-
 import io.taucoin.android.wallet.MyApplication;
 import io.taucoin.android.wallet.base.BaseHandler;
 import io.taucoin.android.wallet.util.SysUtil;
+import io.taucoin.android.wallet.util.TrafficInfo;
 import io.taucoin.foundation.util.ThreadPool;
 import io.taucoin.foundation.util.TrafficUtil;
 
@@ -88,24 +87,6 @@ class ResManager implements BaseHandler.HandleCallBack{
                  break;
          }
      }
-//
-//    private long handleTrafficData(long currentTraffic) {
-//        long currentTrafficTime = new Date().getTime();
-//        long oldTraffic = SharedPreferencesHelper.getInstance().getLong(TransmitKey.TRAFFIC, 0);
-//        long oldTrafficTime = SharedPreferencesHelper.getInstance().getLong(TransmitKey.TRAFFIC_TIME, currentTrafficTime);
-//        long dailyTraffic = currentTraffic - oldTraffic;
-//
-//        if(dailyTraffic < 0){
-//            dailyTraffic = 0;
-//        }
-//
-//        if(DateUtil.compareDay(oldTrafficTime, currentTrafficTime) > 0 || oldTraffic <= 0 || oldTrafficTime <= 0){
-//            dailyTraffic = 0;
-//            SharedPreferencesHelper.getInstance().putLong(TransmitKey.TRAFFIC, currentTraffic);
-//            SharedPreferencesHelper.getInstance().putLong(TransmitKey.TRAFFIC_TIME, currentTrafficTime);
-//        }
-//        return dailyTraffic;
-//    }
 
     private synchronized void startResThreadDelay() {
          ThreadPool.getThreadPool().execute(() -> {
@@ -113,6 +94,10 @@ class ResManager implements BaseHandler.HandleCallBack{
                  if(isRunning){
                      Context context = MyApplication.getInstance();
                      mSysUtil.getPkgInfo(context.getPackageName(), packageStatsObserver);
+
+                     long traffic = TrafficInfo.getTrafficUsed(context);
+                     traffic = traffic >= 0 ? traffic : 0;
+                     TrafficUtil.saveTrafficAll(traffic);
 
                      SysUtil.MemoryInfo info =  mSysUtil.loadAppProcess();
                      Bundle bundle = new Bundle();

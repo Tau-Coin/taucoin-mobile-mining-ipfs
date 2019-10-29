@@ -4,20 +4,34 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class TrafficUtil {
+    private static final String TRAFFIC_WALLET_OLD = "trafficWalletOld";
     private static final String TRAFFIC_WALLET = "trafficWallet";
     private static final String TRAFFIC_MINING = "trafficMining";
     private static final String TRAFFIC_TIME = "trafficTime";
 
-    public static void saveTrafficWallet(long byteSize){
+    public static void saveTrafficAll(long byteSize){
         resetTrafficInfo();
+        long oldTraffic = SharedPreferencesHelper.getInstance().getLong(TRAFFIC_WALLET_OLD, 0);
+        SharedPreferencesHelper.getInstance().putLong(TRAFFIC_WALLET_OLD, byteSize);
+        if(oldTraffic > 0 && byteSize > oldTraffic){
+            byteSize = byteSize - oldTraffic;
+        }else {
+            byteSize = 0;
+        }
         byteSize += SharedPreferencesHelper.getInstance().getLong(TRAFFIC_WALLET, 0);
         SharedPreferencesHelper.getInstance().putLong(TRAFFIC_WALLET, byteSize);
     }
 
+    public static void saveTrafficWallet(long byteSize){
+//        resetTrafficInfo();
+//        byteSize += SharedPreferencesHelper.getInstance().getLong(TRAFFIC_WALLET, 0);
+//        SharedPreferencesHelper.getInstance().putLong(TRAFFIC_WALLET, byteSize);
+    }
+
     public static void saveTrafficMining(long byteSize){
-        resetTrafficInfo();
-        byteSize += SharedPreferencesHelper.getInstance().getLong(TRAFFIC_MINING, 0);
-        SharedPreferencesHelper.getInstance().putLong(TRAFFIC_MINING, byteSize);
+//        resetTrafficInfo();
+//        byteSize += SharedPreferencesHelper.getInstance().getLong(TRAFFIC_MINING, 0);
+//        SharedPreferencesHelper.getInstance().putLong(TRAFFIC_MINING, byteSize);
     }
 
     public static long getTrafficTotal() {
@@ -40,6 +54,7 @@ public class TrafficUtil {
         if(oldTrafficTime == 0 || compareDay(oldTrafficTime, currentTrafficTime) > 0){
             SharedPreferencesHelper.getInstance().putLong(TRAFFIC_TIME, currentTrafficTime);
             SharedPreferencesHelper.getInstance().putLong(TRAFFIC_WALLET, 0);
+            SharedPreferencesHelper.getInstance().putLong(TRAFFIC_WALLET_OLD, 0);
             SharedPreferencesHelper.getInstance().putLong(TRAFFIC_MINING, 0);
         }
     }

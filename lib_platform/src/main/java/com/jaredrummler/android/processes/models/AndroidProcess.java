@@ -32,6 +32,8 @@ public class AndroidProcess implements Parcelable {
   /** the process id */
   public final int pid;
 
+  private final String ipfsName = "goipfs";
+
   /**
    * AndroidProcess constructor
    *
@@ -48,6 +50,10 @@ public class AndroidProcess implements Parcelable {
   protected AndroidProcess(Parcel in) {
     this.name = in.readString();
     this.pid = in.readInt();
+  }
+
+  public boolean isIpfsProcess() {
+    return name.contains(ipfsName);
   }
 
   /**

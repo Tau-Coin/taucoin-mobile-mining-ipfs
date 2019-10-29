@@ -15,208 +15,149 @@
  */
 package io.taucoin.android.wallet.util;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.usage.NetworkStats;
-import android.app.usage.NetworkStatsManager;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
+import android.content.pm.PackageInfo;
 import android.net.TrafficStats;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.telephony.TelephonyManager;
 
 import com.github.naturs.logger.Logger;
 
-import java.io.FileNotFoundException;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
-import io.taucoin.android.wallet.MyApplication;
-
-import static android.content.Context.NETWORK_STATS_SERVICE;
-
-class TrafficInfo {
-    private int UNSUPPORTED = -1;
-//    private long preRxBytes = 0;
-
+public class TrafficInfo {
     /**
-     * Acquire total traffic
+     * Get traffic
      */
-    long getTrafficInfo(int uid) {
-        getSndTraffic1(uid);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            return getNetworkMobileData(uid) + getNetworkWifiData(uid);
-//        }
-        // Download traffic
-        long rcvTraffic = UNSUPPORTED;
-        // Upload traffic
-        long sndTraffic = UNSUPPORTED;
-
-        rcvTraffic = getRcvTraffic(uid);
-        sndTraffic = getSndTraffic(uid);
-        long total;
-        if (rcvTraffic == UNSUPPORTED || sndTraffic == UNSUPPORTED) {
-            total = UNSUPPORTED;
-        }else{
-            total = rcvTraffic + sndTraffic;
+    public static long getTrafficUsed(Context context) {
+        if (context == null) {
+            return -1;
         }
-        Logger.d("data_data=" + total);
-        return rcvTraffic + sndTraffic;
+        long traffic = -1;
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            if (packageInfo == null) {
+                return -1;
+            }
+            int uid = packageInfo.applicationInfo.uid;
+            traffic = getTraffic(uid);
+
+            if (traffic == 0 || traffic == -1) {
+                traffic = getTrafficApi25(uid);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Logger.d("traffic=%s, Mb=%s", traffic,  SysUtil.formatFileSizeMb(traffic));
+        return traffic;
     }
 
-    /**
-     * Get download traffic
+    /**traffic
+     * Specify uid to get
      */
-    private long getRcvTraffic(int uid) {
-        long rcvTraffic = UNSUPPORTED;
-        rcvTraffic = TrafficStats.getUidRxBytes(uid);
-        if (rcvTraffic == UNSUPPORTED) {
-            return UNSUPPORTED;
-        }
-        Logger.i(rcvTraffic + "--1");
-        RandomAccessFile rafRcv = null, rafSnd = null;
-        String rcvPath = "/proc/uid_stat/" + uid + "/tcp_rcv";
+    private static long getTraffic(int uid) {
+        long traffic = -1;
         try {
-            rafRcv = new RandomAccessFile(rcvPath, "r");
-            rcvTraffic = Long.parseLong(rafRcv.readLine());
-        } catch (FileNotFoundException e) {
-            Logger.e(e, "FileNotFoundException: ");
-            rcvTraffic = UNSUPPORTED;
-        } catch (Exception e) {
-            Logger.e(e, "getRcvTraffic");
-        } finally {
-            try {
-                if (rafRcv != null)
-                    rafRcv.close();
-                if (rafSnd != null)
-                    rafSnd.close();
-            } catch (IOException e) {
-                Logger.w("Close RandomAccessFile exception: " + e.getMessage());
+            traffic = (TrafficStats.getUidTxBytes(uid)) + (TrafficStats.getUidRxBytes(uid));
+//            Logger.d("TxByte=%s, RxBytes=%s",  SysUtil.formatFileSizeMb(TrafficStats.getUidTxBytes(uid)),  SysUtil.formatFileSizeMb(TrafficStats.getUidRxBytes(uid)));
+            if (traffic == -1 || traffic == 0 || traffic == -2) {
+                traffic = getTrafficUsedByFile(uid);
             }
-        }
-        Logger.i(rcvTraffic + "--2");
-        return rcvTraffic;
-    }
-
-    /**
-     * Get upload traffic
-     */
-    private long getSndTraffic(int uid) {
-        long sndTraffic = UNSUPPORTED;
-        sndTraffic = TrafficStats.getUidTxBytes(uid);
-        if (sndTraffic == UNSUPPORTED) {
-            return UNSUPPORTED;
-        }
-
-        RandomAccessFile rafRcv = null, rafSnd = null;
-        String sndPath = "/proc/uid_stat/" + uid + "/tcp_snd";
-        try {
-            rafSnd = new RandomAccessFile(sndPath, "r");
-            sndTraffic = Long.parseLong(rafSnd.readLine());
-        } catch (FileNotFoundException e) {
-            Logger.e(e, "FileNotFoundException: ");
-            sndTraffic = UNSUPPORTED;
-        } catch (Exception e) {
-            Logger.e(e, "getSndTraffic");
-        } finally {
-            try {
-                if (rafRcv != null)
-                    rafRcv.close();
-                if (rafSnd != null)
-                    rafSnd.close();
-            } catch (Exception e) {
-                Logger.w("Close RandomAccessFile exception: " + e.getMessage());
-            }
-        }
-        return sndTraffic;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private long getNetworkMobileData(int uid) {
-        long summaryTotal = 0;
-        try {
-            NetworkStats.Bucket summaryBucket = new NetworkStats.Bucket();
-            Context context = MyApplication.getInstance();
-            NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getSystemService(NETWORK_STATS_SERVICE);
-            String subscriberId = getSubscriberId(context);
-            NetworkStats summaryStats = networkStatsManager.queryDetailsForUid(ConnectivityManager.TYPE_MOBILE, subscriberId, 0, System.currentTimeMillis(), uid);
-            do {
-                summaryStats.getNextBucket(summaryBucket);
-                long summaryRx = summaryBucket.getRxBytes();
-                long summaryTx = summaryBucket.getTxBytes();
-                summaryTotal += summaryRx + summaryTx;
-            } while (summaryStats.hasNextBucket());
-            Logger.i(summaryTotal + "data_uid mobile:" + uid + " rx:" + summaryBucket.getRxBytes() +
-                    " tx:" + summaryBucket.getTxBytes());
-        } catch (Exception e) {
-            Logger.e(e, "getNetworkData is error");
-        }
-        return summaryTotal;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private long getNetworkWifiData(int uid) {
-        long summaryTotal = 0;
-        try {
-            NetworkStats.Bucket summaryBucket = new NetworkStats.Bucket();
-            Context context = MyApplication.getInstance();
-            NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getSystemService(NETWORK_STATS_SERVICE);
-            NetworkStats summaryStats = networkStatsManager.queryDetailsForUid(ConnectivityManager.TYPE_WIFI, "", 0, System.currentTimeMillis(), uid);
-            do {
-                summaryStats.getNextBucket(summaryBucket);
-                long summaryRx = summaryBucket.getRxBytes();
-                long summaryTx = summaryBucket.getTxBytes();
-                summaryTotal += summaryRx + summaryTx;
-            } while (summaryStats.hasNextBucket());
-            Logger.i(summaryTotal + "data_uid wifi:" + uid + " rx:" + summaryBucket.getRxBytes() +
-                    " tx:" + summaryBucket.getTxBytes());
-        } catch (Exception e) {
-            Logger.e(e, "getNetworkData is error");
-        }
-        return summaryTotal;
-    }
-
-    @SuppressLint("HardwareIds")
-    private String getSubscriberId(Context context) {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-            TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            return tm.getSubscriberId();
-        }
-        return "";
-    }
-
-    private long getSndTraffic1(int uid) {
-        long sndTraffic = UNSUPPORTED;
-        RandomAccessFile rafRcv = null, rafSnd = null;
-        String sndPath = "/proc/net/xt_qtaguid/stats";
-        try {
-            String line;
-            int index = 0;
-            rafSnd = new RandomAccessFile(sndPath, "r");
-            StringBuffer stringBuffer = new StringBuffer();
-            while ((line = rafSnd.readLine()) != null) {
-                Logger.d("data_data\t" + index + "\t" + line);
-                index += 1;
-            }
-
-        } catch (FileNotFoundException e) {
-            Logger.e(e,  "Close RandomAccessFile exception: ");
-            sndTraffic = UNSUPPORTED;
         } catch (Exception ignore) {
-            Logger.e(ignore,  "Close RandomAccessFile exception: ");
-        } finally {
+        }
+        return traffic;
+    }
+
+    /**
+     * Failed to read traffic data for miui8, read system file directly
+     */
+    private static long getTrafficUsedByFile(int uid) {
+        long receive = -1;
+        File receiveFile = new File(String.format("/proc/uid_stat/%s/tcp_rcv", uid));
+        BufferedReader buffer = null;
+        if (receiveFile.exists()) {
             try {
-                if (rafRcv != null)
-                    rafRcv.close();
-                if (rafSnd != null)
-                    rafSnd.close();
-            } catch (Exception e) {
-                Logger.w( "Close RandomAccessFile exception: " + e.getMessage());
+                buffer = new BufferedReader(new FileReader(receiveFile));
+                receive = Long.valueOf(buffer.readLine());
+            } catch (Exception ignore) {
+            } finally {
+                try {
+                    if (buffer != null) {
+                        buffer.close();
+                    }
+                } catch (IOException ignore) {
+                }
             }
         }
-        return sndTraffic;
+        long send = -1;
+        File sendFile = new File(String.format("/proc/uid_stat/%s/tcp_snd", String.valueOf(uid)));
+        if (sendFile.exists()) {
+            try {
+                buffer = new BufferedReader(new FileReader(sendFile));
+                send = Long.valueOf(buffer.readLine());
+            } catch (Exception ignore) {
+            } finally {
+                try {
+                    if (buffer != null) {
+                        buffer.close();
+                    }
+                } catch (IOException ignore) {
+                }
+            }
+        }
+
+        if (receive == -1 && send == -1) {
+            return -1;
+        }
+
+        receive = (receive == -1) ? 0 : receive;
+        send = (send == -1) ? 0 : send;
+        return (receive + send);
+    }
+
+    /**
+     * Higher version traffic acquisition
+     * @param uid uid
+     * @return long
+     */
+    private static long getTrafficApi25(int uid) {
+        long traffic = 0;
+        try {
+            Method methodGetStatsService = TrafficStats.class.getDeclaredMethod("getStatsService");
+            Class classINetworkStatsService = Class.forName("android.net.INetworkStatsService");
+            methodGetStatsService.setAccessible(true);
+            Object iNetworkStatsService = methodGetStatsService.invoke(null);
+            Object netWorkStats = null;
+            for (Method method : classINetworkStatsService.getDeclaredMethods()) {
+                if ("getDataLayerSnapshotForUid".equals(method.getName())) {
+                    method.setAccessible(true);
+                    netWorkStats = method.invoke(iNetworkStatsService, uid);
+                    break;
+                }
+            }
+            Class classNetWorkStats = Class.forName("android.net.NetworkStats");
+            Field[] fields = classNetWorkStats.getDeclaredFields();
+            for (Field f : fields) {
+                f.setAccessible(true);
+                if ("rxBytes".equals(f.getName())) {
+                    long[] rxBytes = (long[]) f.get(netWorkStats);
+                    for (int i = 0; i < rxBytes.length; i++) {
+                        traffic = traffic + rxBytes[i];
+                    }
+
+                } else if ("txBytes".equals(f.getName())) {
+                    long[] txBytes = (long[]) f.get(netWorkStats);
+                    for (int i = 0; i < txBytes.length; i++) {
+                        traffic = traffic + txBytes[i];
+                    }
+                }
+            }
+        } catch (Exception e) {
+            traffic = -1;
+        }
+        return traffic;
     }
 }

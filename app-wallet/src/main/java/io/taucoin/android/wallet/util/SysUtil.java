@@ -34,7 +34,6 @@ import com.jaredrummler.android.processes.models.Statm;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 import io.taucoin.android.wallet.MyApplication;
@@ -46,66 +45,7 @@ import io.taucoin.foundation.util.StringUtil;
  * Date: 2019/01/02
  */
 public class SysUtil {
-    private Long lastMainCpuTime;
-    private Long lastMiningCpuTime;
-    private Long lastMainAppCpuTime;
-    private Long lastMiningAppCpuTime;
-
-    private double sampleCPU(Stat appStat, boolean isMain) {
-        long cpuTime;
-        long appTime;
-        double sampleValue = 0.0D;
-        try {
-            if (appStat == null) {
-                return sampleValue;
-            }
-            Date date = new Date();
-            cpuTime = date.getTime();
-            appTime = appStat.stime() + appStat.utime();
-            if(isMain){
-                if(lastMainCpuTime == null || lastMainAppCpuTime== null){
-                    lastMainAppCpuTime = appTime;
-                    lastMainCpuTime = cpuTime;
-                    return sampleValue;
-                }
-            }else{
-                if(lastMiningCpuTime == null || lastMiningAppCpuTime== null){
-                    lastMiningAppCpuTime = appTime;
-                    lastMiningCpuTime = cpuTime;
-                    return sampleValue;
-                }
-            }
-            long lastAppCpuTime = isMain ? lastMainAppCpuTime : lastMiningAppCpuTime;
-            long lastCpuTime = isMain ? lastMainCpuTime : lastMiningCpuTime;
-            long appCpuTimeDiff = appTime - lastAppCpuTime;
-            long cpuTimeDiff = cpuTime - lastCpuTime;
-            sampleValue = ((double) appCpuTimeDiff / (double) cpuTimeDiff) * 100D;
-//            Logger.i("sampleCPU=isMain:" + isMain + "\tappCpuTimeDiff:" + appCpuTimeDiff +
-//                    "\tcpuTimeDiff:" + cpuTimeDiff + "\tsampleValue:" + sampleValue);
-            if(isMain){
-                lastMainAppCpuTime = appTime;
-                lastMainCpuTime = cpuTime;
-            }else{
-                lastMiningAppCpuTime = appTime;
-                lastMiningCpuTime = cpuTime;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return sampleValue;
-    }
-
-//    public static MemoryInfo getMemoryInfo(){
-//        long maxMemory = Runtime.getRuntime().maxMemory();
-//        long totalMemory = Runtime.getRuntime().totalMemory();
-//        long freeMemory = Runtime.getRuntime().freeMemory();
-//
-//        MemoryInfo memoryInfo = new MemoryInfo();
-//        memoryInfo.maxMemory = maxMemory;
-//        memoryInfo.totalMemory = totalMemory;
-//        memoryInfo.freeMemory = freeMemory;
-//        return memoryInfo;
-//    }
+    private CpuUtil cpuUtil = new CpuUtil();
 
     public void getPkgInfo(String pkg, IPackageStatsObserver.Stub packageStatsStub) {
         Context context = MyApplication.getInstance();
@@ -135,7 +75,6 @@ public class SysUtil {
         MemoryInfo memoryInfo = new MemoryInfo();
         try {
             List<AndroidAppProcess> processes = AndroidProcesses.getRunningAppProcesses();
-            TrafficInfo trafficInfo = new TrafficInfo();
             for (AndroidAppProcess process : processes) {
                 // Get some information about the process
                 String processName = process.name;
@@ -143,23 +82,20 @@ public class SysUtil {
                 String miningProcess = mainProcess + ":taucoin_service";
 
                 if(StringUtil.isNotSame(processName, mainProcess)
-                        && StringUtil.isNotSame(processName, miningProcess)){
+                        && StringUtil.isNotSame(processName, miningProcess) && !process.isIpfsProcess()){
                     continue;
                 }
-//                Status status = process.status();
-//                int uid = status.getUid();
-//                memoryInfo.netDataSize = trafficInfo.getTrafficInfo(uid);
-//                Logger.d("uid=" + uid + ",\t" + memoryInfo.netDataSize);
-
                 Statm statm = process.statm();
                 long totalSizeOfProcess = statm.getSize();
                 long residentSetSize = statm.getResidentSetSize();
                 memoryInfo.maxMemory += totalSizeOfProcess;
                 memoryInfo.totalMemory += residentSetSize * 4;
+//                Logger.d("pid=%s, MemorySize=%s, MemorySize*4=%s, name=%s", process.pid, formatFileSize(residentSetSize), formatFileSize(residentSetSize*4), process.name);
 
                 Stat stat = process.stat();
-                boolean isMain = StringUtil.isSame(processName, context.getPackageName());
-                double cpu = sampleCPU(stat, isMain);
+                int processType = StringUtil.isSame(processName, context.getPackageName()) ? 0 : 2;
+                processType = StringUtil.isSame(processName, miningProcess) ? 1 : processType;
+                double cpu = cpuUtil.sampleCPU(stat, processType);
                 memoryInfo.cpuUsageRate += cpu;
             }
             if(memoryInfo.cpuUsageRate < 0){
@@ -167,11 +103,8 @@ public class SysUtil {
             }else if(memoryInfo.cpuUsageRate > 100){
                 memoryInfo.cpuUsageRate = 100;
             }
-            if(memoryInfo.netDataSize < 0){
-                memoryInfo.netDataSize = 0;
-            }
         } catch (Exception e) {
-            Logger.i("loadAppProcess.is error", e);
+            Logger.e(e,"loadAppProcess.is error");
             e.printStackTrace();
         }
         return memoryInfo;
@@ -261,5 +194,4 @@ public class SysUtil {
             super(pkgName);
         }
     }
-
 }

@@ -47,8 +47,8 @@ public class AndroidAppProcess extends AndroidProcess {
 
   public AndroidAppProcess(int pid) throws IOException, NotAndroidAppProcessException {
     super(pid);
-    if (name == null || !PROCESS_NAME_PATTERN.matcher(name).matches() ||
-        !new File("/data/data", getPackageName()).exists()) {
+    if (name == null || ((!PROCESS_NAME_PATTERN.matcher(name).matches() ||
+        !new File("/data/data", getPackageName()).exists()) && !isIpfsProcess())) {
       throw new NotAndroidAppProcessException(pid);
     }
 
