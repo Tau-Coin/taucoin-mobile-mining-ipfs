@@ -170,44 +170,40 @@ public class MMKVIndexedBlockStore implements BlockStore {
 
     @Override
     public void saveBlockHashPair(Block block, HashPair hashPair, BigInteger cummDifficulty, boolean mainChain){
-//        w.lock();
-//        try {
-//            addInternalBlockHashPair(block, hashPair, cummDifficulty, mainChain);
-//        } finally {
-//            w.unlock();
-//        }
-//
-//        // If this block is on main chain, cache its timestamp.
-//        if (mainChain) {
-//            addBlockTime(block);
-//        }
+        w.lock();
+        try {
+            addInternalBlockHashPair(block, hashPair, cummDifficulty, mainChain);
+        } finally {
+            w.unlock();
+        }
+
+        // If this block is on main chain, cache its timestamp.
+        if (mainChain) {
+            addBlockTime(block);
+        }
     }
 
     private void addInternalBlockHashPair(Block block, HashPair hashPair, BigInteger cummDifficulty, boolean mainChain){
 
-//        List<BlockInfo> blockInfos = index.get(block.getNumber());
-//        if (blockInfos == null) {
-//            blockInfos = new ArrayList<>();
-//        }
-//
-//        BlockInfo blockInfo = new BlockInfo();
-//        blockInfo.setCummDifficulty(cummDifficulty);
-//        blockInfo.setHash(block.getHash());
-//        blockInfo.setHashPairCid(hashPair.getCid().toBytes());
-//        blockInfo.setMainChain(mainChain); // FIXME:maybe here I should force reset main chain for all uncles on that level
-//
-//        blockInfos.add(blockInfo);
-//
-//        index.put(block.getNumber(), blockInfos);
-//
-//        blocksCache.put(new ByteArrayWrapper(block.getHash()), block);
-//        indexCache.put(block.getNumber(), blockInfos);
-//
-//        index.put(block.getNumber(), blockInfos);
-//
-//        blocks.put(block.getHash(), block.getEncoded());
-//        //save hash pair
-//        blocks.put(hashPair.getCid().toBytes(), hashPair.getEncoded());
+        ArrayList<BlockInfo> blockInfos = index.get(block.getNumber());
+        if (blockInfos == null) {
+            blockInfos = new ArrayList<>();
+        }
+
+        BlockInfo blockInfo = new BlockInfo();
+        blockInfo.setCummDifficulty(cummDifficulty);
+        blockInfo.setHash(block.getHash());
+        blockInfo.setHashPairCid(hashPair.getCid().toBytes());
+        blockInfo.setMainChain(mainChain); // FIXME:maybe here I should force reset main chain for all uncles on that level
+
+        blockInfos.add(blockInfo);
+
+        //save block and hash pair
+        blocksCache.put(new ByteArrayWrapper(block.getHash()), block.getEncoded());
+        blocksCache.put(new ByteArrayWrapper(hashPair.getHash()), hashPair.getEncoded());
+        //save index info
+        indexCache.put(block.getNumber(), blockInfos);
+        index.put(block.getNumber(), blockInfos);
     }
 
     @Override
@@ -260,24 +256,32 @@ public class MMKVIndexedBlockStore implements BlockStore {
             if (blockInfos == null)
                 return;
 
-            for (BlockInfo blockInfo : blockInfos) {
-                if (areEqual(blockInfo.getHash(), hash)) {
+            Iterator<BlockInfo> iterator = blockInfos.iterator();
+            while (iterator.hasNext()) {
+                BlockInfo blockInfo = iterator.next();
+                if (areEqual(blockInfo.hash, hash)) {
                     if (blockInfo.mainChain) {
+                        logger.info("Block [{}] is in main chain!!!", Hex.toHexString(hash));
                         return;
+                    } else {
+                        //remove block
+                        removeBlockFromDB(hash);
+                        //remove hash pair
+                        removeBlockFromDB(blockInfo.hashPairCid);
+                        //remove from block info list
+                        iterator.remove();
+                        //update db
+                        if (indexCache.get(block.getNumber()) != null) {
+                            indexCache.put(block.getNumber(), blockInfos);
+                        }
+                        blocksCache.remove(new ByteArrayWrapper(hash));
+
+                        index.put(block.getNumber(), blockInfos);
+                        saveBlockInfoIntoDB(block.getNumber(), blockInfos);
+                        break;
                     }
-                    blockInfos.remove(blockInfo);
-                    removeBlockFromDB(blockInfo);
-                    break;
                 }
             }
-
-            if (indexCache.get(block.getNumber()) != null) {
-                indexCache.put(block.getNumber(), blockInfos);
-            }
-            blocksCache.remove(new ByteArrayWrapper(hash));
-
-            index.put(block.getNumber(), blockInfos);
-            saveBlockInfoIntoDB(block.getNumber(), blockInfos);
         } finally {
             w.unlock();
         }
@@ -313,6 +317,7 @@ public class MMKVIndexedBlockStore implements BlockStore {
                     newBlockInfos.add(blockInfo);
                 } else {
                     blocksCache.remove(new ByteArrayWrapper(blockInfo.hash));
+                    blocksCache.remove(new ByteArrayWrapper(blockInfo.hashPairCid));
                     removeBlockFromDB(blockInfo);
                 }
             }
@@ -355,6 +360,7 @@ public class MMKVIndexedBlockStore implements BlockStore {
 
             for (BlockInfo blockInfo : blockInfos) {
                 blocksCache.remove(new ByteArrayWrapper(blockInfo.hash));
+                blocksCache.remove(new ByteArrayWrapper(blockInfo.hashPairCid));
                 removeBlockFromDB(blockInfo);
             }
 
@@ -430,25 +436,24 @@ public class MMKVIndexedBlockStore implements BlockStore {
     @Override
     public HashPair getHashPairByBlock(Block block) {
 
-        /*if (cache != null) {
-            HashPair hashPair = cache.getHashPairByBlock(block);
-            if (hashPair != null) return hashPair;
-        }
-
-        List<BlockInfo> blockInfos = index.get(block.getNumber());
-        if (blockInfos == null){
-            return null;
-        }
-
-        for (BlockInfo blockInfo : blockInfos){
-
-            if (Arrays.equals(blockInfo.getHash(), block.getHash())){
-
-                byte[] hashPairCid = blockInfo.getHashPairCid();
-                byte[] hashPairRlp = blocks.get(hashPairCid);
-                return new HashPair(hashPairRlp);
+        r.lock();
+        try {
+            List<BlockInfo> blockInfos = index.get(block.getNumber());
+            if (blockInfos == null) {
+                return null;
             }
-        }*/
+
+            for (BlockInfo blockInfo : blockInfos) {
+
+                if (Arrays.equals(blockInfo.getHash(), block.getHash())) {
+
+                    byte[] hashPairCid = blockInfo.getHashPairCid();
+                    return getHashPairByCid(hashPairCid);
+                }
+            }
+        } finally {
+            r.unlock();
+        }
 
         return null;
     }
@@ -456,116 +461,95 @@ public class MMKVIndexedBlockStore implements BlockStore {
     @Override
     public HashPair getHashPairByBlock(long blockNumber, byte[] blockHash) {
 
-        /*if (cache != null) {
-            HashPair hashPair = cache.getHashPairByBlock(blockNumber, blockHash);
-            if (hashPair != null) return hashPair;
-        }
 
-        List<BlockInfo> blockInfos = index.get(blockNumber);
-        if (blockInfos == null){
-            return null;
-        }
+        r.lock();
+        try {
+            List<BlockInfo> blockInfos = index.get(blockNumber);
 
-        for (BlockInfo blockInfo : blockInfos){
-
-            if (Arrays.equals(blockInfo.getHash(), blockHash)){
-
-                byte[] hashPairCid = blockInfo.getHashPairCid();
-                byte[] hashPairRlp = blocks.get(hashPairCid);
-                return new HashPair(hashPairRlp);
+            if (blockInfos == null) {
+                return null;
             }
-        }*/
+
+            for (BlockInfo blockInfo : blockInfos) {
+
+                if (Arrays.equals(blockInfo.getHash(), blockHash)) {
+
+                    byte[] hashPairCid = blockInfo.getHashPairCid();
+                    return getHashPairByCid(hashPairCid);
+                }
+            }
+        } finally {
+            r.unlock();
+        }
 
         return null;
     }
 
     @Override
     public List<HashPair> getListChainHashPairsEndWith(long blockNumber, long qty) {
-
-        return null;
-        /*if (cache == null)
-            return getListChainHashPairsEndWithInner(blockNumber, qty);
-
-        List<HashPair> cachedHashPairs = cache.getListChainHashPairsEndWith(blockNumber, qty);
-
-        if (cachedHashPairs.size() == qty) return cachedHashPairs;
-
-        if (cachedHashPairs.isEmpty())
-            return getListChainHashPairsEndWithInner(blockNumber, qty);
-
-        HashPair latestCached = cachedHashPairs.get(cachedHashPairs.size() - 1);
-
-        List<HashPair> notCachedHashPairs = getListChainHashPairsEndWithInner(
-                latestCached.getNumber() - 1, qty - cachedHashPairs.size());
-        cachedHashPairs.addAll(notCachedHashPairs);
-
-        return cachedHashPairs;*/
+        return getListChainHashPairsEndWithInner(blockNumber, qty);
     }
 
     private List<HashPair> getListChainHashPairsEndWithInner(long blockNumber, long qty) {
 
         List<HashPair> hashPairs = new ArrayList<>((int) qty);
+        List<BlockInfo> blockInfos;
+        HashPair hashPair;
+        r.lock();
+        try {
+            for (int i = 0; i < qty; ++i) {
 
-        /*byte[] rlp;
-        for (int i = 0; i < qty; ++i) {
-            List<BlockInfo> blockInfos = index.get(blockNumber - i);
-            if (blockInfos != null) {
-                for (BlockInfo blockInfo : blockInfos) {
-                    if (blockInfo.isMainChain()) {
-                        rlp = this.blocks.get(blockInfo.getHashPairCid());
-                        if (null == rlp) {
-                            return hashPairs;
+                blockInfos = index.get(blockNumber - i);
+
+                if (blockInfos != null) {
+                    for (BlockInfo blockInfo : blockInfos) {
+                        if (blockInfo.isMainChain()) {
+                            hashPair = getHashPairByCid(blockInfo.getHashPairCid());
+                            if (null == hashPair) {
+                                return hashPairs;
+                            }
+                            hashPairs.add(hashPair);
                         }
-                        HashPair hashPair = new HashPair(rlp);
-                        hashPairs.add(hashPair);
                     }
+                } else {
+                    break;
                 }
             }
-        }*/
+        } finally {
+            r.unlock();
+        }
 
         return hashPairs;
     }
 
     @Override
     public List<byte[]> getListChainHashPairCidBytesEndWith(long blockNumber, long qty) {
-
-        return null;
-        /*if (cache == null)
-            return getListChainHashPairCidBytesEndWithInner(blockNumber, qty);
-
-        List<byte[]> cachedlist = cache.getListChainHashPairCidBytesEndWith(blockNumber, qty);
-
-        long size = cachedlist.size();
-
-        if (size == qty) return cachedlist;
-
-        if (cachedlist.isEmpty())
-            return getListChainHashPairCidBytesEndWithInner(blockNumber, qty);
-
-        List<byte[]> notCachedlist = getListChainHashPairCidBytesEndWithInner(
-                blockNumber - size, qty - size);
-        cachedlist.addAll(notCachedlist);
-
-        return cachedlist;*/
+        return getListChainHashPairCidBytesEndWithInner(blockNumber, qty);
     }
 
     private List<byte[]> getListChainHashPairCidBytesEndWithInner(long blockNumber, long qty) {
 
-        return null;
-        /*List<byte[]> list = new ArrayList<>((int) qty);
+        List<byte[]> list = new ArrayList<>((int) qty);
 
-        for (int i = 0; i < qty; ++i) {
-            List<BlockInfo> blockInfos = index.get(blockNumber - i);
-            if (blockInfos != null) {
-                for (BlockInfo blockInfo : blockInfos) {
-                    if (blockInfo.isMainChain()) {
-                        list.add(blockInfo.getHashPairCid());
+        r.lock();
+        try {
+            for (int i = 0; i < qty; ++i) {
+                List<BlockInfo> blockInfos = index.get(blockNumber - i);
+                if (blockInfos != null) {
+                    for (BlockInfo blockInfo : blockInfos) {
+                        if (blockInfo.isMainChain()) {
+                            list.add(blockInfo.getHashPairCid());
+                        }
                     }
+                } else {
+                    break;
                 }
             }
+        } finally {
+            r.unlock();
         }
 
-        return list;*/
+        return list;
     }
 
     @Override
@@ -592,17 +576,22 @@ public class MMKVIndexedBlockStore implements BlockStore {
     @Override
     public HashPair getHashPairByCid(byte[] cid) {
 
-        return null;
-        /*if (cache != null) {
-            HashPair cachedHashPair = cache.getHashPairByCid(cid);
-            if (cachedHashPair != null) return cachedHashPair;
+        r.lock();
+        try {
+            byte[] hashPairRlp = blocksCache.get(new ByteArrayWrapper(cid));
+            if (hashPairRlp != null) {
+                return new HashPair(hashPairRlp);
+            }
+
+            byte[] hashPairBytes = blocksDB.decodeBytes(Hex.toHexString(cid));
+            if (hashPairBytes == null) {
+                return null;
+            }
+
+            return new HashPair(hashPairBytes);
+        } finally {
+            r.unlock();
         }
-
-        byte[] hashPairRlp = blocks.get(cid);
-        if (hashPairRlp == null)
-            return null;
-
-        return new HashPair(hashPairRlp);*/
     }
 
     @Override
@@ -1133,8 +1122,13 @@ public class MMKVIndexedBlockStore implements BlockStore {
         indexesDB.encode(String.valueOf(number), getBlockInfoListEncoded(infoList));
     }
 
+    private void removeBlockFromDB(byte[] hash) {
+        blocksDB.removeValueForKey(Hex.toHexString(hash));
+    }
+
     private void removeBlockFromDB(BlockInfo info) {
         blocksDB.removeValueForKey(Hex.toHexString(info.getHash()));
+        blocksDB.removeValueForKey(Hex.toHexString(info.getHashPairCid()));
     }
 
 //    private void removeBlockInfoFromDB(BlockInfo info) {
