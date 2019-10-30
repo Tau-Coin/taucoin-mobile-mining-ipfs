@@ -23,6 +23,7 @@ import io.taucoin.android.wallet.db.entity.TransactionHistory;
 import io.taucoin.android.wallet.util.DateUtil;
 
 import org.greenrobot.greendao.query.QueryBuilder;
+import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
 
@@ -89,12 +90,14 @@ public class TransactionHistoryDaoUtils {
     }
 
     public List<TransactionHistory> queryData(int pageNo, String time, String address) {
-         QueryBuilder<TransactionHistory> db = getTransactionHistoryDao().queryBuilder();
+        WhereCondition.StringCondition groupCondition = new WhereCondition.StringCondition(
+                TransactionHistoryDao.Properties.TxId.columnName + " IS NOT NULL GROUP BY " + TransactionHistoryDao.Properties.TxId.columnName);
+        QueryBuilder<TransactionHistory> db = getTransactionHistoryDao().queryBuilder();
          db.where(TransactionHistoryDao.Properties.CreateTime.lt(time),
                 db.or(TransactionHistoryDao.Properties.FromAddress.eq(address),
                     db.and(TransactionHistoryDao.Properties.ToAddress.eq(address),
-                        TransactionHistoryDao.Properties.Result.eq(TransmitKey.TxResult.SUCCESSFUL)))
-                ).orderDesc(TransactionHistoryDao.Properties.CreateTime)
+                        TransactionHistoryDao.Properties.Result.eq(TransmitKey.TxResult.SUCCESSFUL))), groupCondition)
+                 .orderDesc(TransactionHistoryDao.Properties.CreateTime)
                  .offset((pageNo - 1) * TransmitKey.PAGE_SIZE).limit(TransmitKey.PAGE_SIZE);
         return db.list();
     }

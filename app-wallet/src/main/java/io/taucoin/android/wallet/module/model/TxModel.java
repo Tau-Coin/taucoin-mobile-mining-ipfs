@@ -85,6 +85,7 @@ import retrofit2.Response;
 public class TxModel implements ITxModel {
 
     private Scheduler scheduler = Schedulers.from(Executors.newFixedThreadPool(20));
+    private static volatile boolean isSaving = false;
 
     @Override
     public void getBalance(LogicObserver<KeyValue> observer) {
@@ -532,12 +533,18 @@ public class TxModel implements ITxModel {
 
     @Override
     public void saveTxRecords(RawTxList rawTxList, LogicObserver<Boolean> observer) {
+        if(isSaving){
+            observer.onNext(true);
+            return;
+        }
+        isSaving = true;
         Observable.create((ObservableOnSubscribe<Boolean>) emitter -> {
             if(null != rawTxList){
                 List<RawTxBean> txList = rawTxList.getRecords();
                 if(null != txList && txList.size() > 0){
                     for (RawTxBean bean : txList) {
                         TransactionHistory tx = TransactionHistoryDaoUtils.getInstance().queryTransactionById(bean.getTxId());
+                        Logger.d("type=%s, txId=%s", Thread.currentThread(), bean.getTxId());
                         if(tx == null){
                             tx = new TransactionHistory();
                             tx.setFromAddress(bean.getSender());
@@ -557,6 +564,7 @@ public class TxModel implements ITxModel {
                     }
                 }
             }
+            isSaving = false;
             emitter.onNext(true);
         }).observeOn(Schedulers.io())
                 .subscribeOn(scheduler)
