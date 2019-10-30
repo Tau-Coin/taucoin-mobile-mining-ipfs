@@ -107,9 +107,9 @@ public class WorldManager {
             return;
         }
         isSyncRunning = true;
-        isSyncDownloading = true;
 
         // start sync module
+        startDownload();
         syncManager.start();
     }
 
@@ -118,10 +118,9 @@ public class WorldManager {
             return;
         }
         isSyncRunning = false;
-        isSyncDownloading = false;
 
+        stopDownload();
         syncManager.stop();
-        poolSynchronizer.stop();
     }
 
     public boolean isSync() {
