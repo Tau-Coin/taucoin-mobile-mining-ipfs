@@ -438,16 +438,16 @@ public abstract class ConnectorManager implements ConnectorHandler {
     }
 
     public void stopDownload(){
-//        if(mTaucoinConnector != null && isInit()){
-//            Logger.d("stopDownload");
-//            mTaucoinConnector.stopDownload();
-//        }
+        if(mTaucoinConnector != null && isInit()){
+            Logger.d("stopDownload");
+            mTaucoinConnector.stopDownload();
+        }
     }
 
     public void startDownload(){
-//        if(mTaucoinConnector != null && isInit()){
-//            Logger.d("startDownload");
-//            mTaucoinConnector.startDownload();
-//        }
+        if(mTaucoinConnector != null && isInit()){
+            Logger.d("startDownload");
+            mTaucoinConnector.startDownload();
+        }
     }
 }
