@@ -103,27 +103,33 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
         }
     },"transactionListProcessThread");
 
-    private Thread blockChainSubThread = new Thread(() -> {
-        try {
-            ipfs.pubsub.sub("idc", hashcQueue::add, x -> logger.error(x.getMessage(), x));
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-            throw new RuntimeException(e);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+    private Thread blockChainSubThread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            try {
+                ipfs.pubsub.sub("idc", hashcQueue::add, x -> logger.error(x.getMessage(), x));
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+                throw new RuntimeException(e);
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
         }
-    });
+    },"blockChainSubThread");
 
-    private Thread transactionListSubThread = new Thread(() -> {
-        try {
-            ipfs.pubsub.sub("idl", hashlQueue::add, x -> logger.error(x.getMessage(), x));
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-            throw new RuntimeException(e);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+    private Thread transactionListSubThread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            try {
+                ipfs.pubsub.sub("idl", hashlQueue::add, x -> logger.error(x.getMessage(), x));
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+                throw new RuntimeException(e);
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
         }
-    });
+    },"transactionListSubThread");
 
     /**
      * Queue with new blocks forged.
@@ -563,11 +569,11 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                             hashPair.getBlockCid().toString(),
                             hashPair.getPreviousHashPairCid().toString());
                     hashPairList.add(hashPair);
-                    cid = hashPair.getPreviousHashPairCid();
-                    if (cid.toString().compareTo(Constants.GENESIS_HASHPAIR_CID) == 0) {
-                        logger.info("---------- sync to genesis hash pair ----------");
-                        break;
-                    }
+//                    cid = hashPair.getPreviousHashPairCid();
+//                    if (cid.toString().compareTo(Constants.GENESIS_HASHPAIR_CID) == 0) {
+//                        logger.info("---------- sync to genesis hash pair ----------");
+//                        break;
+//                    }
                     multihash = hashPair.getPreviousHashPairCid();
                     hashPairRlp = ipfs.block.get(multihash);
                     hashPair = new HashPair(hashPairRlp);
