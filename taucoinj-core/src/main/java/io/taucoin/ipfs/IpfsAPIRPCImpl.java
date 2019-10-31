@@ -88,22 +88,26 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
 
     ConcurrentLinkedQueue<Object> hashlQueue = new ConcurrentLinkedQueue<>();
     ConcurrentLinkedQueue<Object> hashcQueue = new ConcurrentLinkedQueue<>();
+    private Thread blockChainSubThread = null;
+    private Thread blockChainProcessThread = null;
+    private Thread transactionListSubThread = null;
+    private Thread transactionListProcessThread = null;
 
-    private Thread blockChainProcessThread = new Thread(new Runnable() {
+    private Runnable blockChainProcessSubscribe = new Runnable() {
         @Override
         public void run() {
             blockChainProcess();
         }
-    },"blockChainProcessThread");
+    };
 
-    private Thread transactionListProcessThread = new Thread(new Runnable() {
+    private Runnable transactionListProcessSubscribe = new Runnable() {
         @Override
         public void run() {
             transactionListProcess();
         }
-    },"transactionListProcessThread");
+    };
 
-    private Thread blockChainSubThread = new Thread(new Runnable() {
+    private Runnable blockChainSubscribe = new Runnable() {
         @Override
         public void run() {
             try {
@@ -115,9 +119,9 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                 logger.error(e.getMessage(), e);
             }
         }
-    },"blockChainSubThread");
+    };
 
-    private Thread transactionListSubThread = new Thread(new Runnable() {
+    private Runnable transactionListSubscribe = new Runnable() {
         @Override
         public void run() {
             try {
@@ -129,7 +133,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                 logger.error(e.getMessage(), e);
             }
         }
-    },"transactionListSubThread");
+    };
 
     /**
      * Queue with new blocks forged.
@@ -231,8 +235,14 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
 
     public void startDownload() {
         try {
-            blockChainProcessThread.start();
-            blockChainSubThread.start();
+//            if (!blockChainProcessThread.isAlive()) {
+                blockChainProcessThread = new Thread(blockChainProcessSubscribe, "blockChainProcessThread");
+                blockChainProcessThread.start();
+//            }
+//            if (!blockChainSubThread.isAlive()) {
+                blockChainSubThread = new Thread(blockChainSubscribe, "blockChainSubThread");
+                blockChainSubThread.start();
+//            }
         } catch (Exception e) {
             if (isDaemonDisconnected(e)) {
                 onIpfsDaemonDisconnected();
@@ -658,9 +668,11 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
             } else { //sync done
                 logger.info("sync done!!!");
                 if (!transactionListProcessThread.isAlive()) {
+                    transactionListProcessThread = new Thread(transactionListProcessSubscribe, "transactionListProcessThread");
                     transactionListProcessThread.start();
                 }
                 if (!transactionListSubThread.isAlive()) {
+                    transactionListSubThread = new Thread(transactionListSubscribe, "transactionListSubThread");
                     transactionListSubThread.start();
                 }
                 if (!isSyncDone) {
