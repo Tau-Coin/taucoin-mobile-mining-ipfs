@@ -276,7 +276,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
         // throw new RuntimeException("Couldn't connect to IPFS daemon at "+target+"\n Is IPFS running?");
         if (e != null && e instanceof RuntimeException) {
             String message = e.getMessage();
-            if (message.contains("Couldn't connect to IPFS daemon")) {
+            if (message != null && message.contains("Couldn't connect to IPFS daemon")) {
                 return true;
             }
         }
