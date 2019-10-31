@@ -113,7 +113,7 @@ public class WorldManager {
         isSyncRunning = true;
 
         // start sync module
-        startDownload();
+        //startDownload();
         syncManager.start();
     }
 
@@ -123,7 +123,7 @@ public class WorldManager {
         }
         isSyncRunning = false;
 
-        stopDownload();
+        //stopDownload();
         syncManager.stop();
     }
 
