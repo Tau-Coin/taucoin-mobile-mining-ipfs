@@ -222,15 +222,27 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
     }
 
     public void startDownload() {
-        blockChainProcessThread.start();
-        blockChainSubThread.start();
+        try {
+            blockChainProcessThread.start();
+            blockChainSubThread.start();
+        } catch (Exception e) {
+            if (isDaemonDisconnected(e)) {
+                onIpfsDaemonDisconnected();
+                try {
+                    sleep(5000);
+                } catch (Exception ex) {
+                    logger.error(ex.getMessage(), e);
+                }
+                startDownload();
+            }
+        }
     }
 
     public void stopDownload() {
-        blockChainProcessThread.stop();
-        transactionListProcessThread.stop();
-        blockChainSubThread.stop();
-        transactionListSubThread.stop();
+        blockChainProcessThread.interrupt();
+        transactionListProcessThread.interrupt();
+        blockChainSubThread.interrupt();
+        transactionListSubThread.interrupt();
     }
 
     protected void onIpfsDaemonDisconnected() {
@@ -458,6 +470,9 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
             Transaction tx;
             HashSet<Transaction> txs = new HashSet<Transaction>();
             for (byte[] txCid : transactionCidList.getTxCidList()) {
+                if (Thread.currentThread().isInterrupted()) {
+                    return;
+                }
                 txMultihash = new Multihash(txCid);
                 byte[] txRlp = ipfs.block.get(txMultihash);
                 tx = new Transaction(txRlp);
@@ -470,7 +485,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
     }
 
     private void blockChainProcess() {
-        while (Thread.currentThread().isInterrupted()) {
+        while (!Thread.currentThread().isInterrupted()) {
             if (hashcQueue.size() > 0) {
                 Map msg = (Map) hashcQueue.poll();
                 if (msg.size() > 0) {
@@ -517,6 +532,9 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                     currentNumber, Hex.toHexString(bestBlock.getHash()), bestBlock.getCid().toString());
             //compare local height with remote height
             while (latestHashPair.getNumber() > currentNumber) {
+                if (Thread.currentThread().isInterrupted()) {
+                    return;
+                }
                 int index = (int) currentNumber / (144 * 3);
                 if (index > cidList.size() - 1) {
                     logger.info("index {} is out of cid list size {}", index, cidList.size());
@@ -533,6 +551,9 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                 byte[] hashPairRlp;
                 //compare best block number with hash pair number to decide if need to sync
                 while (hashPair.getNumber() > currentNumber) {
+                    if (Thread.currentThread().isInterrupted()) {
+                        return;
+                    }
                     //sync hash pair list
                     logger.info("hash pair number:{}, cid:{}, block cid:{}, previous hash pair cid:{}",
                             hashPair.getNumber(),
@@ -557,6 +578,9 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                     Block blockLocal = bestBlock;
                     //find common fork point
                     while (!Arrays.equals(blockFromNet.getHash(), blockLocal.getHash())) {
+                        if (Thread.currentThread().isInterrupted()) {
+                            return;
+                        }
                         multihash = hashPair.getPreviousHashPairCid();
                         hashPairRlp = ipfs.block.get(multihash);
                         hashPair = new HashPair(hashPairRlp);
@@ -591,6 +615,9 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                 int size = hashPairList.size();
                 logger.info("There are {} blocks to sync", size);
                 for (int i = size - 1; i >= 0; i--) {
+                    if (Thread.currentThread().isInterrupted()) {
+                        return;
+                    }
                     hashPair = hashPairList.get(i);
                     logger.info("block cid:{}", hashPair.getBlockCid().toString());
                     multihash = hashPair.getBlockCid();
