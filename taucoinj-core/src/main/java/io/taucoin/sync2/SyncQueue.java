@@ -557,6 +557,10 @@ public class SyncQueue {
         }
     }
 
+    public int getBlockQueueSize() {
+        return blockQueue.size();
+    }
+
     /**
      * Adds NEW block to the queue
      *

@@ -66,6 +66,9 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
     private AtomicBoolean isConnected = new AtomicBoolean(false);
     private AtomicBoolean isConnecting = new AtomicBoolean(false);
 
+    //0:initial 1:synced
+    private int counter = 0;
+
     private Runnable ipfsConnector = new Runnable() {
         @Override
         public void run() {
@@ -81,12 +84,44 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
     private Thread txPubThread;
     private Thread blockPubThread;
 
-    private Thread blockChainSubThread;
-    private Thread transactionListSubThread;
-    private Thread blockChainProcessThread;
-    private Thread transactionListProcessThread;
     ConcurrentLinkedQueue<Object> hashlQueue = new ConcurrentLinkedQueue<>();
     ConcurrentLinkedQueue<Object> hashcQueue = new ConcurrentLinkedQueue<>();
+
+    private Thread blockChainProcessThread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            blockChainProcess();
+        }
+    },"blockChainProcessThread");
+
+    private Thread transactionListProcessThread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            transactionListProcess();
+        }
+    },"transactionListProcessThread");
+
+    private Thread blockChainSubThread = new Thread(() -> {
+        try {
+            ipfs.pubsub.sub("idc", hashcQueue::add, x -> logger.error(x.getMessage(), x));
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    });
+
+    private Thread transactionListSubThread = new Thread(() -> {
+        try {
+            ipfs.pubsub.sub("idl", hashlQueue::add, x -> logger.error(x.getMessage(), x));
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    });
 
     /**
      * Queue with new blocks forged.
@@ -125,12 +160,6 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
 
         connectWorker.start();
 
-        try {
-            sleep(2000);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-
         /**
          * create above definete thread and start them to loop publish tx and block.
          */
@@ -149,46 +178,6 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
             }
         },"newBlockPublishThread");
         this.blockPubThread.start();
-
-        this.blockChainProcessThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                blockChainProcess();
-            }
-        },"blockChainProcessThread");
-        this.blockChainProcessThread.start();
-
-        this.transactionListProcessThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                transactionListProcess();
-            }
-        },"transactionListProcessThread");
-        this.transactionListProcessThread.start();
-
-        blockChainSubThread = new Thread(() -> {
-            try {
-                ipfs.pubsub.sub("idc", hashcQueue::add, x -> logger.error(x.getMessage(), x));
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-                throw new RuntimeException(e);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-        });
-        blockChainSubThread.start();
-
-        transactionListSubThread = new Thread(() -> {
-            try {
-                ipfs.pubsub.sub("idl", hashlQueue::add, x -> logger.error(x.getMessage(), x));
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-                throw new RuntimeException(e);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-        });
-        transactionListSubThread.start();
     }
 
     private void connectToIpfs() {
@@ -230,6 +219,18 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                 break;
             }
         }
+    }
+
+    public void startDownload() {
+        blockChainProcessThread.start();
+        blockChainSubThread.start();
+    }
+
+    public void stopDownload() {
+        blockChainProcessThread.stop();
+        transactionListProcessThread.stop();
+        blockChainSubThread.stop();
+        transactionListSubThread.stop();
     }
 
     protected void onIpfsDaemonDisconnected() {
@@ -424,7 +425,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
     }
 
     private void transactionListProcess(){
-        while (true) {
+        while (Thread.currentThread().isInterrupted()) {
             if (hashlQueue.size() > 0) {
                 Map msg = (Map) hashlQueue.poll();
                 if (msg.size() > 0) {
@@ -469,7 +470,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
     }
 
     private void blockChainProcess() {
-        while (true) {
+        while (Thread.currentThread().isInterrupted()) {
             if (hashcQueue.size() > 0) {
                 Map msg = (Map) hashcQueue.poll();
                 if (msg.size() > 0) {
@@ -493,101 +494,143 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
 
     private synchronized void syncBlockChain(String hashChainCid) {
         try {
+            //get hash pair cid list
             Cid cid = Cid.decode(hashChainCid);
-            logger.info("HASHC:{}", cid.toString());
+            logger.info("HASHC :{}", cid.toString());
             Multihash multihash = new Multihash(cid);
             byte[] rlpEncoded = ipfs.block.get(multihash);
             HashChain hashChain = new HashChain(rlpEncoded);
             List<byte[]> cidList = hashChain.getHashPairCidList();
 
             //simple mode
-            Cid latestHashPairCid = Cid.cast(cidList.get(0));
-            logger.info("first cid in cid list:{}", latestHashPairCid.toString());
+            //get remote chain info
+            Cid latestHashPairCid = Cid.cast(cidList.get(cidList.size() - 1));
+            logger.info("cid list size is {}, latest hash pair cid is :{}",
+                    cidList.size(), latestHashPairCid.toString());
             multihash = new Multihash(latestHashPairCid);
             byte[] latestHashPairRlpEncoded = ipfs.block.get(multihash);
-            HashPair hashPair = new HashPair(latestHashPairRlpEncoded);
+            HashPair latestHashPair = new HashPair(latestHashPairRlpEncoded);
+            //get best block info
             Block bestBlock = blockchain.getBestBlock();
             long currentNumber = bestBlock.getNumber();
             logger.info("current block number:{}, hash:{}, cid:{}",
                     currentNumber, Hex.toHexString(bestBlock.getHash()), bestBlock.getCid().toString());
-            List<HashPair> hashPairList = new ArrayList<>();
-            byte[] hashPairRlp;
-            byte[] rawBlock;
-            while (hashPair.getNumber() > currentNumber) {
-                //test block tic
-//                Cid blockCid = hashPair.getBlockCid();
-//                rawBlock = ipfs.block.get(blockCid);
-//                Block block = new Block(rawBlock, true);
-//                String blockCidFromHashPair = blockCid.toString();
-//                String blockCidFromBlock = block.getCid().toString();
-//                logger.info("blockCidFromHashPair:{}, blockCidFromBlock:{}",
-//                        blockCidFromHashPair, blockCidFromBlock);
-//                if (blockCidFromHashPair.compareTo(blockCidFromBlock) != 0) {
-//                    logger.error("Block hash:{}", Hex.toHexString(block.getHash()));
-//                    break;
-//                }
-                //sync hash pair list
-                logger.info("hash pair number:{}, cid:{}, block cid:{}, previous hash pair cid:{}",
+            //compare local height with remote height
+            while (latestHashPair.getNumber() > currentNumber) {
+                int index = (int) currentNumber / (144 * 3);
+                if (index > cidList.size() - 1) {
+                    logger.info("index {} is out of cid list size {}", index, cidList.size());
+                    break;
+                }
+                //syncing
+                counter = 1;
+                Cid syncHashPairCid = Cid.cast(cidList.get(index));
+                logger.info("cid index[{}] in cid list to sync is :{}", index, syncHashPairCid.toString());
+                multihash = new Multihash(syncHashPairCid);
+                byte[] syncHashPairRlpEncoded = ipfs.block.get(multihash);
+                HashPair hashPair = new HashPair(syncHashPairRlpEncoded);
+                List<HashPair> hashPairList = new ArrayList<>();
+                byte[] hashPairRlp;
+                //compare best block number with hash pair number to decide if need to sync
+                while (hashPair.getNumber() > currentNumber) {
+                    //sync hash pair list
+                    logger.info("hash pair number:{}, cid:{}, block cid:{}, previous hash pair cid:{}",
+                            hashPair.getNumber(),
+                            hashPair.getCid().toString(),
+                            hashPair.getBlockCid().toString(),
+                            hashPair.getPreviousHashPairCid().toString());
+                    hashPairList.add(hashPair);
+                    cid = hashPair.getPreviousHashPairCid();
+                    if (cid.toString().compareTo(Constants.GENESIS_HASHPAIR_CID) == 0) {
+                        logger.info("---------- sync to genesis hash pair ----------");
+                        break;
+                    }
+                    multihash = hashPair.getPreviousHashPairCid();
+                    hashPairRlp = ipfs.block.get(multihash);
+                    hashPair = new HashPair(hashPairRlp);
+                }
+
+                //make sure that block hash(cid in later) from different branch are equal, or hash pair makes one step forward
+                if (hashPair.getNumber() > 0) {
+                    byte[] blockFromNetBytes = ipfs.block.get(hashPair.getBlockCid());
+                    Block blockFromNet = new Block(blockFromNetBytes, true);
+                    Block blockLocal = bestBlock;
+                    //find common fork point
+                    while (!Arrays.equals(blockFromNet.getHash(), blockLocal.getHash())) {
+                        multihash = hashPair.getPreviousHashPairCid();
+                        hashPairRlp = ipfs.block.get(multihash);
+                        hashPair = new HashPair(hashPairRlp);
+                        hashPairList.add(hashPair);
+
+                        multihash = hashPair.getPreviousHashPairCid();
+                        hashPairRlp = ipfs.block.get(multihash);
+                        hashPair = new HashPair(hashPairRlp);
+                        blockFromNetBytes = ipfs.block.get(hashPair.getBlockCid());
+                        blockFromNet = new Block(blockFromNetBytes, true);
+
+                        blockLocal = blockchain.getBlockByHash(blockLocal.getHash());
+                        if (null == blockLocal) {
+                            logger.error("Cannot find common fork point!!!");
+                            return;
+                        }
+                    }
+                }
+
+                //sync block from hash pair list
+                logger.info("Sync start from hash Pair number:{}, cid:{}, block cid:{}, previous hash pair cid:{}",
                         hashPair.getNumber(),
                         hashPair.getCid().toString(),
                         hashPair.getBlockCid().toString(),
                         hashPair.getPreviousHashPairCid().toString());
-                hashPairList.add(hashPair);
-                cid = hashPair.getPreviousHashPairCid();
-                if (cid.toString().compareTo(Constants.GENESIS_HASHPAIR_CID) == 0) {
-                    logger.info("...sync to genesis hash pair...");
-                    break;
-                }
-                multihash = hashPair.getPreviousHashPairCid();
-                hashPairRlp = ipfs.block.get(multihash);
-                hashPair = new HashPair(hashPairRlp);
-            }
 
-            //sync block from hash pair list
-            logger.info("sync start from number:{}", hashPair.getNumber());
-            logger.info("Hash Pair number:{}, cid:{}, block cid:{}, previous hash pair cid:{}",
-                    hashPair.getNumber(),
-                    hashPair.getCid().toString(),
-                    hashPair.getBlockCid().toString(),
-                    hashPair.getPreviousHashPairCid().toString());
-
-            byte[] blockNetBytes = ipfs.block.get(hashPair.getBlockCid());
-            logger.info("block form net number:{}, string:{}",
-                    hashPair.getNumber(), Hex.toHexString(blockNetBytes));
-            logger.info("block form local number:{}, string:{}",
-                    bestBlock.getNumber(), Hex.toHexString(bestBlock.getEncodedMsg()));
-
-            logger.info("Best Block number:{}, hash:{}, block cid:{}",
-                    bestBlock.getNumber(),
-                    Hex.toHexString(bestBlock.getHash()),
-                    bestBlock.getCid().toString());
-            logger.info("In the same height, Cid from hash pair:{}, Cid from best block:{}",
-                    hashPair.getBlockCid().toString(),
-                    bestBlock.getCid().toString());
-            if (hashPair.getPreviousHashPairCid().toString().
-                    compareTo(Constants.GENESIS_HASHPAIR_CID) == 0 ||
-                    hashPair.getBlockCid().toString().
-                            compareTo(bestBlock.getCid().toString()) == 0) {
+//            if (hashPair.getBlockCid().toString().
+//                    compareTo(bestBlock.getCid().toString()) == 0 ||
+//                    hashPair.getPreviousHashPairCid().toString().
+//                    compareTo(Constants.GENESIS_HASHPAIR_CID) == 0) {
+                //sync blocks
                 int size = hashPairList.size();
                 logger.info("There are {} blocks to sync", size);
                 for (int i = size - 1; i >= 0; i--) {
                     hashPair = hashPairList.get(i);
                     logger.info("block cid:{}", hashPair.getBlockCid().toString());
                     multihash = hashPair.getBlockCid();
-//                    while (!blockQueue.isEmpty()) {
-//                        sleep(10);
-//                    }
                     byte[] blockRlp = ipfs.block.get(multihash);
                     Block block = new Block(blockRlp, true);
                     logger.info("sync block hash:{}", Hex.toHexString(block.getHash()));
-//                    BlockWrapper wrapper = new BlockWrapper(block, new byte[1], "127.0.0.1");
-//                    blockQueue.add(wrapper);
                     List<Block> list = new ArrayList<>(1);
                     block.setNumber(hashPair.getNumber());
                     list.add(block);
+//                    while (queue.getBlockQueueSize() > 100) {
+//                        sleep(1000);
+//                    }
+                    while (queue.getBlockQueueSize() > 0) {
+                        sleep(10);
+                    }
                     queue.addList(list, new byte[0]);
                 }
+                //wait to verify
+                sleep(500);
+                //get best block info
+                bestBlock = blockchain.getBestBlock();
+                currentNumber = bestBlock.getNumber();
+                logger.info("Now current block number:{}, hash:{}, cid:{}",
+                        currentNumber, Hex.toHexString(bestBlock.getHash()), bestBlock.getCid().toString());
             }
+
+            if (1 == counter) {
+                logger.info("syncing...");
+                counter = 0;
+            } else { //sync done
+                logger.info("sync done!!!");
+                if (!transactionListProcessThread.isAlive()) {
+                    transactionListProcessThread.start();
+                }
+                if (!transactionListSubThread.isAlive()) {
+                    transactionListSubThread.start();
+                }
+                tauListener.onSyncDone();
+            }
+
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

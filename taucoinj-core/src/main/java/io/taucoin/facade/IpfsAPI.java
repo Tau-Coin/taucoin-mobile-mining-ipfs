@@ -18,4 +18,8 @@ public interface IpfsAPI {
     IpfsHomeNodeInfo getIpfsHomeNode();
 
     List<IpfsPeerInfo> getPeers();
+
+    void startDownload();
+
+    void stopDownload();
 }

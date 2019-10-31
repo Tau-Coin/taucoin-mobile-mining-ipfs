@@ -6,6 +6,7 @@ import io.taucoin.db.BlockStore;
 import io.taucoin.db.ByteArrayWrapper;
 import io.taucoin.db.state.StateLoader;
 import io.taucoin.debug.RefWatcher;
+import io.taucoin.facade.IpfsAPI;
 import io.taucoin.listener.CompositeTaucoinListener;
 import io.taucoin.listener.TaucoinListener;
 import io.taucoin.net.client.PeerClient;
@@ -53,6 +54,8 @@ public class WorldManager {
 
     private RefWatcher refWatcher;
 
+    private IpfsAPI ipfsAPI;
+
     private volatile boolean isSyncRunning = false;
 
     private volatile boolean isSyncDownloading = false;
@@ -64,7 +67,7 @@ public class WorldManager {
                         , BlockStore blockStore, SyncManager syncManager
                         , PendingState pendingState
                         , PoolSynchronizer poolSynchronizer, StateLoader stateLoader
-                        , RefWatcher refWatcher) {
+                        , IpfsAPI ipfsAPI, RefWatcher refWatcher) {
         logger.info("World manager instantiated");
         this.listener = listener;
         this.blockchain = blockchain;
@@ -74,6 +77,7 @@ public class WorldManager {
         this.pendingState = pendingState;
         this.poolSynchronizer = poolSynchronizer;
         this.stateLoader = stateLoader;
+        this.ipfsAPI = ipfsAPI;
         this.refWatcher = refWatcher;
     }
 
@@ -131,6 +135,7 @@ public class WorldManager {
         if (isSyncDownloading) {
             return;
         }
+        ipfsAPI.startDownload();
         isSyncDownloading = true;
     }
 
@@ -138,6 +143,7 @@ public class WorldManager {
         if (!isSyncDownloading) {
             return;
         }
+        ipfsAPI.stopDownload();
         isSyncDownloading = false;
     }
 
