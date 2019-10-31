@@ -88,10 +88,6 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
 
     ConcurrentLinkedQueue<Object> hashlQueue = new ConcurrentLinkedQueue<>();
     ConcurrentLinkedQueue<Object> hashcQueue = new ConcurrentLinkedQueue<>();
-    private Thread blockChainSubThread = null;
-    private Thread blockChainProcessThread = null;
-    private Thread transactionListSubThread = null;
-    private Thread transactionListProcessThread = null;
 
     private Runnable blockChainProcessSubscribe = new Runnable() {
         @Override
@@ -114,7 +110,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                 ipfs.pubsub.sub("idc", hashcQueue::add, x -> logger.error(x.getMessage(), x));
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
-                throw new RuntimeException(e);
+//                throw new RuntimeException(e);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
@@ -134,6 +130,11 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
             }
         }
     };
+
+    private Thread blockChainProcessThread = null;// new Thread(blockChainProcessSubscribe, "blockChainProcessThread");
+    private Thread blockChainSubThread = null;// new Thread(blockChainSubscribe, "blockChainSubThread");
+    private Thread transactionListProcessThread = new Thread(transactionListProcessSubscribe, "transactionListProcessThread");
+    private Thread transactionListSubThread = new Thread(transactionListSubscribe, "transactionListSubThread");
 
     /**
      * Queue with new blocks forged.
