@@ -59,6 +59,8 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
 
     private boolean initDone = false;
 
+    private boolean isSyncDone = false;
+
     // 'initLock' protects race for 'ipfs' & 'initDone'.
     private final ReentrantLock initLock = new ReentrantLock();
     private final Condition init = initLock.newCondition();
@@ -655,7 +657,10 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                 if (!transactionListSubThread.isAlive()) {
                     transactionListSubThread.start();
                 }
-                tauListener.onSyncDone();
+                if (!isSyncDone) {
+                    isSyncDone = true;
+                    tauListener.onSyncDone();
+                }
             }
 
         } catch (Exception e) {
