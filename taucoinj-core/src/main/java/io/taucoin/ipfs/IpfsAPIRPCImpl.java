@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
+import java.nio.channels.ClosedByInterruptException;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -258,10 +259,10 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
     }
 
     public void stopDownload() {
-        blockChainProcessThread.interrupt();
         transactionListProcessThread.interrupt();
-        blockChainSubThread.interrupt();
         transactionListSubThread.interrupt();
+        blockChainProcessThread.interrupt();
+        blockChainSubThread.interrupt();
     }
 
     protected void onIpfsDaemonDisconnected() {
@@ -456,7 +457,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
     }
 
     private void transactionListProcess(){
-        while (Thread.currentThread().isInterrupted()) {
+        while (!Thread.currentThread().isInterrupted()) {
             if (hashlQueue.size() > 0) {
                 Map msg = (Map) hashlQueue.poll();
                 if (msg.size() > 0) {
@@ -472,8 +473,9 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
             //sleep 1s
             try {
                 sleep(1000);
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 logger.error(e.getMessage(), e);
+                Thread.currentThread().interrupt();
             }
         }
     }
@@ -498,6 +500,9 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                 txs.add(tx);
             }
             pendingState.addWireTransactions(txs);
+        } catch (ClosedByInterruptException e) {
+            logger.error(e.getMessage(), e);
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -520,8 +525,9 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
             //sleep 1s
             try {
                 sleep(1000);
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 logger.error(e.getMessage(), e);
+                Thread.currentThread().interrupt();
             }
         }
     }
@@ -667,7 +673,6 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                 logger.info("syncing...");
                 counter = 0;
             } else { //sync done
-                logger.info("sync done!!!");
                 if (!transactionListProcessThread.isAlive()) {
                     transactionListProcessThread = new Thread(transactionListProcessSubscribe, "transactionListProcessThread");
                     transactionListProcessThread.start();
@@ -677,11 +682,18 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                     transactionListSubThread.start();
                 }
                 if (!isSyncDone) {
+                    logger.info("Send signal: sync done!!!");
                     isSyncDone = true;
                     tauListener.onSyncDone();
                 }
             }
 
+        } catch (InterruptedException e) {
+            logger.error(e.getMessage(), e);
+            Thread.currentThread().interrupt();
+        } catch (ClosedByInterruptException e) {
+            logger.error(e.getMessage(), e);
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
