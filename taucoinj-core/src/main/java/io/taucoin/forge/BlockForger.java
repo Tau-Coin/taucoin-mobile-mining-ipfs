@@ -104,6 +104,7 @@ public class BlockForger {
 
             @Override
             public void onSyncDone() {
+                notifySyncDone();
                 if (CONFIG.forgerStart() && CONFIG.isSyncEnabled()) {
                     logger.info("Sync complete, start forging...");
                     startForging((long)CONFIG.getForgedAmount());
@@ -120,7 +121,7 @@ public class BlockForger {
     }
 
     public void startForging() {
-        startForging(-1);
+        startForging(1);
     }
 
     public synchronized void startForging(long amount) {
@@ -191,9 +192,7 @@ public class BlockForger {
 
         // If forging is running and current block is sync done with remote peer,
         // wakeup forging thread.
-        if (isForging() && isWaitingSyncDone.get()
-                && Utils.hashEquals(
-                        newBlock.getHash(), chainInfoManager.getCurrentBlockHash())) {
+        if (isForging() && isWaitingSyncDone.get()) {
             notifySyncDone();
         }
     }
@@ -218,13 +217,13 @@ public class BlockForger {
 
         bestBlock = blockchain.getBestBlock();
         //if (!Utils.hashEquals(bestBlock.getHash(), chainInfoManager.getCurrentBlockHash())) {
-//            try {
-//                waitForSyncDone();
-//            } catch (InterruptedException e) {
-//                logger.warn("Forging task is interrupted when waiting for sync done");
-//                isWaitingSyncDone.set(false);
-//                return ForgeStatus.FORGE_TASK_INTERRUPTED_NOT_SYNCED;
-//            }
+        try {
+            waitForSyncDone();
+        } catch (InterruptedException e) {
+            logger.warn("Forging task is interrupted when waiting for sync done");
+            isWaitingSyncDone.set(false);
+            return ForgeStatus.FORGE_TASK_INTERRUPTED_NOT_SYNCED;
+        }
         //    return ForgeStatus.BLOCK_SYNC_PROCESSING;
         //}
 
@@ -448,6 +447,7 @@ public class BlockForger {
 
     private void waitForSyncDone() throws InterruptedException {
         logger.info("Wait for sync done");
+
         synchronized(syncLock) {
             isWaitingSyncDone.set(true);
             syncLock.wait();
