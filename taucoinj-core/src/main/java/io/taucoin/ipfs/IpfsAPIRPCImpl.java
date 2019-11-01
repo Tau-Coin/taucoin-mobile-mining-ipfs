@@ -46,7 +46,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
 
     private static final long RECONNECT_IPFS_DAEMON_DURATION = 3000;
 
-    private static final int HASH_PAIR_CID_INTERVAL = 144 * 3;
+    private static final int HASH_PAIR_CID_INTERVAL = (144 * 3);
 
     private static final String LOCAL_IPFS = "/ip4/127.0.0.1/tcp/5001";
 
@@ -571,6 +571,13 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
             multihash = new Multihash(latestHashPairCid);
             byte[] latestHashPairRlpEncoded = ipfs.block.get(multihash);
             HashPair latestHashPair = new HashPair(latestHashPairRlpEncoded);
+            byte[] latestBlockRlp = ipfs.block.get(latestHashPair.getBlockCid());
+            Block latestBlock = new Block(latestBlockRlp, true);
+            if (blockchain.isBlockExist(latestBlock.getHash())) {
+                logger.info("Remote chain is not best chain. Remote best block hash is [{}].",
+                        Hex.toHexString(latestBlock.getHash()));
+                return;
+            }
             //get best block info
             Block bestBlock = blockchain.getBestBlock();
             long currentNumber = bestBlock.getNumber();
