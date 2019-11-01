@@ -635,9 +635,6 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                         hashPair = new HashPair(hashPairRlp);
                         hashPairList.add(hashPair);
 
-                        multihash = hashPair.getPreviousHashPairCid();
-                        hashPairRlp = ipfs.block.get(multihash);
-                        hashPair = new HashPair(hashPairRlp);
                         blockRemoteBytes = ipfs.block.get(hashPair.getBlockCid());
                         blockRemote = new Block(blockRemoteBytes, true);
 
