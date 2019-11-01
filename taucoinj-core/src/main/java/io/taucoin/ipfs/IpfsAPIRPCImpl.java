@@ -16,6 +16,7 @@ import io.ipfs.api.IPFS;
 import io.ipfs.api.Peer;
 
 import io.taucoin.sync2.SyncQueue;
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
@@ -25,7 +26,6 @@ import java.net.ConnectException;
 import java.nio.channels.ClosedByInterruptException;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Condition;
@@ -88,8 +88,8 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
     private Thread txPubThread;
     private Thread blockPubThread;
 
-    ConcurrentLinkedQueue<Object> hashlQueue = new ConcurrentLinkedQueue<>();
-    ConcurrentLinkedQueue<Object> hashcQueue = new ConcurrentLinkedQueue<>();
+    private CircularFifoQueue<Object> hashcCircularFifoQueue = new CircularFifoQueue<>(1);
+    private CircularFifoQueue<Object> hashlCircularFifoQueue = new CircularFifoQueue<>(1);
 
     private Runnable blockChainProcessSubscribe = new Runnable() {
         @Override
@@ -110,7 +110,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
         public void run() {
             try {
                 logger.info("Start to sub from topic:[idc].");
-                ipfs.pubsub.sub("idc", hashcQueue::add, x -> logger.error(x.getMessage(), x));
+                ipfs.pubsub.sub("idc", hashcCircularFifoQueue::add, x -> logger.error(x.getMessage(), x));
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
 //                throw new RuntimeException(e);
@@ -127,7 +127,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
 //            }
             try {
                 logger.info("Start to sub from topic:[idl].");
-                ipfs.pubsub.sub("idl", hashlQueue::add, x -> logger.error(x.getMessage(), x));
+                ipfs.pubsub.sub("idl", hashlCircularFifoQueue::add, x -> logger.error(x.getMessage(), x));
             } catch (NullPointerException e) {
                 logger.error(e.getMessage(), e);
                 throw new RuntimeException(e);
@@ -477,8 +477,8 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
 
     private void transactionListProcess(){
         while (!Thread.currentThread().isInterrupted()) {
-            if (hashlQueue.size() > 0) {
-                Map msg = (Map) hashlQueue.poll();
+            if (hashlCircularFifoQueue.size() > 0) {
+                Map msg = (Map) hashlCircularFifoQueue.poll();
                 if (msg.size() > 0) {
 //                    String from = Base58.encode(Base64.getDecoder().decode(msg.get("from").toString()));
 //                    String topicId = msg.get("topicIDs").toString();
@@ -486,7 +486,6 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                     String data = new String(Base64.getDecoder().decode(msg.get("data").toString()));
                     syncTransactions(data);
                 }
-                hashlQueue.clear();
             }
 
             //sleep 1s
@@ -530,8 +529,8 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
 
     private void blockChainProcess() {
         while (!Thread.currentThread().isInterrupted()) {
-            if (hashcQueue.size() > 0) {
-                Map msg = (Map) hashcQueue.poll();
+            if (hashcCircularFifoQueue.size() > 0) {
+                Map msg = (Map) hashcCircularFifoQueue.poll();
                 if (msg.size() > 0) {
 //                    String from = Base58.encode(Base64.getDecoder().decode(msg.get("from").toString()));
 //                    String topicId = msg.get("topicIDs").toString();
@@ -539,7 +538,6 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                     String data = new String(Base64.getDecoder().decode(msg.get("data").toString()));
                     syncBlockChain(data);
                 }
-                hashcQueue.clear();
             }
 
             //sleep 1s
