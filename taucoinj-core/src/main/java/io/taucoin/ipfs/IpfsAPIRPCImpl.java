@@ -238,7 +238,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
     }
 
     public void startDownload() {
-        try {
+//        try {
             if (null == blockChainProcessThread || !blockChainProcessThread.isAlive()) {
                 blockChainProcessThread = new Thread(blockChainProcessSubscribe, "blockChainProcessThread");
                 blockChainProcessThread.start();
@@ -247,17 +247,17 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                 blockChainSubThread = new Thread(blockChainSubscribe, "blockChainSubThread");
                 blockChainSubThread.start();
             }
-        } catch (Exception e) {
-            if (isDaemonDisconnected(e)) {
-                onIpfsDaemonDisconnected();
-                try {
-                    Thread.sleep(5000);
-                } catch (Exception ex) {
-                    logger.error(ex.getMessage(), e);
-                }
-                startDownload();
-            }
-        }
+//        } catch (Exception e) {
+//            if (isDaemonDisconnected(e)) {
+//                onIpfsDaemonDisconnected();
+//                try {
+//                    Thread.sleep(5000);
+//                } catch (Exception ex) {
+//                    logger.error(ex.getMessage(), e);
+//                }
+//                startDownload();
+//            }
+//        }
     }
 
     public void stopDownload() {
@@ -621,7 +621,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                         blockFromNetBytes = ipfs.block.get(hashPair.getBlockCid());
                         blockFromNet = new Block(blockFromNetBytes, true);
 
-                        blockLocal = blockchain.getBlockByHash(blockLocal.getHash());
+                        blockLocal = blockchain.getBlockByHash(blockLocal.getPreviousHeaderHash());
                         if (null == blockLocal) {
                             logger.error("Cannot find common fork point!!!");
                             return;
