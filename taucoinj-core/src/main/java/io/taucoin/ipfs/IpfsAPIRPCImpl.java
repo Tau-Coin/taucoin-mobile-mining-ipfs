@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.nio.channels.ClosedByInterruptException;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
@@ -122,9 +123,17 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
     private Runnable transactionListSubscribe = new Runnable() {
         @Override
         public void run() {
+//            while (!Thread.currentThread().isInterrupted()) {
+//            }
             try {
                 logger.info("Start to sub from topic:[idl].");
                 ipfs.pubsub.sub("idl", hashlQueue::add, x -> logger.error(x.getMessage(), x));
+            } catch (NullPointerException e) {
+                logger.error(e.getMessage(), e);
+                throw new RuntimeException(e);
+            } catch (ConnectException e) {
+                logger.error(e.getMessage(), e);
+                throw new RuntimeException(e);
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
                 throw new RuntimeException(e);
@@ -261,10 +270,18 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
     }
 
     public void stopDownload() {
-        transactionListProcessThread.interrupt();
-        transactionListSubThread.interrupt();
-        blockChainProcessThread.interrupt();
-        blockChainSubThread.interrupt();
+        if (null != transactionListProcessThread) {
+            transactionListProcessThread.interrupt();
+        }
+        if (null != transactionListSubThread) {
+            transactionListSubThread.interrupt();
+        }
+        if (null != blockChainProcessThread) {
+            blockChainProcessThread.interrupt();
+        }
+        if (null != blockChainSubThread) {
+            blockChainSubThread.interrupt();
+        }
     }
 
     protected void onIpfsDaemonDisconnected() {
@@ -656,12 +673,13 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                     List<Block> list = new ArrayList<>(1);
                     block.setNumber(hashPair.getNumber());
                     list.add(block);
-//                    while (queue.getBlockQueueSize() > 100) {
-//                        Thread.sleep(1000);
-//                    }
-                    while (queue.getBlockQueueSize() > 0) {
-                        Thread.sleep(10);
+                    while (!queue.isMoreBlocksNeeded()) {
+                        logger.info("Block queue is full. Sleep 10s.");
+                        Thread.sleep(10000);
                     }
+//                    while (queue.getBlockQueueSize() > 0) {
+//                        Thread.sleep(10);
+//                    }
                     queue.addList(list, new byte[0]);
                 }
                 //wait to verify
