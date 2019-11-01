@@ -63,7 +63,7 @@ class ResManager implements BaseHandler.HandleCallBack{
                      }
                      cpuInfo += "%";
 
-                     long dailyTraffic = TrafficUtil.getTrafficTotal();
+                     long dailyTraffic = info.netDataSize;
                      String netDataInfo = SysUtil.formatFileSizeMb(dailyTraffic);
 
                      if(mResCallBack != null){
@@ -100,6 +100,7 @@ class ResManager implements BaseHandler.HandleCallBack{
                      TrafficUtil.saveTrafficAll(traffic);
 
                      SysUtil.MemoryInfo info =  mSysUtil.loadAppProcess();
+                     info.netDataSize = TrafficUtil.getTrafficTotal();
                      Bundle bundle = new Bundle();
                      bundle.putParcelable("data", info);
                      Message message = mHandler.obtainMessage(2);
