@@ -32,8 +32,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import static java.lang.Thread.sleep;
-
 @Singleton
 public class IpfsAPIRPCImpl implements IpfsAPI {
 
@@ -46,6 +44,8 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
     private PendingState pendingState;
 
     private static final long RECONNECT_IPFS_DAEMON_DURATION = 3000;
+
+    private static final int HASH_PAIR_CID_INTERVAL = 144 * 3;
 
     private static final String LOCAL_IPFS = "/ip4/127.0.0.1/tcp/5001";
 
@@ -108,6 +108,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
         @Override
         public void run() {
             try {
+                logger.info("Start to sub from topic:[idc].");
                 ipfs.pubsub.sub("idc", hashcQueue::add, x -> logger.error(x.getMessage(), x));
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
@@ -122,6 +123,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
         @Override
         public void run() {
             try {
+                logger.info("Start to sub from topic:[idl].");
                 ipfs.pubsub.sub("idl", hashlQueue::add, x -> logger.error(x.getMessage(), x));
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
@@ -132,10 +134,10 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
         }
     };
 
-    private Thread blockChainProcessThread = null;// new Thread(blockChainProcessSubscribe, "blockChainProcessThread");
-    private Thread blockChainSubThread = null;// new Thread(blockChainSubscribe, "blockChainSubThread");
-    private Thread transactionListProcessThread = new Thread(transactionListProcessSubscribe, "transactionListProcessThread");
-    private Thread transactionListSubThread = new Thread(transactionListSubscribe, "transactionListSubThread");
+    private Thread blockChainProcessThread = null;
+    private Thread blockChainSubThread = null;
+    private Thread transactionListProcessThread = null;
+    private Thread transactionListSubThread = null;
 
     /**
      * Queue with new blocks forged.
@@ -237,19 +239,19 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
 
     public void startDownload() {
         try {
-//            if (!blockChainProcessThread.isAlive()) {
+            if (null == blockChainProcessThread || !blockChainProcessThread.isAlive()) {
                 blockChainProcessThread = new Thread(blockChainProcessSubscribe, "blockChainProcessThread");
                 blockChainProcessThread.start();
-//            }
-//            if (!blockChainSubThread.isAlive()) {
+            }
+            if (null == blockChainSubThread || !blockChainSubThread.isAlive()) {
                 blockChainSubThread = new Thread(blockChainSubscribe, "blockChainSubThread");
                 blockChainSubThread.start();
-//            }
+            }
         } catch (Exception e) {
             if (isDaemonDisconnected(e)) {
                 onIpfsDaemonDisconnected();
                 try {
-                    sleep(5000);
+                    Thread.sleep(5000);
                 } catch (Exception ex) {
                     logger.error(ex.getMessage(), e);
                 }
@@ -472,9 +474,10 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
 
             //sleep 1s
             try {
-                sleep(1000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
-                logger.error(e.getMessage(), e);
+                logger.info("-----interrupt-----");
+                logger.info(e.getMessage(), e);
                 Thread.currentThread().interrupt();
             }
         }
@@ -524,9 +527,10 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
 
             //sleep 1s
             try {
-                sleep(1000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
-                logger.error(e.getMessage(), e);
+                logger.info("-----interrupt-----");
+                logger.info(e.getMessage(), e);
                 Thread.currentThread().interrupt();
             }
         }
@@ -560,7 +564,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                 if (Thread.currentThread().isInterrupted()) {
                     return;
                 }
-                int index = (int) currentNumber / (144 * 3);
+                int index = (int) currentNumber / (HASH_PAIR_CID_INTERVAL);
                 if (index > cidList.size() - 1) {
                     logger.info("index {} is out of cid list size {}", index, cidList.size());
                     break;
@@ -653,15 +657,15 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                     block.setNumber(hashPair.getNumber());
                     list.add(block);
 //                    while (queue.getBlockQueueSize() > 100) {
-//                        sleep(1000);
+//                        Thread.sleep(1000);
 //                    }
                     while (queue.getBlockQueueSize() > 0) {
-                        sleep(10);
+                        Thread.sleep(10);
                     }
                     queue.addList(list, new byte[0]);
                 }
                 //wait to verify
-                sleep(500);
+                Thread.sleep(500);
                 //get best block info
                 bestBlock = blockchain.getBestBlock();
                 currentNumber = bestBlock.getNumber();
@@ -673,11 +677,11 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                 logger.info("syncing...");
                 counter = 0;
             } else { //sync done
-                if (!transactionListProcessThread.isAlive()) {
+                if (null == transactionListProcessThread || !transactionListProcessThread.isAlive()) {
                     transactionListProcessThread = new Thread(transactionListProcessSubscribe, "transactionListProcessThread");
                     transactionListProcessThread.start();
                 }
-                if (!transactionListSubThread.isAlive()) {
+                if (null == transactionListSubThread || !transactionListSubThread.isAlive()) {
                     transactionListSubThread = new Thread(transactionListSubscribe, "transactionListSubThread");
                     transactionListSubThread.start();
                 }
@@ -689,10 +693,12 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
             }
 
         } catch (InterruptedException e) {
-            logger.error(e.getMessage(), e);
+            logger.info("-----interrupt-----");
+            logger.info(e.getMessage(), e);
             Thread.currentThread().interrupt();
         } catch (ClosedByInterruptException e) {
-            logger.error(e.getMessage(), e);
+            logger.info("-----interrupt-----");
+            logger.info(e.getMessage(), e);
             Thread.currentThread().interrupt();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
