@@ -630,10 +630,10 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                         logger.info("Number :[{}], remote block hash :[{}], local block hash :[{}]",
                                 hashPair.getNumber(), Hex.toHexString(blockRemote.getHash()),
                                 Hex.toHexString(blockLocal.getHash()));
+                        hashPairList.add(hashPair);
                         multihash = hashPair.getPreviousHashPairCid();
                         hashPairRlp = ipfs.block.get(multihash);
                         hashPair = new HashPair(hashPairRlp);
-                        hashPairList.add(hashPair);
 
                         blockRemoteBytes = ipfs.block.get(hashPair.getBlockCid());
                         blockRemote = new Block(blockRemoteBytes, true);
