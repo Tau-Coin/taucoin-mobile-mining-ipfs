@@ -302,9 +302,7 @@ public class SyncQueue {
 
                     // Add this block into block queue, and try to add his parent
                     blockQueue.add(wrapper);
-                    if (!tryGapRecoveryAndVerify(wrapper)) {
-                        rollbackBlockQueue();
-                    }
+                    tryGapRecovery(wrapper);
 
                     try {
                         Thread.sleep(2000);
@@ -441,6 +439,8 @@ public class SyncQueue {
                 return ((BlockQueueFileSys)blockQueue).reloadBlock(expectedEndNumber);
             }
         }
+
+        // TODO: how to recover gap for ipfs solution?
 
         return false;
     }
