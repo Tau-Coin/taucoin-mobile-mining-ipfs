@@ -200,7 +200,7 @@ public class MMKVIndexedBlockStore implements BlockStore {
 
         //save block and hash pair
         blocksCache.put(new ByteArrayWrapper(block.getHash()), block.getEncoded());
-        blocksCache.put(new ByteArrayWrapper(hashPair.getHash()), hashPair.getEncoded());
+        blocksCache.put(new ByteArrayWrapper(hashPair.getCid().toBytes()), hashPair.getEncoded());
         //save index info
         indexCache.put(block.getNumber(), blockInfos);
         index.put(block.getNumber(), blockInfos);

@@ -130,6 +130,7 @@ public class TaucoinModule {
     BlockStore provideBlockStore(MapDBFactory mapDBFactory) {
         //OrmLiteBlockStoreDatabase database = OrmLiteBlockStoreDatabase.getHelper(context);
         //return new InMemoryBlockStore(database, storeAllBlocks);
+/*
         if (sBlockStore != null) {
             return sBlockStore;
         }
@@ -160,8 +161,9 @@ public class TaucoinModule {
         sBlockStore = indexedBlockStore;
 
         return sBlockStore;
+*/
         //return new MemoryIndexedBlockStore();
-//        return new MMKVIndexedBlockStore();
+        return new MMKVIndexedBlockStore();
     }
 
     @Provides
