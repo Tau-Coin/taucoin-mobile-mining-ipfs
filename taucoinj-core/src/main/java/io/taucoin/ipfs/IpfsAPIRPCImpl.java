@@ -573,13 +573,15 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
             HashPair latestHashPair = new HashPair(latestHashPairRlpEncoded);
             byte[] latestBlockRlp = ipfs.block.get(latestHashPair.getBlockCid());
             Block latestBlock = new Block(latestBlockRlp, true);
-            if (blockchain.isBlockExist(latestBlock.getHash())) {
-                logger.info("Remote chain is not best chain. Remote best block hash is [{}].",
-                        Hex.toHexString(latestBlock.getHash()));
-                return;
-            }
             //get best block info
             Block bestBlock = blockchain.getBestBlock();
+            if (blockchain.isBlockExist(latestBlock.getHash()) &&
+                    !Arrays.equals(bestBlock.getHash(), latestBlock.getHash())) {
+                logger.info("Remote chain is not best chain. Best block from remote and local are not equal.");
+                logger.info("Remote best block hash [{}], local best block hash [{}].",
+                        Hex.toHexString(latestBlock.getHash()), Hex.toHexString(bestBlock.getHash()));
+                return;
+            }
             long currentNumber = bestBlock.getNumber();
             logger.info("current block number:{}, hash:{}, cid:{}",
                     currentNumber, Hex.toHexString(bestBlock.getHash()), bestBlock.getCid().toString());
