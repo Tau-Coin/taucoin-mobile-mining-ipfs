@@ -63,8 +63,8 @@ public class BlockForger {
 
     private Object pullTxPoolLock = new Object();
 
-    // Indicate whether pulling pool tx is successful or not.
-    private boolean txsGot = false;
+    // Indicate whether sync Done.
+    private boolean syncDone = false;
 
     // Sync with remote peer.
     private final Object syncLock = new Object();
@@ -186,14 +186,14 @@ public class BlockForger {
     }
 
     private void onBlockConnected(Block newBlock) {
-        logger.debug("On block {} {} connected, remote block {}",
-                newBlock.getNumber(), Hex.toHexString(newBlock.getHash()),
-                Hex.toHexString(chainInfoManager.getCurrentBlockHash()));
+        logger.debug("On block {} {} connected",
+                newBlock.getNumber(), Hex.toHexString(newBlock.getHash()));
 
         // If forging is running and current block is sync done with remote peer,
         // wakeup forging thread.
         if (isForging() && isWaitingSyncDone.get()) {
-            notifySyncDone();
+            //notifySyncDone();
+            //notifyFireNext();
         }
     }
 
@@ -425,14 +425,12 @@ public class BlockForger {
 
     private void resetPullTxPoolFlag() {
         synchronized(pullTxPoolLock) {
-            txsGot = false;
         }
     }
 
     private void waitForPullTxPool() throws InterruptedException {
         logger.info("Wait for pulling pool txs");
         synchronized(pullTxPoolLock) {
-            txsGot = false;
             //pullTxPoolLock.wait(PULL_TX_POOL_TIMEOUT);
         }
     }
@@ -440,28 +438,38 @@ public class BlockForger {
     public void notifyPullTxPoolFinished() {
         logger.info("Pulling pool txs finished");
         synchronized(pullTxPoolLock) {
-            txsGot = true;
             //pullTxPoolLock.notify();
         }
     }
 
     private void waitForSyncDone() throws InterruptedException {
-        logger.info("Wait for sync done");
-
-        synchronized(syncLock) {
-            isWaitingSyncDone.set(true);
-            syncLock.wait();
-            isWaitingSyncDone.set(false);
+        if(!syncDone) {
+            synchronized (syncLock) {
+                isWaitingSyncDone.set(true);
+                logger.info("Wait for sync done");
+                syncLock.wait();
+                isWaitingSyncDone.set(false);
+            }
         }
     }
 
     private void notifySyncDone() {
-        logger.info("notify sync done");
-        synchronized(syncLock) {
-            syncLock.notify();
+        if (!syncDone) {
+            synchronized (syncLock) {
+                logger.info("notify sync done");
+                syncLock.notify();
+                syncDone = true;
+            }
         }
     }
 
+    private void notifyFireNext() {
+        if(syncDone) {
+            synchronized (syncLock) {
+                syncLock.notify();
+            }
+        }
+    }
     // Forge task implementation.
     private static class ForgeTask implements Runnable, ForgerListener {
 
