@@ -39,10 +39,11 @@ public class SyncQueue {
     private static final int SCAN_BLOCKS_LIMIT = 1000;
 
     // BlockQueueMem implementation configuration.
-    //private static final int BLOCK_QUEUE_LIMIT = 20000;
+    private static final int BLOCK_QUEUE_LIMIT
+        = (int)SystemProperties.CONFIG.rebootCycle();
 
     // BlockQueueImpl implementation configuration.
-    private static final int BLOCK_QUEUE_LIMIT = Integer.MAX_VALUE;
+    //private static final int BLOCK_QUEUE_LIMIT = Integer.MAX_VALUE;
 
     /**
      * Store holding a list of hashes of the heaviest chain on the network,
@@ -138,8 +139,7 @@ public class SyncQueue {
         hashStore = new HashStoreMem();
         headerStore = new HeaderStoreMem();
         blockNumbersStore = new BlockNumberStoreMem();
-        blockQueue = new BlockQueueFileSys(fileBlockStore);
-        ((BlockQueueFileSys)blockQueue).setBlockchain(blockchain);
+        blockQueue = new BlockQueueMem();
 
         hashStore.open();
         headerStore.open();
@@ -437,7 +437,9 @@ public class SyncQueue {
         logger.warn("Try gap recovery from {} end {}", bestBlockNumber + 1, expectedEndNumber);
 
         if (expectedEndNumber > bestBlockNumber) {
-            return ((BlockQueueFileSys)blockQueue).reloadBlock(expectedEndNumber);
+            if (blockQueue instanceof BlockQueueFileSys) {
+                return ((BlockQueueFileSys)blockQueue).reloadBlock(expectedEndNumber);
+            }
         }
 
         return false;
@@ -453,7 +455,9 @@ public class SyncQueue {
         logger.warn("Try gap recovery from {} end {}", bestBlockNumber + 1, expectedEndNumber);
 
         if (expectedEndNumber > bestBlockNumber) {
-            ((BlockQueueFileSys)blockQueue).reloadBlock(expectedEndNumber);
+            if (blockQueue instanceof BlockQueueFileSys) {
+                ((BlockQueueFileSys)blockQueue).reloadBlock(expectedEndNumber);
+            }
         }
 
         // Try to peek and verify.
@@ -476,7 +480,9 @@ public class SyncQueue {
         }
 
         long bestNumber = blockchain.getBestBlock().getNumber();
-        ((BlockQueueFileSys)blockQueue).rollbackTo(bestNumber);
+        if (blockQueue instanceof BlockQueueFileSys) {
+            ((BlockQueueFileSys)blockQueue).rollbackTo(bestNumber);
+        }
         syncManager.notifyBlockQueueRollback(bestNumber);
 
         // This block chain service exists and start again.
