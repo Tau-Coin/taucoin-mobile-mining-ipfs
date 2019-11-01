@@ -619,14 +619,16 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
 
                 //make sure that block hash(cid in later) from different branch are equal, or hash pair makes one step forward
                 if (hashPair.getNumber() > 0) {
-                    byte[] blockFromNetBytes = ipfs.block.get(hashPair.getBlockCid());
-                    Block blockFromNet = new Block(blockFromNetBytes, true);
+                    byte[] blockRemoteBytes = ipfs.block.get(hashPair.getBlockCid());
+                    Block blockRemote = new Block(blockRemoteBytes, true);
                     Block blockLocal = bestBlock;
                     //find common fork point
-                    while (!Arrays.equals(blockFromNet.getHash(), blockLocal.getHash())) {
+                    while (!Arrays.equals(blockRemote.getHash(), blockLocal.getHash())) {
                         if (Thread.currentThread().isInterrupted()) {
                             return;
                         }
+                        logger.info("Number :[{}], remote block hash :[{}], local block hash :[{}]",
+                                hashPair.getNumber(), blockRemote.getHash(), blockLocal.getHash());
                         multihash = hashPair.getPreviousHashPairCid();
                         hashPairRlp = ipfs.block.get(multihash);
                         hashPair = new HashPair(hashPairRlp);
@@ -635,9 +637,11 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                         multihash = hashPair.getPreviousHashPairCid();
                         hashPairRlp = ipfs.block.get(multihash);
                         hashPair = new HashPair(hashPairRlp);
-                        blockFromNetBytes = ipfs.block.get(hashPair.getBlockCid());
-                        blockFromNet = new Block(blockFromNetBytes, true);
+                        blockRemoteBytes = ipfs.block.get(hashPair.getBlockCid());
+                        blockRemote = new Block(blockRemoteBytes, true);
 
+                        logger.info("Number :[{}], next remote block hash :[{}], next local block hash :[{}]",
+                                hashPair.getNumber(), blockRemote.getHash(), blockLocal.getPreviousHeaderHash());
                         blockLocal = blockchain.getBlockByHash(blockLocal.getPreviousHeaderHash());
                         if (null == blockLocal) {
                             logger.error("Cannot find common fork point!!!");
