@@ -628,7 +628,8 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                             return;
                         }
                         logger.info("Number :[{}], remote block hash :[{}], local block hash :[{}]",
-                                hashPair.getNumber(), blockRemote.getHash(), blockLocal.getHash());
+                                hashPair.getNumber(), Hex.toHexString(blockRemote.getHash()),
+                                Hex.toHexString(blockLocal.getHash()));
                         multihash = hashPair.getPreviousHashPairCid();
                         hashPairRlp = ipfs.block.get(multihash);
                         hashPair = new HashPair(hashPairRlp);
@@ -641,7 +642,8 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                         blockRemote = new Block(blockRemoteBytes, true);
 
                         logger.info("Number :[{}], next remote block hash :[{}], next local block hash :[{}]",
-                                hashPair.getNumber(), blockRemote.getHash(), blockLocal.getPreviousHeaderHash());
+                                hashPair.getNumber(), Hex.toHexString(blockRemote.getHash()),
+                                Hex.toHexString(blockLocal.getPreviousHeaderHash()));
                         blockLocal = blockchain.getBlockByHash(blockLocal.getPreviousHeaderHash());
                         if (null == blockLocal) {
                             logger.error("Cannot find common fork point!!!");
