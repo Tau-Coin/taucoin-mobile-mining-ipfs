@@ -503,22 +503,21 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
         try {
             Cid cid = Cid.decode(txListCid);
             logger.info("HASHL:{}", cid.toString());
-            Multihash multihash = new Multihash(cid);
-            byte[] rlpEncoded = ipfs.block.get(multihash);
+            byte[] rlpEncoded = ipfs.block.get(cid);
             TransactionCidList transactionCidList = new TransactionCidList(rlpEncoded);
             Multihash txMultihash;
             Transaction tx;
-            HashSet<Transaction> txs = new HashSet<Transaction>();
             for (byte[] txCid : transactionCidList.getTxCidList()) {
                 if (Thread.currentThread().isInterrupted()) {
                     return;
                 }
                 txMultihash = new Multihash(txCid);
                 byte[] txRlp = ipfs.block.get(txMultihash);
+                HashSet<Transaction> txs = new HashSet<Transaction>();
                 tx = new Transaction(txRlp);
                 txs.add(tx);
+                pendingState.addWireTransactions(txs);
             }
-            pendingState.addWireTransactions(txs);
         } catch (ClosedByInterruptException e) {
             logger.error(e.getMessage(), e);
             Thread.currentThread().interrupt();
@@ -675,6 +674,10 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                         return;
                     }
                     hashPair = hashPairList.get(i);
+                    if (hashPair.getNumber() <= queue.getBlockqueueMaxNumber()) {
+                        logger.info("Block [{}] in queue has exited!", hashPair.getNumber());
+                        continue;
+                    }
                     logger.info("block cid:{}", hashPair.getBlockCid().toString());
                     multihash = hashPair.getBlockCid();
                     byte[] blockRlp = ipfs.block.get(multihash);
@@ -684,16 +687,14 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                     block.setNumber(hashPair.getNumber());
                     list.add(block);
                     while (!queue.isMoreBlocksNeeded()) {
-                        logger.info("Block queue is full. Sleep 10s.");
-                        Thread.sleep(10000);
+                        logger.info("Block queue is full. Sleep 60s.");
+                        Thread.sleep(60000);
                     }
 //                    while (queue.getBlockQueueSize() > 0) {
 //                        Thread.sleep(10);
 //                    }
                     queue.addList(list, new byte[0]);
                 }
-                //wait to verify
-                Thread.sleep(500);
                 //get best block info
                 bestBlock = blockchain.getBestBlock();
                 currentNumber = bestBlock.getNumber();
@@ -704,19 +705,25 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
             if (1 == counter) {
                 logger.info("syncing...");
                 counter = 0;
-            } else { //sync done
-                if (null == transactionListProcessThread || !transactionListProcessThread.isAlive()) {
-                    transactionListProcessThread = new Thread(transactionListProcessSubscribe, "transactionListProcessThread");
-                    transactionListProcessThread.start();
-                }
-                if (null == transactionListSubThread || !transactionListSubThread.isAlive()) {
-                    transactionListSubThread = new Thread(transactionListSubscribe, "transactionListSubThread");
-                    transactionListSubThread.start();
-                }
-                if (!isSyncDone) {
-                    logger.info("Send signal: sync done!!!");
-                    isSyncDone = true;
-                    tauListener.onSyncDone();
+            } else {
+                //sync done
+                logger.info("Block chain download is complete.");
+                if (queue.isBlocksEmpty()) {
+                    logger.info("Block chain verification is complete.");
+                    if (null == transactionListProcessThread || !transactionListProcessThread.isAlive()) {
+                        transactionListProcessThread = new Thread(transactionListProcessSubscribe, "transactionListProcessThread");
+                        logger.info("Start Transaction Verification thread.");
+                        transactionListProcessThread.start();
+                    }
+                    if (null == transactionListSubThread || !transactionListSubThread.isAlive()) {
+                        transactionListSubThread = new Thread(transactionListSubscribe, "transactionListSubThread");
+                        transactionListSubThread.start();
+                    }
+                    if (!isSyncDone) {
+                        logger.info("Send signal: sync done!!!");
+                        isSyncDone = true;
+                        tauListener.onSyncDone();
+                    }
                 }
             }
 
