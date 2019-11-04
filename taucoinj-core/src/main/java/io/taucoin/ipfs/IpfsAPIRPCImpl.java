@@ -600,6 +600,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                 byte[] syncHashPairRlpEncoded = ipfs.block.get(multihash);
                 HashPair hashPair = new HashPair(syncHashPairRlpEncoded);
                 List<HashPair> hashPairList = new ArrayList<>();
+                boolean hasInQueue = false;
                 byte[] hashPairRlp;
                 //compare best block number with hash pair number to decide if need to sync
                 while (hashPair.getNumber() > currentNumber) {
@@ -612,6 +613,10 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                             hashPair.getCid().toString(),
                             hashPair.getBlockCid().toString(),
                             hashPair.getPreviousHashPairCid().toString());
+                    if (hashPair.getNumber() <= queue.getBlockqueueMaxNumber()) {
+                        hasInQueue = true;
+                        break;
+                    }
                     hashPairList.add(hashPair);
 //                    cid = hashPair.getPreviousHashPairCid();
 //                    if (cid.toString().compareTo(Constants.GENESIS_HASHPAIR_CID) == 0) {
@@ -624,7 +629,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                 }
 
                 //make sure that block hash(cid in later) from different branch are equal, or hash pair makes one step forward
-                if (hashPair.getNumber() > 0) {
+                if (!hasInQueue && hashPair.getNumber() > 0) {
                     byte[] blockRemoteBytes = ipfs.block.get(hashPair.getBlockCid());
                     Block blockRemote = new Block(blockRemoteBytes, true);
                     Block blockLocal = bestBlock;
@@ -636,6 +641,9 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                         logger.info("Number :[{}], remote block hash :[{}], local block hash :[{}]",
                                 hashPair.getNumber(), Hex.toHexString(blockRemote.getHash()),
                                 Hex.toHexString(blockLocal.getHash()));
+                        if (hashPair.getNumber() <= queue.getBlockqueueMaxNumber()) {
+                            break;
+                        }
                         hashPairList.add(hashPair);
                         multihash = hashPair.getPreviousHashPairCid();
                         hashPairRlp = ipfs.block.get(multihash);
@@ -675,7 +683,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                     }
                     hashPair = hashPairList.get(i);
                     if (hashPair.getNumber() <= queue.getBlockqueueMaxNumber()) {
-                        logger.info("Block [{}] in queue has exited!", hashPair.getNumber());
+//                        logger.info("Block [{}] in queue has exited!", hashPair.getNumber());
                         continue;
                     }
                     logger.info("block cid:{}", hashPair.getBlockCid().toString());
@@ -687,8 +695,8 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                     block.setNumber(hashPair.getNumber());
                     list.add(block);
                     while (!queue.isMoreBlocksNeeded()) {
-                        logger.info("Block queue is full. Sleep 60s.");
-                        Thread.sleep(60000);
+                        logger.info("Block queue is full. Sleep 120s.");
+                        Thread.sleep(120000);
                     }
 //                    while (queue.getBlockQueueSize() > 0) {
 //                        Thread.sleep(10);
