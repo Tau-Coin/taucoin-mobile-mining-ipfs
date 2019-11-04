@@ -617,6 +617,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                         hasInQueue = true;
                         break;
                     }
+                    tauListener.onHashPairSynchronized(hashPair.getNumber());
                     hashPairList.add(hashPair);
 //                    cid = hashPair.getPreviousHashPairCid();
 //                    if (cid.toString().compareTo(Constants.GENESIS_HASHPAIR_CID) == 0) {
@@ -644,6 +645,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                         if (hashPair.getNumber() <= queue.getBlockqueueMaxNumber()) {
                             break;
                         }
+                        tauListener.onHashPairSynchronized(hashPair.getNumber());
                         hashPairList.add(hashPair);
                         multihash = hashPair.getPreviousHashPairCid();
                         hashPairRlp = ipfs.block.get(multihash);
