@@ -42,7 +42,6 @@ public class HashChain {
             byte[][] elements = new byte[hashPairCidList.size()][];
             int i = 0;
             for (byte[] bytes : hashPairCidList) {
-                logger.info("cid:{}", Cid.cast(bytes).toString());
                 elements[i] = RLP.encodeElement(bytes);
                 i++;
             }
@@ -53,7 +52,6 @@ public class HashChain {
     }
 
     private void parseRLP() {
-        logger.info("rlp encode:{}", rlpEncoded);
         RLPList params = RLP.decode2(rlpEncoded);
         RLPList cidList = (RLPList) params.get(0);
         int size = cidList.size();
