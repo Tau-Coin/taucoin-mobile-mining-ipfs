@@ -130,4 +130,8 @@ public class TaucoinListenerAdapter implements TaucoinListener {
     @Override
     public void onIpfsDaemonDead() {
     }
+
+    @Override
+    public void onHashPairSynchronized(long number) {
+    }
 }

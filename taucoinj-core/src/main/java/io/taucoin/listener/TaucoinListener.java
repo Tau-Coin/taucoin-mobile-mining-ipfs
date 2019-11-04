@@ -69,4 +69,6 @@ public interface TaucoinListener {
     void onStatesLoadedFailed(long tagHeight);
 
     void onIpfsDaemonDead();
+
+    void onHashPairSynchronized(long number);
 }

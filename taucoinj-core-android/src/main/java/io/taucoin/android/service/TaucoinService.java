@@ -310,5 +310,10 @@ public class TaucoinService extends Service {
         public void onIpfsDaemonDead() {
             broadcastEvent(EventFlag.EVENT_IPFS_DAEMON_DEAD, new EventData());
         }
+
+        @Override
+        public void onHashPairSynchronized(long number) {
+            broadcastEvent(EventFlag.EVENT_HASHPAIR_SYNCHRONIZED, new HashPairSynchronizedData(number));
+        }
     }
 }

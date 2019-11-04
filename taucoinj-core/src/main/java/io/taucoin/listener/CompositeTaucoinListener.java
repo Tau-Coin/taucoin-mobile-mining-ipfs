@@ -212,4 +212,11 @@ public class CompositeTaucoinListener implements TaucoinListener {
             listener.onIpfsDaemonDead();
         }
     }
+
+    @Override
+    public void onHashPairSynchronized(long number) {
+        for (TaucoinListener listener : listeners) {
+            listener.onHashPairSynchronized(number);
+        }
+    }
 }

@@ -160,5 +160,11 @@ public enum EventFlag {
     /**
      * Ipfs daemon dead.
      */
-    EVENT_IPFS_DAEMON_DEAD
+    EVENT_IPFS_DAEMON_DEAD,
+
+    /**
+     * Hashpair Synchronized.
+     */
+    EVENT_HASHPAIR_SYNCHRONIZED
+
 }
