@@ -18,6 +18,7 @@ package io.taucoin.android.wallet.module.presenter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Parcelable;
 
 import com.github.naturs.logger.Logger;
@@ -45,11 +46,13 @@ import io.taucoin.android.wallet.base.TransmitKey;
 import io.taucoin.android.wallet.module.bean.MessageEvent;
 import io.taucoin.android.wallet.module.service.NotifyManager;
 import io.taucoin.android.wallet.module.service.StateTagManager;
+import io.taucoin.android.wallet.net.callback.TxObserver;
 import io.taucoin.android.wallet.util.EventBusUtil;
 import io.taucoin.android.wallet.util.UserUtil;
 import io.taucoin.android.wallet.module.service.RemoteService;
 import io.taucoin.android.wallet.util.WifiSettings;
 import io.taucoin.core.Transaction;
+import io.taucoin.foundation.net.callback.LogicObserver;
 
 public abstract class ConnectorManager implements ConnectorHandler {
 
@@ -67,6 +70,7 @@ public abstract class ConnectorManager implements ConnectorHandler {
     private int isSyncMe = -1;
     private volatile boolean miningSwitch = false;
     BlockForgeExceptionStopEvent mExceptionStop;
+    LogicObserver<Bundle> mTxObserver;
 
     private final static int CONSOLE_LENGTH = 10000;
     private static final int BOOT_UP_DELAY_INIT_SECONDS = 2;
@@ -303,14 +307,23 @@ public abstract class ConnectorManager implements ConnectorHandler {
         }
     }
 
-    public boolean submitTransaction(Transaction transaction){
+    public void submitTransaction(Transaction transaction){
         Logger.d("submitTransaction");
         io.taucoin.android.interop.Transaction interT = new io.taucoin.android.interop.Transaction(transaction);
         if(mTaucoinConnector != null && isInit()){
             mTaucoinConnector.submitTransaction(mHandlerIdentifier, interT);
-            return true;
         }
-        return false;
+    }
+
+    public void sendTransaction(Transaction transaction, LogicObserver<Bundle> observer){
+        Logger.d("sendTransaction");
+        mTxObserver = observer;
+        submitTransaction(transaction);
+    }
+
+    public void clearSendTxCallback(){
+        Logger.d("clearSendTxCallback");
+        mTxObserver = null;
     }
 
     public void startBlockForging(){

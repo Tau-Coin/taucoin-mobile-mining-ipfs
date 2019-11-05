@@ -310,10 +310,10 @@ public class RemoteConnectorManager extends ConnectorManager implements Connecto
 //                getBlockList(height);
                 break;
             case TaucoinClientMessage.MSG_SUBMIT_TRANSACTION_RESULT:
-//                replyData = message.getData();
-//                replyData.setClassLoader(Transaction.class.getClassLoader());
-//                Transaction transaction = replyData.getParcelable(TransmitKey.RemoteResult.TRANSACTION);
-//                submitTransactionResult(transaction);
+                replyData = message.getData();
+                if(mTxObserver != null ){
+                   mTxObserver.handleData(replyData);
+                }
                 break;
             case TaucoinClientMessage.MSG_CLOSE_DONE:
                 cancelLocalConnector();
