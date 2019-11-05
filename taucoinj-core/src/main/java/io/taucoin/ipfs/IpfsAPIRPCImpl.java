@@ -22,8 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
-import java.net.ConnectException;
-import java.nio.channels.ClosedByInterruptException;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -118,8 +116,8 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                     logger.error(e.getMessage(), e);
                     //just wait for now
 //                    throw new RuntimeException(e);
-                } catch (ConnectException e) {
-                    //re-connect
+                } catch (IOException e) {
+                    //InterruptedIOException、ConnectException、ClosedByInterruptException or others, re-connect
                     logger.error(e.getMessage(), e);
                     onIpfsDaemonDisconnected();
 //                    throw new RuntimeException(e);
@@ -150,8 +148,8 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                     logger.error(e.getMessage(), e);
                     //just wait for now
 //                    throw new RuntimeException(e);
-                } catch (ConnectException e) {
-                    //re-connect
+                } catch (IOException e) {
+                    //InterruptedIOException、ConnectException、ClosedByInterruptException or others, re-connect
                     logger.error(e.getMessage(), e);
                     onIpfsDaemonDisconnected();
 //                    throw new RuntimeException(e);
@@ -525,12 +523,12 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                 logger.error(e.getMessage(), e);
                 //just wait for now
 //                    throw new RuntimeException(e);
-            } catch (ConnectException e) {
-                //re-connect
+            } catch (IOException e) {
+                //InterruptedIOException、ConnectException、ClosedByInterruptException or others, re-connect
                 logger.error(e.getMessage(), e);
                 onIpfsDaemonDisconnected();
 //                    throw new RuntimeException(e);
-            } catch (InterruptedException | ClosedByInterruptException e) {
+            } catch (InterruptedException e) {
                 logger.error(e.getMessage(), e);
                 Thread.currentThread().interrupt();
             } catch (Exception e) {
@@ -580,12 +578,12 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
                 logger.error(e.getMessage(), e);
                 //just wait for now
 //                    throw new RuntimeException(e);
-            } catch (ConnectException e) {
-                //re-connect
+            } catch (IOException e) {
+                //InterruptedIOException、ConnectException、ClosedByInterruptException or others, re-connect
                 logger.error(e.getMessage(), e);
                 onIpfsDaemonDisconnected();
 //                    throw new RuntimeException(e);
-            } catch (InterruptedException | ClosedByInterruptException e) {
+            } catch (InterruptedException e) {
                 logger.info("-----interrupt-----");
                 logger.info(e.getMessage(), e);
                 Thread.currentThread().interrupt();
