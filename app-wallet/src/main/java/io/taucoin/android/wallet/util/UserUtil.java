@@ -561,18 +561,14 @@ public class UserUtil {
             if(ratio > 100){
                 ratio = 100;
             }
-            Logger.e("ratio=%s", ratio);
             tvHashPairSync.setVisibility(View.VISIBLE);
             if(tvHashPairSync.getTag() != null && ratio == StringUtil.getIntTag(tvHashPairSync)){
                 return;
             }
             tvHashPairSync.setTag(ratio);
             String text = tvHashPairSync.getResources().getString(R.string.home_hash_pair_sync);
-            Logger.e("text=%s", text);
             text = String.format(text, ratio);
-            Logger.e("text=%s", text);
             tvHashPairSync.setText(text);
-            Logger.e("success!!!");
         }
     }
 }
