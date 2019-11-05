@@ -9,6 +9,7 @@ import java.lang.Runtime.getRuntime
 class IPFSManager(private var service: Service) {
 
     companion object{
+        var nodeA: String = "/ip4/52.10.204.93/tcp/6001/ipfs/QmNu9vByGwjdnvRuyqTMi35FQvznEQ6qNLVnBFNxvJA2ip"
         var logger: Logger = LoggerFactory.getLogger("ipfs")
         var daemon: Process? = null
 
@@ -80,7 +81,7 @@ class IPFSManager(private var service: Service) {
     }
 
     fun start() {
-        service.exec("init").apply {
+        service.exec("init --profile=lowpower").apply {
             read{
                 logger.info("init=$it")
             }
@@ -109,7 +110,7 @@ class IPFSManager(private var service: Service) {
                     iterator.next()
                     iterator.remove()
                 }
-                val nodeA = json("/ip4/52.10.204.93/tcp/6001/ipfs/QmNu9vByGwjdnvRuyqTMi35FQvznEQ6qNLVnBFNxvJA2ip")
+                val nodeA = json(nodeA)
                 if(nodeA !in methods) methods.add(nodeA)
             }
         }

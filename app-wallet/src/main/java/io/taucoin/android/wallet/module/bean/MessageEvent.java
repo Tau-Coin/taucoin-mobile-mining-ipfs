@@ -25,9 +25,7 @@ public class MessageEvent {
         IRREPARABLE_ERROR,
         APP_BACK_TO_FRONT,
         SWITCH_STOP_MINING,
-
-        PEERS_LIST,
-        HOME_NODE
+        HASH_PAIR_SYNC
     }
     private Object data;
 

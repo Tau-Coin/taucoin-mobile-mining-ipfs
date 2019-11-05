@@ -15,6 +15,7 @@
  */
 package io.taucoin.android.wallet.module.model;
 
+import android.os.Bundle;
 import android.util.ArrayMap;
 
 import com.github.naturs.logger.Logger;
@@ -409,54 +410,72 @@ public class TxModel implements ITxModel {
         String txHash = Hex.toHexString(transaction.getEncoded());
         String txId = transaction.getTxid();
         Logger.d("txId=" + txId  + "\ttxHash=" + txHash);
-        Observable.create((ObservableOnSubscribe<Boolean>) emitter -> {
-            boolean isSuccess = IpfsRPCManager.getInstance().sendTransaction(transaction);
-            emitter.onNext(isSuccess);
-        }).observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(scheduler)
-            .unsubscribeOn(scheduler)
-            .subscribe(new TxObserver<Boolean>() {
+        TxObserver<Boolean> txObserver = new TxObserver<Boolean>() {
 
-                @Override
-                public void handleError(String msg, int msgCode) {
-                    String result = ResourcesUtil.getText(R.string.send_tx_network_error);
-                    handleError(result);
-                    super.handleError(result, msgCode);
-                }
+            @Override
+            public void handleError(String msg, int msgCode) {
+                String result = ResourcesUtil.getText(R.string.send_tx_network_error);
+                handleError(result);
+                super.handleError(result, msgCode);
+            }
 
-                void handleError(String result) {
-                    transactionHistory.setResult(TransmitKey.TxResult.FAILED);
-                    transactionHistory.setMessage(result);
+            void handleError(String result) {
+                transactionHistory.setResult(TransmitKey.TxResult.FAILED);
+                transactionHistory.setMessage(result);
+                insertTransactionHistory(transactionHistory, new LogicObserver<Boolean>() {
+                    @Override
+                    public void handleData(Boolean aBoolean) {
+                        EventBusUtil.post(MessageEvent.EventCode.TRANSACTION);
+                    }
+                });
+                observer.onNext(false);
+            }
+
+            @Override
+            public void handleData(Boolean dataResult) {
+                if(dataResult){
+                    // Enter local transaction pool
+                    Logger.d("sendRawTransaction.handleData=true");
                     insertTransactionHistory(transactionHistory, new LogicObserver<Boolean>() {
                         @Override
                         public void handleData(Boolean aBoolean) {
+                            ToastUtils.showShortToast(R.string.send_tx_success);
                             EventBusUtil.post(MessageEvent.EventCode.TRANSACTION);
+                            EventBusUtil.post(MessageEvent.EventCode.BALANCE);
+                            MiningUtil.checkRawTransaction();
                         }
                     });
-                    observer.onNext(false);
+                    observer.onNext(true);
+                }else{
+                    handleError(null, -1);
                 }
+            }
+        };
 
-                @Override
-                public void handleData(Boolean dataResult) {
-                    if(dataResult){
-                        // Enter local transaction pool
-                        MyApplication.getRemoteConnector().submitTransaction(transaction);
-                        Logger.d("sendRawTransaction.handleData=true");
-                        insertTransactionHistory(transactionHistory, new LogicObserver<Boolean>() {
-                            @Override
-                            public void handleData(Boolean aBoolean) {
-                                ToastUtils.showShortToast(R.string.send_tx_success);
-                                EventBusUtil.post(MessageEvent.EventCode.TRANSACTION);
-                                EventBusUtil.post(MessageEvent.EventCode.BALANCE);
-                                MiningUtil.checkRawTransaction();
+        Observable.create((ObservableOnSubscribe<Boolean>) emitter -> {
+            if(MyApplication.getRemoteConnector().isInit()){
+                MyApplication.getRemoteConnector().sendTransaction(transaction, new LogicObserver<Bundle>(){
+
+                    @Override
+                    public void handleData(Bundle bundle) {
+                        if(bundle != null){
+                            int txResult = bundle.getInt(TransmitKey.RESULT, -1);
+                            String currentTxId = bundle.getString(TransmitKey.ID, "");
+                            if(StringUtil.isSame(currentTxId, txId)){
+                                emitter.onNext(txResult == 0);
+                                MyApplication.getRemoteConnector().clearSendTxCallback();
                             }
-                        });
-                        observer.onNext(true);
-                    }else{
-                        handleError(null, -1);
+                        }
                     }
-                }
-            });
+                });
+            }else{
+                boolean isSuccess = IpfsRPCManager.getInstance().sendTransaction(transaction);
+                emitter.onNext(isSuccess);
+            }
+        }).observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(scheduler)
+            .unsubscribeOn(scheduler)
+            .subscribe(txObserver);
     }
 
     @Override

@@ -29,6 +29,7 @@ import io.taucoin.android.service.events.BlocksDownloadedData;
 import io.taucoin.android.service.events.ChainInfoChangedData;
 import io.taucoin.android.service.events.EventData;
 import io.taucoin.android.service.events.EventFlag;
+import io.taucoin.android.service.events.HashPairSynchronizedData;
 import io.taucoin.android.service.events.MessageEventData;
 import io.taucoin.android.service.events.NetworkTrafficData;
 import io.taucoin.android.service.events.NextBlockForgedPOTDetail;
@@ -264,6 +265,15 @@ public class RemoteConnectorManager extends ConnectorManager implements Connecto
                     case EVENT_IPFS_DAEMON_DEAD:
                         IpfsRPCManager.getInstance().restartIpfsProgress();
                         break;
+                    case EVENT_HASHPAIR_SYNCHRONIZED:
+                        HashPairSynchronizedData hashPairSyncResult = data.getParcelable("data");
+                        if(hashPairSyncResult != null){
+                            logMessage = "event hash pair synchronized=" + hashPairSyncResult.number;
+                            time = hashPairSyncResult.registeredTime;
+                            addLogEntry(time, logMessage);
+                            EventBusUtil.post(MessageEvent.EventCode.HASH_PAIR_SYNC, hashPairSyncResult.number);
+                        }
+                        break;
                 }
                 break;
             case TaucoinClientMessage.MSG_POOL_TXS:
@@ -300,10 +310,10 @@ public class RemoteConnectorManager extends ConnectorManager implements Connecto
 //                getBlockList(height);
                 break;
             case TaucoinClientMessage.MSG_SUBMIT_TRANSACTION_RESULT:
-//                replyData = message.getData();
-//                replyData.setClassLoader(Transaction.class.getClassLoader());
-//                Transaction transaction = replyData.getParcelable(TransmitKey.RemoteResult.TRANSACTION);
-//                submitTransactionResult(transaction);
+                replyData = message.getData();
+                if(mTxObserver != null ){
+                   mTxObserver.handleData(replyData);
+                }
                 break;
             case TaucoinClientMessage.MSG_CLOSE_DONE:
                 cancelLocalConnector();
