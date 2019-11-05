@@ -15,11 +15,14 @@
  */
 package io.taucoin.android.wallet.module.presenter;
 
+import com.github.naturs.logger.Logger;
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 
+import java.util.Iterator;
 import java.util.List;
 
+import io.taucoin.android.ipfs.IPFSManager;
 import io.taucoin.ipfs.node.IpfsHomeNodeInfo;
 import io.taucoin.ipfs.node.IpfsPeerInfo;
 import io.taucoin.android.wallet.module.bean.HelpBean;
@@ -77,6 +80,22 @@ public class AppPresenter {
             @Override
             public void handleData(List<IpfsPeerInfo> peers) {
                 if(mIpfsView != null){
+                    try {
+                        if(peers != null && peers.size() > 0){
+                            Iterator<IpfsPeerInfo> it = peers.iterator();
+                            while (it.hasNext()){
+                                IpfsPeerInfo peerInfo = it.next();
+                                if(IPFSManager.Companion.getNodeA().toLowerCase()
+                                        .contains(peerInfo.getPeerId().toLowerCase())){
+                                    it.remove();
+                                    peers.add(0, peerInfo);
+                                    break;
+                                }
+                            }
+                        }
+                    }catch (Exception e){
+                        Logger.e(e, "getPeersList.handleData is error");
+                    }
                     mIpfsView.loadPeerData(peers);
                 }
             }

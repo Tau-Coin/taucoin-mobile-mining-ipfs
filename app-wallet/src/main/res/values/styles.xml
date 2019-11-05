@@ -139,6 +139,11 @@
         <item name="android:textColor">@color/color_blue</item>
     </style>
 
+    <style name="style_litter_small_blue">
+        <item name="android:textSize">@dimen/dimen_size_10</item>
+        <item name="android:textColor">@color/color_blue</item>
+    </style>
+
     <style name="style_small_blue">
         <item name="android:textSize">@dimen/dimen_size_12</item>
         <item name="android:textColor">@color/color_blue</item>

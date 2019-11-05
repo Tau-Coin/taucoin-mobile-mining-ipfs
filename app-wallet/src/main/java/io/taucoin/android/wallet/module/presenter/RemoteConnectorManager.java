@@ -29,6 +29,7 @@ import io.taucoin.android.service.events.BlocksDownloadedData;
 import io.taucoin.android.service.events.ChainInfoChangedData;
 import io.taucoin.android.service.events.EventData;
 import io.taucoin.android.service.events.EventFlag;
+import io.taucoin.android.service.events.HashPairSynchronizedData;
 import io.taucoin.android.service.events.MessageEventData;
 import io.taucoin.android.service.events.NetworkTrafficData;
 import io.taucoin.android.service.events.NextBlockForgedPOTDetail;
@@ -263,6 +264,15 @@ public class RemoteConnectorManager extends ConnectorManager implements Connecto
                         break;
                     case EVENT_IPFS_DAEMON_DEAD:
                         IpfsRPCManager.getInstance().restartIpfsProgress();
+                        break;
+                    case EVENT_HASHPAIR_SYNCHRONIZED:
+                        HashPairSynchronizedData hashPairSyncResult = data.getParcelable("data");
+                        if(hashPairSyncResult != null){
+                            logMessage = "event hash pair synchronized=" + hashPairSyncResult.number;
+                            time = hashPairSyncResult.registeredTime;
+                            addLogEntry(time, logMessage);
+                            EventBusUtil.post(MessageEvent.EventCode.HASH_PAIR_SYNC, hashPairSyncResult.number);
+                        }
                         break;
                 }
                 break;

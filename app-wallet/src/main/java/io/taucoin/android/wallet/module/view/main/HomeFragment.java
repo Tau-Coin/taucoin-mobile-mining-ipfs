@@ -114,6 +114,8 @@ public class HomeFragment extends BaseFragment implements IHomeView {
     View rlAvgTime;
     @BindView(R.id.tv_hit_tip)
     TextView tvHitTip;
+    @BindView(R.id.tv_hash_pair_sync)
+    TextView tvHashPairSync;
 
     private RewardAdapter minerRewardAdapter;
     private MiningPresenter miningPresenter;
@@ -243,7 +245,12 @@ public class HomeFragment extends BaseFragment implements IHomeView {
                 handleMiningView();
                 break;
             case BLOCK_HEIGHT:
+                handleMiningView(1);
+                break;
             case MINING_SYNC:
+                if(tvHashPairSync != null){
+                    tvHashPairSync.setVisibility(View.GONE);
+                }
                 handleMiningView(1);
                 break;
             case MINING_REWARD:
@@ -278,6 +285,9 @@ public class HomeFragment extends BaseFragment implements IHomeView {
                 break;
             case SWITCH_STOP_MINING:
                 switchStopMining();
+                break;
+            case HASH_PAIR_SYNC:
+                UserUtil.handleHashPairSyncView(object.getData(), tvHashPairSync);
                 break;
             default:
                 break;

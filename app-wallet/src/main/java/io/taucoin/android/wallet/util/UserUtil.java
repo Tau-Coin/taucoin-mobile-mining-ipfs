@@ -551,4 +551,28 @@ public class UserUtil {
         title = String.format(title, UserUtil.getEllipsisAddress());
         tvHitTip.setText(title);
     }
+
+    public static void handleHashPairSyncView(Object data, TextView tvHashPairSync) {
+        if(data != null && tvHashPairSync != null){
+            long number = Long.valueOf(data.toString());
+            double hashPairSize = 432;
+            double ratioValue = number % hashPairSize;
+            int ratio = (int) ((hashPairSize - ratioValue + 1) * 100 / hashPairSize);
+            if(ratio > 100){
+                ratio = 100;
+            }
+            Logger.e("ratio=%s", ratio);
+            tvHashPairSync.setVisibility(View.VISIBLE);
+            if(tvHashPairSync.getTag() != null && ratio == StringUtil.getIntTag(tvHashPairSync)){
+                return;
+            }
+            tvHashPairSync.setTag(ratio);
+            String text = tvHashPairSync.getResources().getString(R.string.home_hash_pair_sync);
+            Logger.e("text=%s", text);
+            text = String.format(text, ratio);
+            Logger.e("text=%s", text);
+            tvHashPairSync.setText(text);
+            Logger.e("success!!!");
+        }
+    }
 }

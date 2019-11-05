@@ -23,6 +23,7 @@
     <string name="home_no_point">No.%s</string>
     <string name="home_total_blocks">Total Blocks</string>
     <string name="home_verify_blocks">Verify Blocks</string>
+    <string name="home_hash_pair_sync">Hash Pair Sync (%d%%)</string>
     <string name="home_verify_percentage">Verify Percentage</string>
     <string name="home_tau_forked">TAU Forks Detected 1 ></string>
     <string name="home_tau_forked_text">TAU Forks Detected</string>
