@@ -215,7 +215,7 @@
                                 android:text="@string/home_verify_blocks"/>
 
                             <TextView
-                                android:visibility="visible"
+                                android:visibility="gone"
                                 android:id="@+id/tv_hash_pair_sync"
                                 style="@style/style_litter_small_blue"
                                 android:layout_width="match_parent"
