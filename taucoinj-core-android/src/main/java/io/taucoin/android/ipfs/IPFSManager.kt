@@ -88,7 +88,7 @@ class IPFSManager(private var service: Service) {
     }
 
     fun start() {
-        service.exec("init").apply {
+        service.exec("init --profile=lowpower").apply {
             read{
                 logger.info("init=$it")
             }
@@ -131,7 +131,7 @@ class IPFSManager(private var service: Service) {
         }
         getRuntime().addShutdownHook(closeChildThread)
 
-        service.exec("daemon --enable-pubsub-experiment").apply {
+        service.exec("daemon --enable-pubsub-experiment --enable-gc").apply {
             daemon = this
             read{
                 logger.info("daemon=$it")
