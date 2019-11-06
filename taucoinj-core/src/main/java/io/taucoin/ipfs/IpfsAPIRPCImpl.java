@@ -1,8 +1,8 @@
 package io.taucoin.ipfs;
 
 import io.ipfs.cid.Cid;
+import io.ipfs.multiaddr.MultiAddress;
 import io.ipfs.multihash.Multihash;
-import io.taucoin.config.Constants;
 import io.taucoin.core.*;
 import io.taucoin.facade.IpfsAPI;
 import io.taucoin.http.tau.message.NewBlockMessage;
@@ -50,6 +50,8 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
 
     private static final String LOCAL_IPFS = "/ip4/127.0.0.1/tcp/5001";
 
+    private static final String BOOTSTRAP = "QmNu9vByGwjdnvRuyqTMi35FQvznEQ6qNLVnBFNxvJA2ip";
+
     // temp home node id, just for test.
     private static final String HOME_NODE_ID = "id";
 
@@ -81,6 +83,43 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
     };
 
     private Thread connectWorker = new Thread(ipfsConnector);
+
+    private Runnable bootstrapTimingConnector = new Runnable() {
+        @Override
+        public void run() {
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    if (bootstrapConnectionChecking()) {
+                        logger.info("Bootstrap is connected.");
+                    } else {
+                        connectToBootstrap();
+                    }
+                } catch (NullPointerException e) {
+                    logger.error(e.getMessage(), e);
+                    //just wait for now
+//                    throw new RuntimeException(e);
+                } catch (IOException e) {
+                    //InterruptedIOException、ConnectException、ClosedByInterruptException or others, re-connect
+                    logger.error(e.getMessage(), e);
+                    onIpfsDaemonDisconnected();
+//                    throw new RuntimeException(e);
+                } catch (Exception e) {
+                    //just wait
+                    logger.error(e.getMessage(), e);
+                }
+
+                //sleep 60 s
+                try {
+                    Thread.sleep(60000);
+                } catch (InterruptedException e) {
+                    logger.info(e.getMessage(), e);
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+    };
+
+    private Thread bootstrapWorker = new Thread(bootstrapTimingConnector);
 
     /**
      * these 2 thread used to publish transaction and block coming from client to reduce the blocking time of main thread.
@@ -211,6 +250,8 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
 
         connectWorker.start();
 
+        bootstrapWorker.start();
+
         /**
          * create above definete thread and start them to loop publish tx and block.
          */
@@ -229,6 +270,29 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
             }
         },"newBlockPublishThread");
         this.blockPubThread.start();
+    }
+
+    private boolean bootstrapConnectionChecking() throws Exception {
+        List<Peer> peerList = ipfs.swarm.peers();
+
+        boolean isConnected = false;
+        for (Peer peer : peerList) {
+            //You'd better get bootstrap id from bootstrap commands
+            if (BOOTSTRAP.compareTo(peer.id.toString()) == 0) {
+                isConnected = true;
+                break;
+            }
+        }
+
+        return isConnected;
+    }
+
+    private void connectToBootstrap() throws Exception {
+        List<MultiAddress> multiAddressList = ipfs.bootstrap.list();
+        for (MultiAddress multiAddress : multiAddressList) {
+            logger.info("Connecting to {}", multiAddress.toString());
+            ipfs.swarm.connect(multiAddress);
+        }
     }
 
     private void connectToIpfs() {
