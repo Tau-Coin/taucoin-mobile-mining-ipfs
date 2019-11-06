@@ -11,6 +11,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileReader
+import java.io.InputStream
 import java.io.InterruptedIOException
 import java.lang.Runtime.getRuntime
 
@@ -77,5 +78,15 @@ fun Process.read(consumer: (String) -> Unit) {
                 stream.bufferedReader().forEachLine { consumer(it) }
             } catch(ex: InterruptedIOException){}
         }
+    }
+}
+
+fun copyFileTo(input: InputStream, file: File) {
+    val output = file.outputStream()
+    try {
+        input.copyTo(output)
+    } finally {
+        input.close()
+        output.close()
     }
 }

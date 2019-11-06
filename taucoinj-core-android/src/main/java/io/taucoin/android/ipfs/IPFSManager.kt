@@ -64,24 +64,31 @@ class IPFSManager(private var service: Service) {
             if(!exists()){
                 mkdirs()
             }
+
+            val swarmFile = service.store["swarm.key"]
+
+            if(!swarmFile.exists()){
+
+            }
+        }
+        val swarmFile = service.store["swarm.key"]
+        swarmFile.apply {
+            delete()
+            createNewFile()
+
+            val keyInput = service.assets.open("swarm.key")
+            copyFileTo(keyInput, this)
         }
 
-        val input = service.assets.open(type)
-        val output = service.bin.outputStream()
-
-        try {
-            input.copyTo(output)
-        } finally {
-            input.close()
-            output.close()
-        }
+        val cpuInput = service.assets.open(type)
+        copyFileTo(cpuInput, service.bin)
 
         service.bin.setExecutable(true)
         logger.info("Installed binary")
     }
 
     fun start() {
-        service.exec("init --profile=lowpower").apply {
+        service.exec("init").apply {
             read{
                 logger.info("init=$it")
             }
