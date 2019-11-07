@@ -133,6 +133,7 @@
                 </RelativeLayout>
 
                 <io.taucoin.android.wallet.widget.ItemLineView
+                    android:visibility="gone"
                     android:id="@+id/item_reset_data"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
