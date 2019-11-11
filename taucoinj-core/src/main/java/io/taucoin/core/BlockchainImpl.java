@@ -307,8 +307,8 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
                 }
 
                 //if (needFlush(block)) {
-                    repository.flush(block.getNumber());
                     blockStore.flush();
+                    repository.flush(block.getNumber());
                     System.gc();
                 //}
 
@@ -528,8 +528,8 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
         storeBlock(block, true);
 
         //if (needFlush(block)) {
-            repository.flush(block.getNumber());
             blockStore.flush();
+            repository.flush(block.getNumber());
             System.gc();
         //}
 
@@ -1218,7 +1218,8 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
             track.commit();
             repository.flush(blockStoreMaxNumber);
         } else if (blockStoreMaxNumber == stateMaxNumber + 1) {
-            // Maybe this condition never happens.
+            // Note: for the based-ipfs solution, this maybe happen.
+            // Because firstly flush blockstore and then flush states db.
             blockStore.delChainBlockByNumber(blockStoreMaxNumber);
         } else {
             String errorStr = String.format(
