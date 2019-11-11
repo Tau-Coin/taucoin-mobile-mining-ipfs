@@ -250,7 +250,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
 
         connectWorker.start();
 
-//        bootstrapWorker.start();
+        bootstrapWorker.start();
 
         /**
          * create above definete thread and start them to loop publish tx and block.
