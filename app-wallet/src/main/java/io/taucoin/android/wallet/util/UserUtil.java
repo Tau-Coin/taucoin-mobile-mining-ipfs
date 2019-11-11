@@ -552,14 +552,22 @@ public class UserUtil {
         tvHitTip.setText(title);
     }
 
-    public static void handleHashPairSyncView(Object data, TextView tvHashPairSync) {
-        if(data != null && tvHashPairSync != null){
+    public static void handleHashPairSyncView(Object data, TextView tvHashPairSync, TextView tvVerify) {
+        if(data != null && tvHashPairSync != null && tvVerify != null){
+            long syncNum = StringUtil.getLongString(StringUtil.getTag(tvVerify));
             long number = Long.valueOf(data.toString());
             double hashPairSize = 432;
             double ratioValue = number % hashPairSize;
-            int ratio = (int) ((hashPairSize - ratioValue + 1) * 100 / hashPairSize);
+            double diffValue = syncNum % hashPairSize;
+            if(diffValue < 0){
+                diffValue = 0;
+            }
+            int ratio = (int) ((hashPairSize - ratioValue + diffValue + 1) * 100 / hashPairSize);
             if(ratio > 100){
                 ratio = 100;
+            }
+            if(ratio < 0){
+                ratio = 0;
             }
             tvHashPairSync.setVisibility(View.VISIBLE);
             if(tvHashPairSync.getTag() != null && ratio == StringUtil.getIntTag(tvHashPairSync)){

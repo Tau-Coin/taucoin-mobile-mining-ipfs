@@ -389,7 +389,7 @@ public class TxService extends Service {
     }
 
     private void getBlockHeightDelay() {
-        Observable.timer(5, TimeUnit.MINUTES)
+        Observable.timer(3, TimeUnit.MINUTES)
             .subscribeOn(Schedulers.io())
             .subscribe(new CommonObserver<Long>() {
                 @Override

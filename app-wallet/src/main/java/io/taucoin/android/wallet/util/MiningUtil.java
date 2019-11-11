@@ -138,14 +138,20 @@ public class MiningUtil {
 
     /**
      * handle upgrade compatibility
-     * only version 1.9.0.3、1.9.0.5、1.9.1、1.9.2
+     * only version name 1.9.0.3、1.9.0.5、1.9.1、1.9.2、1.9.5
+     * only version code 24、26、27、28、31
      * */
     public static void handleUpgradeCompatibility() {
         Context context = MyApplication.getInstance();
+        int versionCode = AppUtil.getVersionCode(context);
+        if(versionCode != 24 && versionCode != 26 && versionCode != 27 &&
+                versionCode != 28 && versionCode != 31){
+            return;
+        }
         String forgingReloadKey = TransmitKey.FORGING_RELOAD + AppUtil.getVersionCode(context);
         boolean isReload = SharedPreferencesHelper.getInstance().getBoolean(forgingReloadKey, false);
         if(!isReload){
-            MiningUtil.clearAndReloadBlocks(null, false, false);
+            MiningUtil.clearAndReloadBlocks(null, false, true);
             SharedPreferencesHelper.getInstance().putBoolean(forgingReloadKey, true);
         }
     }

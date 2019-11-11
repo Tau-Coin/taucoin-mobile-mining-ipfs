@@ -287,7 +287,7 @@ public class HomeFragment extends BaseFragment implements IHomeView {
                 switchStopMining();
                 break;
             case HASH_PAIR_SYNC:
-                UserUtil.handleHashPairSyncView(object.getData(), tvHashPairSync);
+                UserUtil.handleHashPairSyncView(object.getData(), tvHashPairSync, tvVerify);
                 break;
             default:
                 break;
@@ -373,7 +373,7 @@ public class HomeFragment extends BaseFragment implements IHomeView {
         }
 
         if(blockInfo != null){
-            if(handleNextBlock == 1 && blockInfo.getBlockSync() != blockInfo.getBlockHeight()){
+            if(handleNextBlock == 1 && blockInfo.getBlockSync() >= blockInfo.getBlockHeight()){
                 refreshNextBlockView(null);
             }
             long blockHeight = StringUtil.getIntTag(tvNextBlockNo);

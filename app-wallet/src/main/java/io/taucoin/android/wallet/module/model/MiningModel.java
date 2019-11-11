@@ -36,6 +36,7 @@ import io.taucoin.android.wallet.db.entity.KeyValue;
 import io.taucoin.android.wallet.db.util.BlockInfoDaoUtils;
 import io.taucoin.android.wallet.db.util.KeyValueDaoUtils;
 import io.taucoin.android.wallet.module.bean.MinerListBean;
+import io.taucoin.android.wallet.module.service.TxService;
 import io.taucoin.android.wallet.net.callback.TxObserver;
 import io.taucoin.android.wallet.net.service.TransactionService;
 import io.taucoin.android.wallet.util.SharedPreferencesHelper;
@@ -115,6 +116,10 @@ public class MiningModel implements IMiningModel{
             entry = new BlockInfo();
         }
         entry.setBlockSync(blockSync);
+
+        if(blockSync >= entry.getBlockHeight() && entry.getBlockHeight() > 0){
+            TxService.startTxService(TransmitKey.ServiceType.GET_BLOCK_HEIGHT);
+        }
         BlockInfoDaoUtils.getInstance().insertOrReplace(entry);
     }
 
