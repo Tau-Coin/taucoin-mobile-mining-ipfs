@@ -276,11 +276,13 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
         List<Peer> peerList = ipfs.swarm.peers();
 
         boolean isConnected = false;
-        for (Peer peer : peerList) {
-            //You'd better get bootstrap id from bootstrap commands
-            if (BOOTSTRAP.compareTo(peer.id.toString()) == 0) {
-                isConnected = true;
-                break;
+        if (null != peerList) {
+            for (Peer peer : peerList) {
+                //You'd better get bootstrap id from bootstrap commands
+                if (BOOTSTRAP.compareTo(peer.id.toString()) == 0) {
+                    isConnected = true;
+                    break;
+                }
             }
         }
 
@@ -289,9 +291,13 @@ public class IpfsAPIRPCImpl implements IpfsAPI {
 
     private void connectToBootstrap() throws Exception {
         List<MultiAddress> multiAddressList = ipfs.bootstrap.list();
-        for (MultiAddress multiAddress : multiAddressList) {
-            logger.info("Connecting to {}", multiAddress.toString());
-            ipfs.swarm.connect(multiAddress);
+        if (null != multiAddressList) {
+            for (MultiAddress multiAddress : multiAddressList) {
+                logger.info("Connecting to {}", multiAddress.toString());
+                ipfs.swarm.connect(multiAddress);
+            }
+        } else {
+            logger.info("Bootstrap list is null!");
         }
     }
 
