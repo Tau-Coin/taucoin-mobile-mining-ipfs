@@ -385,6 +385,10 @@ public class UserUtil {
         if(blockInfo == null || tvNextBlockNo == null){
             return;
         }
+        long oldBlockHeight = StringUtil.getIntTag(tvNextBlockNo);
+        if(oldBlockHeight != 0 && oldBlockHeight > blockInfo.getBlockHeight()){
+            return;
+        }
         long nextBlockNo = blockInfo.getBlockHeight() + 1;
         String nextBlockNoStr = FmtMicrometer.fmtPower(nextBlockNo);
         tvNextBlockNo.setText(nextBlockNoStr);
