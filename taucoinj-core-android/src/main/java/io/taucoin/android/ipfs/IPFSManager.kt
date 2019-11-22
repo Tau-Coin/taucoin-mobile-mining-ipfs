@@ -9,7 +9,7 @@ import java.lang.Runtime.getRuntime
 class IPFSManager(private var service: Service) {
 
     companion object{
-        var nodeA: String = "/ip4/52.10.204.93/tcp/6001/ipfs/QmNu9vByGwjdnvRuyqTMi35FQvznEQ6qNLVnBFNxvJA2ip"
+        var nodeA: String = "/ip4/52.10.109.120/tcp/6001/ipfs/QmQkUWojrd5do1n5seLt5wr85iBRzcLjbJs16SFXfuguFN"
         var logger: Logger = LoggerFactory.getLogger("ipfs")
         var daemon: Process? = null
 
