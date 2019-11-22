@@ -120,6 +120,9 @@ class IPFSManager(private var service: Service) {
                 val nodeA = json(nodeA)
                 if(nodeA !in methods) methods.add(nodeA)
             }
+            obj("Swarm").addProperty("EnableRelayHop", true)
+            obj("Swarm").addProperty("EnableAutoRelay", true)
+            obj("Swarm").addProperty("EnableAutoNATService", true)
         }
 
         val closeChildThread = object : Thread() {
