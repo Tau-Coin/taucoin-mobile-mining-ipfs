@@ -23,6 +23,9 @@ public class IpfsPeerInfo {
         init();
         parseMultiAddress(peer.address);
         parsePeerId(peer.id);
+
+        // Temp solution just for test
+        this.peerId = peer.toString();
     }
 
     public String getHost() {
