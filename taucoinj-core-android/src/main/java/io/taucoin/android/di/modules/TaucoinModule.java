@@ -317,8 +317,9 @@ public class TaucoinModule {
 
     @Provides
     @Singleton
-    IpfsAPI provideIpfsAPI(Blockchain blockchain, SyncQueue queue, PendingState pendingState, TaucoinListener tauListener) {
-        return new IpfsAPIRPCImpl(blockchain, queue, pendingState, tauListener);
+    IpfsAPI provideIpfsAPI(Blockchain blockchain, SyncQueue queue, PendingState pendingState,
+                           BlockForger blockForger, TaucoinListener tauListener) {
+        return new IpfsAPIRPCImpl(blockchain, queue, pendingState, blockForger, tauListener);
     }
 
     @Provides
