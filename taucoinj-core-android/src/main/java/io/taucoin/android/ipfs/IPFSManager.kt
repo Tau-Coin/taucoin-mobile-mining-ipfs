@@ -9,7 +9,7 @@ import java.lang.Runtime.getRuntime
 class IPFSManager(private var service: Service) {
 
     companion object{
-        var nodeA: String = "/ip4/52.10.109.120/tcp/6001/ipfs/QmQkUWojrd5do1n5seLt5wr85iBRzcLjbJs16SFXfuguFN"
+        var nodeA: String = "/ip4/52.10.204.93/tcp/6001/ipfs/QmNu9vByGwjdnvRuyqTMi35FQvznEQ6qNLVnBFNxvJA2ip"
         var logger: Logger = LoggerFactory.getLogger("ipfs")
         var daemon: Process? = null
 
@@ -64,19 +64,14 @@ class IPFSManager(private var service: Service) {
             if(!exists()){
                 mkdirs()
             }
-
-            val swarmFile = service.store["swarm.key"]
-
-            if(!swarmFile.exists()){
-
-            }
         }
-        val swarmFile = service.store["swarm.key"]
+        val swarmKey = "swarm.key"
+        val swarmFile = service.store[swarmKey]
         swarmFile.apply {
             delete()
             createNewFile()
 
-            val keyInput = service.assets.open("swarm.key")
+            val keyInput = service.assets.open(swarmKey)
             copyFileTo(keyInput, this)
         }
 
@@ -120,9 +115,6 @@ class IPFSManager(private var service: Service) {
                 val nodeA = json(nodeA)
                 if(nodeA !in methods) methods.add(nodeA)
             }
-            obj("Swarm").addProperty("EnableRelayHop", true)
-            obj("Swarm").addProperty("EnableAutoRelay", true)
-            obj("Swarm").addProperty("EnableAutoNATService", true)
         }
 
         val closeChildThread = object : Thread() {

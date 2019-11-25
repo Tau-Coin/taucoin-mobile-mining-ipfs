@@ -248,7 +248,7 @@ public class HomeFragment extends BaseFragment implements IHomeView {
                 handleMiningView(1);
                 break;
             case MINING_SYNC:
-                if(tvHashPairSync != null){
+                if(tvHashPairSync != null && StringUtil.getIntTag(tvHashPairSync) == 100){
                     tvHashPairSync.setVisibility(View.GONE);
                 }
                 handleMiningView(1);

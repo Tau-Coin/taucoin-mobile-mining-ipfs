@@ -25,7 +25,7 @@ public class IpfsPeerInfo {
         parsePeerId(peer.id);
 
         // Temp solution just for test
-        this.peerId = peer.toString();
+//        this.peerId = peer.toString();
     }
 
     public String getHost() {
