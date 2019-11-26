@@ -266,10 +266,8 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
         this.connectWorker = new Thread(ipfsConnector, "IPFSConnector");
         this.connectWorker.start();
 
-        if (null == bootstrapWorker) {
+        if (null == bootstrapWorker || !bootstrapWorker.isAlive()) {
             bootstrapWorker = new Thread(bootstrapTimingConnector);
-        }
-        if (!bootstrapWorker.isAlive()) {
             bootstrapWorker.start();
         }
 
