@@ -253,6 +253,11 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
 
     private void init() {
         tryToConnectToIpfsDaemon();
+
+        if (null == bootstrapWorker || !bootstrapWorker.isAlive()) {
+            bootstrapWorker = new Thread(bootstrapTimingConnector);
+            bootstrapWorker.start();
+        }
     }
 
     private void tryToConnectToIpfsDaemon() {
@@ -265,11 +270,6 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
 
         this.connectWorker = new Thread(ipfsConnector, "IPFSConnector");
         this.connectWorker.start();
-
-        if (null == bootstrapWorker || !bootstrapWorker.isAlive()) {
-            bootstrapWorker = new Thread(bootstrapTimingConnector);
-            bootstrapWorker.start();
-        }
 
         /**
          * create above definete thread and start them to loop publish tx and block.
