@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -138,6 +139,15 @@ public class HomeFragment extends BaseFragment implements IHomeView {
         TxService.startTxService(TransmitKey.ServiceType.GET_INFO);
         TxService.startTxService(TransmitKey.ServiceType.GET_BLOCK_HEIGHT);
         return view;
+    }
+
+    @OnCheckedChanged({R.id.iv_mining_switch})
+    public void OnMiningSwitch(boolean isChecked) {
+        String miningState = isChecked ? TransmitKey.MiningState.Start : TransmitKey.MiningState.Stop;
+        NotifyManager.NotifyData notifyData = NotifyManager.getInstance().getNotifyData();
+        if(notifyData != null){
+            notifyData.miningState = miningState;
+        }
     }
 
     @OnClick({R.id.iv_mining_switch, R.id.cb_wifi_only, R.id.iv_right,
@@ -265,7 +275,7 @@ public class HomeFragment extends BaseFragment implements IHomeView {
                 }
                 break;
             case APPLICATION_INFO:
-                UserUtil.setApplicationInfo(ivMiningSwitch, tvCPU, tvMemory, tvDataStorage, tvStorage, object.getData());
+                UserUtil.setApplicationInfo(tvCPU, tvMemory, tvDataStorage, tvStorage, object.getData());
                 break;
             case MINING_INCOME:
                 BlockInfo blockInfo = (BlockInfo) object.getData();
