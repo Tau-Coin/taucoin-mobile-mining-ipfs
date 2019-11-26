@@ -45,7 +45,6 @@ import io.taucoin.manager.WorldManager;
 import io.taucoin.sync2.SyncManager;
 import io.taucoin.sync2.SyncQueue;
 import io.taucoin.sync2.ChainInfoManager;
-import io.taucoin.sync2.PoolSynchronizer;
 
 import java.io.File;
 import java.util.HashMap;
@@ -93,11 +92,11 @@ public class TaucoinModule {
     @Singleton
     WorldManager provideWorldManager(TaucoinListener listener, Blockchain blockchain, Repository repository,
             BlockStore blockStore, SyncManager syncManager, PendingState pendingState,
-            PoolSynchronizer poolSynchronizer, StateLoader stateLoader, IpfsAPI ipfsAPI,
+            StateLoader stateLoader, IpfsAPI ipfsAPI,
             RefWatcher refWatcher) {
 
         return new WorldManager(listener, blockchain, repository, blockStore, syncManager,
-                pendingState, poolSynchronizer, stateLoader, ipfsAPI, refWatcher);
+                pendingState, stateLoader, ipfsAPI, refWatcher);
     }
 
     @Provides
@@ -194,9 +193,9 @@ public class TaucoinModule {
     @Singleton
     SyncManager provideSyncManager(Blockchain blockchain, SyncQueue queue,
             TaucoinListener taucoinListener, ChainInfoManager chainInfoManager,
-            PoolSynchronizer poolSynchronizer, ConnectionManager connectionManager) {
+            ConnectionManager connectionManager) {
         return new SyncManager(blockchain, queue, taucoinListener,
-                chainInfoManager, poolSynchronizer, connectionManager);
+                chainInfoManager, connectionManager);
     }
 
     @Provides
@@ -306,13 +305,6 @@ public class TaucoinModule {
     @Singleton
     ConnectionManager provideConnectionManager() {
         return new ConnectionManager();
-    }
-
-    @Provides
-    @Singleton
-    PoolSynchronizer providePoolSynchronizer(TaucoinListener listener,
-            BlockForger blockForger, PendingState pendingState) {
-        return new PoolSynchronizer(listener, blockForger, pendingState);
     }
 
     @Provides

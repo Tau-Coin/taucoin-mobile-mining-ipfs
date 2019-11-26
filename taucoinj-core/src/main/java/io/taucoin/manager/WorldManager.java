@@ -11,7 +11,6 @@ import io.taucoin.listener.CompositeTaucoinListener;
 import io.taucoin.listener.TaucoinListener;
 import io.taucoin.net.client.PeerClient;
 import io.taucoin.sync2.SyncManager;
-import io.taucoin.sync2.PoolSynchronizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
@@ -48,8 +47,6 @@ public class WorldManager {
 
     private PendingState pendingState;
 
-    private PoolSynchronizer poolSynchronizer;
-
     private StateLoader stateLoader;
 
     private RefWatcher refWatcher;
@@ -66,7 +63,7 @@ public class WorldManager {
     public WorldManager(TaucoinListener listener, Blockchain blockchain, Repository repository
                         , BlockStore blockStore, SyncManager syncManager
                         , PendingState pendingState
-                        , PoolSynchronizer poolSynchronizer, StateLoader stateLoader
+                        , StateLoader stateLoader
                         , IpfsAPI ipfsAPI, RefWatcher refWatcher) {
         logger.info("World manager instantiated");
         this.listener = listener;
@@ -75,7 +72,6 @@ public class WorldManager {
         this.blockStore = blockStore;
         this.syncManager = syncManager;
         this.pendingState = pendingState;
-        this.poolSynchronizer = poolSynchronizer;
         this.stateLoader = stateLoader;
         this.ipfsAPI = ipfsAPI;
         this.refWatcher = refWatcher;
@@ -275,7 +271,6 @@ public class WorldManager {
         stopPeerDiscovery();
         stopSync();
 
-        poolSynchronizer.close();
         syncManager.close();
         repository.close();
         blockchain.close();
@@ -287,6 +282,5 @@ public class WorldManager {
         refWatcher.watch(blockStore);
         refWatcher.watch(syncManager);
         refWatcher.watch(pendingState);
-        refWatcher.watch(poolSynchronizer);
     }
 }
