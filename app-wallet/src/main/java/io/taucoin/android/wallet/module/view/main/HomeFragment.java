@@ -265,7 +265,7 @@ public class HomeFragment extends BaseFragment implements IHomeView {
                 }
                 break;
             case APPLICATION_INFO:
-                UserUtil.setApplicationInfo(tvCPU, tvMemory, tvDataStorage, tvStorage, object.getData());
+                UserUtil.setApplicationInfo(ivMiningSwitch, tvCPU, tvMemory, tvDataStorage, tvStorage, object.getData());
                 break;
             case MINING_INCOME:
                 BlockInfo blockInfo = (BlockInfo) object.getData();

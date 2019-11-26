@@ -186,10 +186,6 @@ public class NotifyManager {
         if(mService == null){
             return;
         }
-        KeyValue keyValue = MyApplication.getKeyValue();
-        if(keyValue != null && StringUtil.isNotEmpty(keyValue.getMiningState())){
-            mNotifyData.miningState = keyValue.getMiningState();
-        }
         sendNotify(mService, mBuilder, mNotifyData);
         MessageEvent messageEvent = new MessageEvent();
         messageEvent.setData(mNotifyData);
@@ -374,7 +370,7 @@ public class NotifyManager {
         public String memorySize;
         public String netDataSize;
         public String dataSize;
-        String miningState;
+        public String miningState;
 
         NotifyData() {}
 
