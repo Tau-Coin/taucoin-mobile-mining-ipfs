@@ -508,9 +508,6 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
 
         try {
             swarmPeers = ipfs.swarm.peers();
-        } catch (NullPointerException e) {
-            logger.info("There is no peers!");
-            return peers;
         } catch (IOException ioe) {
             logger.error("getPeers ioexception: {}", ioe);
         } catch (Exception e) {
