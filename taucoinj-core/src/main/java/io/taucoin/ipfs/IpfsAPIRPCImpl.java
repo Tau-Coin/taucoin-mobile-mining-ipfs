@@ -221,7 +221,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
 //    private Thread transactionListProcessThread = null;
 //    private Thread transactionListSubThread = null;
 
-    private static final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+    private static final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(3);
 
     private ScheduledFuture<?> txSubTimer = null;
 
@@ -288,17 +288,22 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
     }
 
     private boolean bootstrapConnectionChecking() throws Exception {
-        List<Peer> peerList = ipfs.swarm.peers();
-
         boolean isConnected = false;
-        if (null != peerList) {
-            for (Peer peer : peerList) {
-                //You'd better get bootstrap id from bootstrap commands
-                if (BOOTSTRAP.compareTo(peer.id.toString()) == 0) {
-                    isConnected = true;
-                    break;
+
+        try {
+            List<Peer> peerList = ipfs.swarm.peers();
+
+            if (null != peerList) {
+                for (Peer peer : peerList) {
+                    //You'd better get bootstrap id from bootstrap commands
+                    if (BOOTSTRAP.compareTo(peer.id.toString()) == 0) {
+                        isConnected = true;
+                        break;
+                    }
                 }
             }
+        } catch (NullPointerException e) {
+            logger.info("No peers!");
         }
 
         return isConnected;
