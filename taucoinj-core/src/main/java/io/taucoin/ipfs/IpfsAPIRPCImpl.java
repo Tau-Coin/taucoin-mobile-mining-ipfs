@@ -731,6 +731,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
                     Hex.toHexString(latestBlock.getHash()), Hex.toHexString(bestBlock.getHash()));
             return;
         }
+        logger.info("remote block number:{}", latestHashPair.getNumber());
         long currentNumber = bestBlock.getNumber();
         logger.info("current block number:{}, hash:{}, cid:{}",
                 currentNumber, Hex.toHexString(bestBlock.getHash()), bestBlock.getCid().toString());
