@@ -20,6 +20,7 @@ import io.ipfs.api.IPFS;
 import io.ipfs.api.Peer;
 
 import io.taucoin.sync2.SyncQueue;
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
@@ -137,8 +138,8 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
     private Thread txPubThread;
     private Thread blockPubThread;
 
-//    private CircularFifoQueue<Object> hashcCircularFifoQueue = new CircularFifoQueue<>(1);
-//    private CircularFifoQueue<Object> hashlCircularFifoQueue = new CircularFifoQueue<>(1);
+    private CircularFifoQueue<Object> hashcCircularFifoQueue = new CircularFifoQueue<>(1);
+    private CircularFifoQueue<Object> hashlCircularFifoQueue = new CircularFifoQueue<>(1);
 
     private Runnable blockChainProcessSubscribe = new Runnable() {
         @Override
@@ -154,74 +155,78 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
         }
     };
 
-//    private Runnable blockChainSubscribe = new Runnable() {
-//        @Override
-//        public void run() {
-//            while (!Thread.currentThread().isInterrupted()) {
-//                try {
-//                    logger.info("Start to sub from topic:[idc].");
-//                    ipfs.pubsub.sub("idc", hashcCircularFifoQueue::add, x -> logger.error(x.getMessage(), x));
-//                } catch (NullPointerException e) {
-//                    logger.error(e.getMessage(), e);
-//                    //just wait for now
-////                    throw new RuntimeException(e);
-//                } catch (IOException e) {
-//                    //InterruptedIOException、ConnectException、ClosedByInterruptException or others, re-connect
-//                    logger.error(e.getMessage(), e);
-//                    onIpfsDaemonDisconnected();
-////                    throw new RuntimeException(e);
-//                } catch (Exception e) {
-//                    //just wait
-//                    logger.error(e.getMessage(), e);
-//                }
-//
-//                //sleep 3 s when exception happens
-//                try {
-//                    Thread.sleep(3000);
-//                } catch (InterruptedException e) {
-//                    logger.info(e.getMessage(), e);
-//                    Thread.currentThread().interrupt();
-//                }
-//            }
-//        }
-//    };
+    private Runnable blockChainSubscribe = new Runnable() {
+        @Override
+        public void run() {
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    awaitInit();
 
-//    private Runnable transactionListSubscribe = new Runnable() {
-//        @Override
-//        public void run() {
-//            while (!Thread.currentThread().isInterrupted()) {
-//                try {
-//                    logger.info("Start to sub from topic:[idl].");
-//                    ipfs.pubsub.sub("idl", hashlCircularFifoQueue::add, x -> logger.error(x.getMessage(), x));
-//                } catch (NullPointerException e) {
-//                    logger.error(e.getMessage(), e);
-//                    //just wait for now
-////                    throw new RuntimeException(e);
-//                } catch (IOException e) {
-//                    //InterruptedIOException、ConnectException、ClosedByInterruptException or others, re-connect
-//                    logger.error(e.getMessage(), e);
-//                    onIpfsDaemonDisconnected();
-////                    throw new RuntimeException(e);
-//                } catch (Exception e) {
-//                    //just wait
-//                    logger.error(e.getMessage(), e);
-//                }
-//
-//                //sleep 3 s when exception happens
-//                try {
-//                    Thread.sleep(3000);
-//                } catch (InterruptedException e) {
-//                    logger.info(e.getMessage(), e);
-//                    Thread.currentThread().interrupt();
-//                }
-//            }
-//        }
-//    };
+                    logger.info("Start to sub from topic:[idc].");
+                    ipfs.pubsub.sub("idc", hashcCircularFifoQueue::add, x -> logger.error(x.getMessage(), x));
+                } catch (NullPointerException e) {
+                    logger.error(e.getMessage(), e);
+                    //just wait for now
+//                    throw new RuntimeException(e);
+                } catch (IOException e) {
+                    //InterruptedIOException、ConnectException、ClosedByInterruptException or others, re-connect
+                    logger.error(e.getMessage(), e);
+                    onIpfsDaemonDisconnected();
+//                    throw new RuntimeException(e);
+                } catch (Exception e) {
+                    //just wait
+                    logger.error(e.getMessage(), e);
+                }
+
+                //sleep 3 s when exception happens
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    logger.info(e.getMessage(), e);
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+    };
+
+    private Runnable transactionListSubscribe = new Runnable() {
+        @Override
+        public void run() {
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    awaitInit();
+
+                    logger.info("Start to sub from topic:[idl].");
+                    ipfs.pubsub.sub("idl", hashlCircularFifoQueue::add, x -> logger.error(x.getMessage(), x));
+                } catch (NullPointerException e) {
+                    logger.error(e.getMessage(), e);
+                    //just wait for now
+//                    throw new RuntimeException(e);
+                } catch (IOException e) {
+                    //InterruptedIOException、ConnectException、ClosedByInterruptException or others, re-connect
+                    logger.error(e.getMessage(), e);
+                    onIpfsDaemonDisconnected();
+//                    throw new RuntimeException(e);
+                } catch (Exception e) {
+                    //just wait
+                    logger.error(e.getMessage(), e);
+                }
+
+                //sleep 3 s when exception happens
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    logger.info(e.getMessage(), e);
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+    };
 
     private Thread blockChainProcessThread = null;
-//    private Thread blockChainSubThread = null;
+    private Thread blockChainSubThread = null;
 //    private Thread transactionListProcessThread = null;
-//    private Thread transactionListSubThread = null;
+    private Thread transactionListSubThread = null;
 
     private static final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(3);
 
@@ -378,12 +383,10 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
                 blockChainProcessThread = new Thread(blockChainProcessSubscribe, "blockChainProcessThread");
                 blockChainProcessThread.start();
             }
-/*
             if (null == blockChainSubThread || !blockChainSubThread.isAlive()) {
                 blockChainSubThread = new Thread(blockChainSubscribe, "blockChainSubThread");
                 blockChainSubThread.start();
             }
-*/
 //        } catch (Exception e) {
 //            if (isDaemonDisconnected(e)) {
 //                onIpfsDaemonDisconnected();
@@ -402,15 +405,15 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
 //        if (null != transactionListProcessThread) {
 //            transactionListProcessThread.interrupt();
 //        }
-//        if (null != transactionListSubThread) {
-//            transactionListSubThread.interrupt();
-//        }
+        if (null != transactionListSubThread) {
+            transactionListSubThread.interrupt();
+        }
         if (null != blockChainProcessThread) {
             blockChainProcessThread.interrupt();
         }
-//        if (null != blockChainSubThread) {
-//            blockChainSubThread.interrupt();
-//        }
+        if (null != blockChainSubThread) {
+            blockChainSubThread.interrupt();
+        }
     }
 
     protected void onIpfsDaemonDisconnected() {
@@ -617,20 +620,21 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
     private void transactionListProcess() {
 //        while (!Thread.currentThread().isInterrupted()) {
             try {
+                logger.info("Waiting to init...");
                 awaitInit();
+                logger.info("Init compete...");
 
-                logger.info("Start to sub from topic:[idl].");
-                Stream<Map<String, Object>> sub = ipfs.pubsub.sub("idc");
-                List<Map> results = sub.limit(1).collect(Collectors.toList());
-                Map msg = results.get(0);
+                if (hashlCircularFifoQueue.size() > 0) {
+                    Map msg = (Map) hashlCircularFifoQueue.poll();
 //                String from = Base58.encode(Base64.getDecoder().decode(msg.get("from").toString()));
 //                String topicId = msg.get("topicIDs").toString();
 //                String seqno = new BigInteger(Base64.getDecoder().decode(msg.get("seqno").toString())).toString();
-                String data = new String(Base64.getDecoder().decode(msg.get("data").toString()));
-                if (pendingState.size() < MAXTNO) {
-                    syncTransactions(data);
-                } else {
-                    logger.info("pendingState size >= {}", MAXTNO);
+                    String data = new String(Base64.getDecoder().decode(msg.get("data").toString()));
+                    if (pendingState.size() < MAXTNO) {
+                        syncTransactions(data);
+                    } else {
+                        logger.info("pendingState size >= {}", MAXTNO);
+                    }
                 }
 
                 //sleep 1s
@@ -639,9 +643,6 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
                 logger.error(e.getMessage(), e);
                 //just wait for now
 //                    throw new RuntimeException(e);
-            } catch (RuntimeException e) {
-                logger.info("Interrupted when sub.");
-                logger.info(e.getMessage(), e);
             } catch (IOException e) {
                 //InterruptedIOException、ConnectException、ClosedByInterruptException or others, re-connect
                 logger.error(e.getMessage(), e);
@@ -649,7 +650,8 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
 //                    throw new RuntimeException(e);
             } catch (InterruptedException e) {
                 logger.error(e.getMessage(), e);
-                Thread.currentThread().interrupt();
+                //no loop no interrupt
+//                Thread.currentThread().interrupt();
             } catch (Exception e) {
                 //just wait
                 logger.error(e.getMessage(), e);
@@ -682,15 +684,14 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
             try {
                 awaitInit();
 
-                logger.info("Start to sub from topic:[idc].");
-                Stream<Map<String, Object>> sub = ipfs.pubsub.sub("idc");
-                List<Map> results = sub.limit(1).collect(Collectors.toList());
-                Map msg = results.get(0);
+                if (hashcCircularFifoQueue.size() > 0) {
+                    Map msg = (Map) hashcCircularFifoQueue.poll();
 //                String from = Base58.encode(Base64.getDecoder().decode(msg.get("from").toString()));
 //                String topicId = msg.get("topicIDs").toString();
 //                String seqno = new BigInteger(Base64.getDecoder().decode(msg.get("seqno").toString())).toString();
-                String data = new String(Base64.getDecoder().decode(msg.get("data").toString()));
-                syncBlockChain(data);
+                    String data = new String(Base64.getDecoder().decode(msg.get("data").toString()));
+                    syncBlockChain(data);
+                }
 
                 //sleep 1s
                 Thread.sleep(1000);
@@ -698,9 +699,6 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
                 logger.error(e.getMessage(), e);
                 //just wait for now
 //                    throw new RuntimeException(e);
-            } catch (RuntimeException e) {
-                logger.info("Interrupted when sub.");
-                logger.info(e.getMessage(), e);
             } catch (IOException e) {
                 //InterruptedIOException、ConnectException、ClosedByInterruptException or others, re-connect
                 logger.error(e.getMessage(), e);
@@ -885,10 +883,10 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
 //                    logger.info("Start Transaction Verification thread.");
 //                    transactionListProcessThread.start();
 //                }
-//                if (null == transactionListSubThread || !transactionListSubThread.isAlive()) {
-//                    transactionListSubThread = new Thread(transactionListSubscribe, "transactionListSubThread");
-//                    transactionListSubThread.start();
-//                }
+                if (null == transactionListSubThread || !transactionListSubThread.isAlive()) {
+                    transactionListSubThread = new Thread(transactionListSubscribe, "transactionListSubThread");
+                    transactionListSubThread.start();
+                }
                 if (!isSyncDone) {
                     logger.info("Send signal: sync done!!!");
                     isSyncDone = true;
