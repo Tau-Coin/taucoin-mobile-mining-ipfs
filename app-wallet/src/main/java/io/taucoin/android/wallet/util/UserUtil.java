@@ -19,7 +19,6 @@ import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.view.View;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.github.naturs.logger.Logger;
@@ -192,17 +191,9 @@ public class UserUtil {
         return String.valueOf(blocks * 5);
     }
 
-    public static void setApplicationInfo(Switch ivMiningSwitch, TextView tvCPU, TextView tvMemory, TextView tvDataStorage, TextView tvStorage, Object data) {
+    public static void setApplicationInfo(TextView tvCPU, TextView tvMemory, TextView tvDataStorage, TextView tvStorage, Object data) {
         try{
             if(data != null){
-                if(ivMiningSwitch != null){
-                    boolean isOn = ivMiningSwitch.isChecked();
-                    String miningState = isOn ? TransmitKey.MiningState.Start : TransmitKey.MiningState.Stop;
-                    NotifyManager.NotifyData notifyData = NotifyManager.getInstance().getNotifyData();
-                    if(notifyData != null){
-                        notifyData.miningState = miningState;
-                    }
-                }
 
                 NotifyManager.NotifyData notifyData = (NotifyManager.NotifyData)data;
                 if(StringUtil.isNotEmpty(notifyData.cpuUsage)){

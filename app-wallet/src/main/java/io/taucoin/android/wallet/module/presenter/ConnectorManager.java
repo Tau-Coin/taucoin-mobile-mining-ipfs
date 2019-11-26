@@ -46,7 +46,6 @@ import io.taucoin.android.wallet.base.TransmitKey;
 import io.taucoin.android.wallet.module.bean.MessageEvent;
 import io.taucoin.android.wallet.module.service.NotifyManager;
 import io.taucoin.android.wallet.module.service.StateTagManager;
-import io.taucoin.android.wallet.net.callback.TxObserver;
 import io.taucoin.android.wallet.util.EventBusUtil;
 import io.taucoin.android.wallet.util.UserUtil;
 import io.taucoin.android.wallet.module.service.RemoteService;

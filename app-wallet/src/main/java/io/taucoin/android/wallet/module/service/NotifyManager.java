@@ -32,9 +32,14 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import com.github.naturs.logger.Logger;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import io.taucoin.android.wallet.R;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import io.taucoin.android.wallet.MyApplication;
 import io.taucoin.android.wallet.base.TransmitKey;
@@ -42,6 +47,7 @@ import io.taucoin.android.wallet.db.entity.KeyValue;
 import io.taucoin.android.wallet.module.bean.MessageEvent;
 import io.taucoin.android.wallet.module.model.MiningModel;
 import io.taucoin.android.wallet.module.view.manage.ImportKeyActivity;
+import io.taucoin.android.wallet.net.callback.CommonObserver;
 import io.taucoin.android.wallet.util.ActivityUtil;
 import io.taucoin.android.wallet.util.DateUtil;
 import io.taucoin.android.wallet.util.EventBusUtil;
@@ -338,11 +344,32 @@ public class NotifyManager {
         }
     }
 
+    private volatile boolean isThrottle = false;
+    private void throttleFirst(){
+        isThrottle = true;
+        Observable.timer(2, TimeUnit.SECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .subscribe(new CommonObserver<Long>() {
+                @Override
+                public void onComplete() {
+                    isThrottle = false;
+                }
+            });
+    }
+
     private void updateMiningState(String serviceType) {
+        if(isThrottle){
+            return;
+        }
+        throttleFirst();
+
         boolean isOn = StringUtil.isSame(serviceType, TransmitKey.MiningState.Start);
         isOn = !isOn;
         String miningState = isOn ? TransmitKey.MiningState.Start : TransmitKey.MiningState.Stop;
-        sendNotify(miningState);
+        if(mNotifyData != null){
+            mNotifyData.miningState = miningState;
+        }
         new MiningModel().updateMiningState(miningState, new LogicObserver<KeyValue>() {
             @Override
             public void handleData(KeyValue keyValue) {
@@ -357,6 +384,7 @@ public class NotifyManager {
                 }else{
                     MyApplication.getRemoteConnector().stopBlockForging();
                 }
+                sendNotify();
                 MessageEvent messageEvent = new MessageEvent();
                 messageEvent.setCode(MessageEvent.EventCode.MINING_NOTIFY);
                 messageEvent.setData(isStart);

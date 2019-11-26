@@ -97,7 +97,6 @@ public class TxService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         MyApplication.getRemoteConnector().restoreConnection();
-        NotifyManager.getInstance().sendNotify(this);
         KeyValue keyValue = MyApplication.getKeyValue();
         if(intent != null){
             String action = intent.getAction();
@@ -165,6 +164,7 @@ public class TxService extends Service {
             }
             Logger.i("TxService onStartCommand, ServiceType=" + serviceType);
         }
+        NotifyManager.getInstance().sendNotify(this);
         return START_NOT_STICKY;
     }
 
