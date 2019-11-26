@@ -186,6 +186,10 @@ public class NotifyManager {
         if(mService == null){
             return;
         }
+        KeyValue keyValue = MyApplication.getKeyValue();
+        if(keyValue != null && StringUtil.isNotEmpty(keyValue.getMiningState())){
+            mNotifyData.miningState = keyValue.getMiningState();
+        }
         sendNotify(mService, mBuilder, mNotifyData);
         MessageEvent messageEvent = new MessageEvent();
         messageEvent.setData(mNotifyData);
