@@ -104,6 +104,8 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
                     Thread.currentThread().interrupt();
                 }
 
+                awaitInit();
+
                 try {
                     if (bootstrapConnectionChecking()) {
                         logger.info("Bootstrap is connected.");
@@ -601,6 +603,8 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
     private void transactionListProcess() {
 //        while (!Thread.currentThread().isInterrupted()) {
             try {
+                awaitInit();
+
                 logger.info("Start to sub from topic:[idl].");
                 Stream<Map<String, Object>> sub = ipfs.pubsub.sub("idc");
                 List<Map> results = sub.limit(1).collect(Collectors.toList());
@@ -662,6 +666,8 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
     private void blockChainProcess() {
         while (!Thread.currentThread().isInterrupted()) {
             try {
+                awaitInit();
+
                 logger.info("Start to sub from topic:[idc].");
                 Stream<Map<String, Object>> sub = ipfs.pubsub.sub("idc");
                 List<Map> results = sub.limit(1).collect(Collectors.toList());
