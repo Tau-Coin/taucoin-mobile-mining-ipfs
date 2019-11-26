@@ -90,7 +90,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
         }
     };
 
-    private Thread connectWorker = new Thread(ipfsConnector);
+    private Thread connectWorker;
 
     private Runnable bootstrapTimingConnector = new Runnable() {
         @Override
@@ -263,7 +263,8 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
 
         isConnecting.set(true);
 
-        connectWorker.start();
+        this.connectWorker = new Thread(ipfsConnector, "IPFSConnector");
+        this.connectWorker.start();
 
         if (null == bootstrapWorker) {
             bootstrapWorker = new Thread(bootstrapTimingConnector);
