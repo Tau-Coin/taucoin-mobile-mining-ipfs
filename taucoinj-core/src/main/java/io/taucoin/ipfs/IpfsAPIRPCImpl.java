@@ -260,6 +260,8 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
             bootstrapWorker = new Thread(bootstrapTimingConnector);
             bootstrapWorker.start();
         }
+
+        startTxBlockDistributeLoop();
     }
 
     private void tryToConnectToIpfsDaemon() {
@@ -272,7 +274,9 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
 
         this.connectWorker = new Thread(ipfsConnector, "IPFSConnector");
         this.connectWorker.start();
+    }
 
+    private void startTxBlockDistributeLoop() {
         /**
          * create above definete thread and start them to loop publish tx and block.
          */
@@ -552,7 +556,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
             try {
                 tx = newTransactions.take();
                 String txPayload = new NewTxMessage(tx).toJsonString();
-                ipfs.pubsub.pub(Topic.getTransactionId(HOME_NODE_ID), txPayload);
+                ipfsPub(Topic.getTransactionId(HOME_NODE_ID), txPayload);
             } catch (InterruptedException e) {
                 break;
             } catch (Exception e) {
@@ -581,7 +585,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
             try {
                 block = newBlocks.take();
                 String blockPayload = new NewBlockMessage(block.getNumber(),block.getCumulativeDifficulty(),block).toJsonString();
-                ipfs.pubsub.pub(Topic.getBlockId(HOME_NODE_ID),blockPayload);
+                ipfsPub(Topic.getBlockId(HOME_NODE_ID),blockPayload);
             } catch (InterruptedException e) {
                 break;
             } catch (Exception e) {
@@ -598,6 +602,16 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
                 }
             }
         }
+    }
+
+    private void ipfsPub(String topic, String payload) throws Exception {
+        if (topic == null || "".equals(topic) || payload == null || "".equals(payload)) {
+            logger.error("pub parameters error: {} {}", topic, payload);
+            return;
+        }
+
+        awaitInit();
+        ipfs.pubsub.pub(topic, payload);
     }
 
     private void transactionListProcess() {
