@@ -96,6 +96,14 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
         @Override
         public void run() {
             while (!Thread.currentThread().isInterrupted()) {
+                //sleep 60 s
+                try {
+                    Thread.sleep(60000);
+                } catch (InterruptedException e) {
+                    logger.info(e.getMessage(), e);
+                    Thread.currentThread().interrupt();
+                }
+
                 try {
                     if (bootstrapConnectionChecking()) {
                         logger.info("Bootstrap is connected.");
@@ -114,14 +122,6 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
                 } catch (Exception e) {
                     //just wait
                     logger.error(e.getMessage(), e);
-                }
-
-                //sleep 60 s
-                try {
-                    Thread.sleep(60000);
-                } catch (InterruptedException e) {
-                    logger.info(e.getMessage(), e);
-                    Thread.currentThread().interrupt();
                 }
             }
         }
