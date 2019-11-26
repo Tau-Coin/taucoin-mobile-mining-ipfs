@@ -127,7 +127,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
         }
     };
 
-    private Thread bootstrapWorker = new Thread(bootstrapTimingConnector);
+    private Thread bootstrapWorker;
 
     /**
      * these 2 thread used to publish transaction and block coming from client to reduce the blocking time of main thread.
@@ -265,7 +265,12 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
 
         connectWorker.start();
 
-        bootstrapWorker.start();
+        if (null == bootstrapWorker) {
+            bootstrapWorker = new Thread(bootstrapTimingConnector);
+        }
+        if (!bootstrapWorker.isAlive()) {
+            bootstrapWorker.start();
+        }
 
         /**
          * create above definete thread and start them to loop publish tx and block.
