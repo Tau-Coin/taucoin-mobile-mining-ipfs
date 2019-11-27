@@ -276,7 +276,7 @@ public class BlockForger {
             nextBlockForgedTimePoint = timePreBlock + timeInterval;
             long sleepTime = nextBlockForgedTimePoint - timeNow;
             logger.debug("Sleeping " + sleepTime + " s before importing...");
-            //fireNextBlockForgedInternal(sleepTime);
+            fireNextBlockForgedInternal(sleepTime);
             fireNextBlockForgedDetail(new NextBlockForgedDetail(baseTarget,
                     new BigInteger(1, generationSignature),
                     bestBlock.getCumulativeDifficulty(), forgingPower, hit,
@@ -293,7 +293,7 @@ public class BlockForger {
             }
         } else {
             logger.info("Forged time has lapsed");
-            //fireNextBlockForgedInternal(0);
+            fireNextBlockForgedInternal(0);
             synchronized (blockchain.getLockObject()) {
                 try {
                     //resetPullTxPoolFlag();
