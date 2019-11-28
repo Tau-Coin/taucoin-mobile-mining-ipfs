@@ -173,7 +173,7 @@ public class MiningUtil {
     }
 
     public static void clearAndReloadBlocks(LogicObserver<Boolean> logicObserver) {
-        clearAndReloadBlocks(logicObserver, true, false);
+        clearAndReloadBlocks(logicObserver, true, true);
     }
 
     private static void clearAndReloadBlocks(LogicObserver<Boolean> logicObserver, boolean isSleep, boolean isReDownload) {
@@ -186,10 +186,10 @@ public class MiningUtil {
                     Thread.sleep(2000);
                 }
                 deleteBlockChainFileDir(isReDownload);
-                int blockSync = BlockInfoDaoUtils.getInstance().reloadBlocks(isReDownload);
-                if(logicObserver == null){
-                    EventBusUtil.post(MessageEvent.EventCode.IRREPARABLE_ERROR, blockSync);
-                }
+//                int blockSync = BlockInfoDaoUtils.getInstance().reloadBlocks(isReDownload);
+//                if(logicObserver == null){
+//                    EventBusUtil.post(MessageEvent.EventCode.IRREPARABLE_ERROR, blockSync);
+//                }
                 emitter.onNext(true);
             }catch (Exception ex){
                 emitter.onNext(false);
