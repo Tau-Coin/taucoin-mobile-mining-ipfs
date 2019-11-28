@@ -21,7 +21,6 @@ import io.taucoin.datasource.KeyValueDataSource;
 import io.taucoin.datasource.mapdb.MapDBFactory;
 import io.taucoin.datasource.mapdb.MapDBFactoryImpl;
 import io.taucoin.db.BlockStore;
-import io.taucoin.db.file.FileBlockStore;
 import io.taucoin.db.IndexedBlockStore;
 import io.taucoin.db.MemoryIndexedBlockStore;
 import io.taucoin.db.RepositoryImpl;
@@ -119,9 +118,9 @@ public class TaucoinModule {
     @Singleton
     io.taucoin.core.Blockchain provideBlockchain(BlockStore blockStore, io.taucoin.core.Repository repository,
             PendingState pendingState, TaucoinListener listener, ChainInfoManager chainInfoManager,
-            FileBlockStore fileBlockStore, RefWatcher refWatcher) {
+            RefWatcher refWatcher) {
         return new BlockchainImpl(blockStore, repository, pendingState, listener,
-                chainInfoManager, fileBlockStore, refWatcher);
+                chainInfoManager, refWatcher);
     }
 
     @Provides
@@ -167,15 +166,9 @@ public class TaucoinModule {
 
     @Provides
     @Singleton
-    FileBlockStore provideFileBlockStore() {
-        return new FileBlockStore();
-    }
-
-    @Provides
-    @Singleton
     StateLoader proviStateLoader(BlockStore blockStore, Repository repository,
-            FileBlockStore fileBlockStore, TaucoinListener listener) {
-        return new StateLoader(blockStore, repository, fileBlockStore, listener);
+            TaucoinListener listener) {
+        return new StateLoader(blockStore, repository, listener);
     }
 
 
@@ -200,9 +193,8 @@ public class TaucoinModule {
 
     @Provides
     @Singleton
-    SyncQueue provideSyncQueue(Blockchain blockchain, MapDBFactory mapDBFactory,
-            FileBlockStore fileBlockStore) {
-        return new SyncQueue(blockchain, mapDBFactory, fileBlockStore);
+    SyncQueue provideSyncQueue(Blockchain blockchain, MapDBFactory mapDBFactory) {
+        return new SyncQueue(blockchain, mapDBFactory);
     }
 
     @Provides

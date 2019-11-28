@@ -53,10 +53,10 @@ public class StateLoader {
 
     @Inject
     public StateLoader(BlockStore blockStore, Repository repository,
-            FileBlockStore fileBlockStore, TaucoinListener listener) {
+            /*FileBlockStore fileBlockStore, */TaucoinListener listener) {
         this.blockStore = blockStore;
         this.repository = repository;
-        this.fileBlockStore = fileBlockStore;
+        //this.fileBlockStore = fileBlockStore;
         this.listener = listener;
     }
 

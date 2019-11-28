@@ -8,7 +8,6 @@ import io.taucoin.core.transaction.TransactionOptions;
 import io.taucoin.core.transaction.TransactionVersion;
 import io.taucoin.datasource.DBCorruptionException;
 import io.taucoin.db.BlockStore;
-import io.taucoin.db.file.FileBlockStore;
 import io.taucoin.debug.RefWatcher;
 import io.taucoin.listener.TaucoinListener;
 import io.taucoin.sync2.ChainInfoManager;
@@ -94,8 +93,6 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
 
     private ChainInfoManager chainInfoManager;
 
-    private FileBlockStore fileBlockStore;
-
     private TransactionExecutor executor;
 
     private StakeHolderIdentityUpdate stakeHolderIdentityUpdate;
@@ -120,14 +117,13 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
     @Inject
     public BlockchainImpl(BlockStore blockStore, Repository repository,
             PendingState pendingState, TaucoinListener listener,
-            ChainInfoManager chainInfoManager, FileBlockStore fileBlockStore,
+            ChainInfoManager chainInfoManager,
             RefWatcher refWatcher) {
         this.blockStore = blockStore;
         this.repository = repository;
         this.pendingState = pendingState;
         this.listener = listener;
         this.chainInfoManager = chainInfoManager;
-        this.fileBlockStore = fileBlockStore;
         this.refWatcher = refWatcher;
         this.executor = new TransactionExecutor(this, listener);
         this.stakeHolderIdentityUpdate = new StakeHolderIdentityUpdate();
@@ -1185,6 +1181,7 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
         // repository state database is updated firstly and then block store.
         // But when app is killed, database consistency maybe happens.
         if (stateMaxNumber == blockStoreMaxNumber + 1) {
+            /*
             // Rollback state database
             BlockWrapper wrapper = fileBlockStore.get(blockStoreMaxNumber + 1);
             if (wrapper == null) {
@@ -1217,6 +1214,7 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
 
             track.commit();
             repository.flush(blockStoreMaxNumber);
+            */
         } else if (blockStoreMaxNumber == stateMaxNumber + 1) {
             // Note: for the based-ipfs solution, this maybe happen.
             // Because firstly flush blockstore and then flush states db.

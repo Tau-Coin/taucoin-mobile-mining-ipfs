@@ -72,9 +72,7 @@ public class TaucoinRemoteService extends TaucoinService {
 
     private ConnectivityManager connectivityManager;
 
-    private RefWatcher refWatcher;
-
-
+    //private RefWatcher refWatcher;
 
     public TaucoinRemoteService() {
 
@@ -124,14 +122,14 @@ public class TaucoinRemoteService extends TaucoinService {
 
         super.onCreate();
 
+        /*
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
             return;
         }
         refWatcher = LeakCanary.install(this.getApplication());
-
-
+        */
    }
 
     @Override
@@ -619,10 +617,16 @@ public class TaucoinRemoteService extends TaucoinService {
         TaucoinModule.close();
         isTaucoinStarted = false;
 
+        /*
         if (refWatcher != null) {
-            refWatcher.watch(component);
-            refWatcher.watch(taucoin);
+            if (component != null) {
+                refWatcher.watch(component);
+            }
+            if (taucoin != null) {
+                refWatcher.watch(taucoin);
+            }
         }
+        */
 
         Message replyMessage = Message.obtain(null, TaucoinClientMessage.MSG_CLOSE_DONE, 0, 0);
         try {

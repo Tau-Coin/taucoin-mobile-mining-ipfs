@@ -2,6 +2,7 @@ package io.taucoin.android.db;
 
 import io.taucoin.core.Block;
 import io.taucoin.core.HashPair;
+import io.taucoin.datasource.DBCorruptionException;
 import io.taucoin.db.BlockStore;
 import io.taucoin.db.ByteArrayWrapper;
 import io.taucoin.util.*;
@@ -1150,7 +1151,14 @@ public class MMKVIndexedBlockStore implements BlockStore {
             ArrayList<BlockInfo> list = entry.getValue();
             if (list != null && !list.isEmpty()) {
                 for (BlockInfo info : list) {
-                    String key = Hex.toHexString(info.getHash());
+                    // Very urgly code. Just designed for database compatibility.
+                    // between v1.9.4 and v1.9.6+.
+                    byte[] hash = info.getHash();
+                    if (hash == null || hash.length == 0) {
+                        throw new DBCorruptionException("database compatibility exception");
+                    }
+
+                    String key = Hex.toHexString(hash);
                     if (blocksDB.decodeBytes(key) == null) {
                         String errorString = String.format(
                                 "Block %d %s not exist.",

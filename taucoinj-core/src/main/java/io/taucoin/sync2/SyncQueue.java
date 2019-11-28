@@ -6,7 +6,6 @@ import io.taucoin.datasource.DBCorruptionException;
 import io.taucoin.datasource.mapdb.MapDBFactory;
 import io.taucoin.db.*;
 import io.taucoin.db.file.BlockQueueFileSys;
-import io.taucoin.db.file.FileBlockStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
@@ -68,8 +67,6 @@ public class SyncQueue {
      */
     private BlockQueue blockQueue;
 
-    private FileBlockStore fileBlockStore;
-
     private AtomicBoolean noParent = new AtomicBoolean(false);
 
     private final Object noParentLock = new Object();
@@ -114,11 +111,9 @@ public class SyncQueue {
 
     private AtomicBoolean isRequestClose = new AtomicBoolean(false);
 
-    public SyncQueue(Blockchain blockchain, MapDBFactory mapDBFactory,
-            FileBlockStore fileBlockStore) {
+    public SyncQueue(Blockchain blockchain, MapDBFactory mapDBFactory) {
         this.blockchain = blockchain;
         this.mapDBFactory = mapDBFactory;
-        this.fileBlockStore = fileBlockStore;
     }
 
     public void setSyncManager(SyncManager syncManager) {
