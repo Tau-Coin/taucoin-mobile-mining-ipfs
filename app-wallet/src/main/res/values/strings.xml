@@ -32,7 +32,7 @@
 
     <string name="splash_title">TAU mWallet %s</string>
     <string name="splash_subheading">Mobile Mining Wallet</string>
-    <string name="splash_describe">Mobile &#038; Decentral\nProof of Transaction\nMining consumes 5 MB data per day</string>
+    <string name="splash_describe">Mobile &#038; Decentral\nProof of Transaction</string>
 
     <string name="main_home">Home</string>
     <string name="main_send_receive">Send &#38; Receive</string>
@@ -71,7 +71,7 @@
     <string name="manager_help">Help</string>
     <string name="manager_p2p_exchange">P2P &#38; Non&#045;KYC Exchange</string>
     <string name="manager_mining_group">Mining Group</string>
-    <string name="manager_upcoming_feature">Upcoming feature: IPFS native integration, Serverless Wallet, Sharding as Mining.</string>
+    <string name="manager_upcoming_feature">On IPFS native integration, Serverless Wallet, Sharding as Mining.</string>
 
     <string name="send_receiver_address">Receiver\'s Address</string>
     <string name="send_amount">Amount</string>
