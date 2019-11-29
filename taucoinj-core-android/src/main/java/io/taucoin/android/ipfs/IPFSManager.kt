@@ -115,7 +115,7 @@ class IPFSManager(private var service: Service) {
                 val nodeA = json(nodeA)
                 if(nodeA !in methods) methods.add(nodeA)
             }
-            obj("Discovery").obj("MDNS").addProperty("Enabled", false)
+            obj("Discovery").obj("MDNS").addProperty("Enabled", true)
         }
 
         val closeChildThread = object : Thread() {
