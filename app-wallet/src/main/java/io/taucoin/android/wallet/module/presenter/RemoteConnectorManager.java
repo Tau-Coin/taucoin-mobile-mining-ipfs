@@ -218,9 +218,9 @@ public class RemoteConnectorManager extends ConnectorManager implements Connecto
 //                        }
                         break;
                     case EVENT_NETWORK_TRAFFIC:
-                        NetworkTrafficData networkTrafficData = data.getParcelable("data");
-                        int trafficSize = networkTrafficData.trafficSize;
-                        TrafficUtil.saveTrafficMining(trafficSize);
+//                        NetworkTrafficData networkTrafficData = data.getParcelable("data");
+//                        int trafficSize = networkTrafficData.trafficSize;
+//                        TrafficUtil.saveTrafficMining(trafficSize);
                         break;
                     case EVENT_CHAININFO_CHANGED:
                         ChainInfoChangedData chainInfoData = data.getParcelable("data");

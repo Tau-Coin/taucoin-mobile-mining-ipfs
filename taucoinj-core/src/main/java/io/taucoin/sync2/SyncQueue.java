@@ -834,9 +834,12 @@ public class SyncQueue {
     }
 
     public boolean isMoreBlocksNeeded() {
-        logger.debug("blockQueue size/limit {}/{}", blockQueue.size(),
-                BLOCK_QUEUE_LIMIT);
-        return blockQueue.size() < BLOCK_QUEUE_LIMIT;
+        long height = blockchain.getBestBlock() != null ?
+                blockchain.getBestBlock().getNumber() : 0;
+        logger.debug("blockQueue size/limit/height {}/{}/{}", blockQueue.size(),
+                BLOCK_QUEUE_LIMIT, height);
+        return (height % REBOOT_CYCLE + blockQueue.size()) < REBOOT_CYCLE
+                && blockQueue.size() < BLOCK_QUEUE_LIMIT;
     }
 
     public void clearHashes() {
