@@ -763,8 +763,6 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
             logger.info("cid index[{}] in cid list to sync is :{}", index, syncHashPairCid.toString());
             multihash = new Multihash(syncHashPairCid);
             byte[] syncHashPairRlpEncoded = ipfs.block.get(multihash);
-            //pin hash pair
-            pinAdd(multihash);
 
             HashPair hashPair = new HashPair(syncHashPairRlpEncoded);
             List<HashPair> hashPairList = new ArrayList<>();
@@ -789,8 +787,6 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
                 hashPairList.add(hashPair);
                 multihash = hashPair.getPreviousHashPairCid();
                 hashPairRlp = ipfs.block.get(multihash);
-                //pin hash pair
-                pinAdd(multihash);
 
                 hashPair = new HashPair(hashPairRlp);
             }
@@ -798,8 +794,6 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
             //make sure that block hash(cid in later) from different branch are equal, or hash pair makes one step forward
             if (!hasInQueue && hashPair.getNumber() > 0) {
                 byte[] blockRemoteBytes = ipfs.block.get(hashPair.getBlockCid());
-                //pin block
-                pinAdd(hashPair.getBlockCid());
 
                 Block blockRemote = new Block(blockRemoteBytes, true);
                 Block blockLocal = bestBlock;
@@ -818,14 +812,10 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
                     hashPairList.add(hashPair);
                     multihash = hashPair.getPreviousHashPairCid();
                     hashPairRlp = ipfs.block.get(multihash);
-                    //pin hash pair
-                    pinAdd(multihash);
 
                     hashPair = new HashPair(hashPairRlp);
 
                     blockRemoteBytes = ipfs.block.get(hashPair.getBlockCid());
-                    //pin block
-                    pinAdd(hashPair.getBlockCid());
 
                     blockRemote = new Block(blockRemoteBytes, true);
 
@@ -866,8 +856,6 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
                 logger.info("block cid:{}", hashPair.getBlockCid().toString());
                 multihash = hashPair.getBlockCid();
                 byte[] blockRlp = ipfs.block.get(multihash);
-                //pin block
-                pinAdd(multihash);
 
                 Block block = new Block(blockRlp, true);
                 logger.info("sync block number [{}], hash:{}",
@@ -962,22 +950,6 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
 
     @Override
     public void blockForgingCanceled(Block block) {
-    }
-
-    public void pinAdd(Multihash multihash) {
-        try {
-            awaitInit();
-
-            ipfs.pin.add(multihash);
-        } catch (IOException e) {
-            //InterruptedIOException、ConnectException、ClosedByInterruptException or others, re-connect
-            logger.error(e.getMessage(), e);
-            onIpfsDaemonDisconnected();
-//                    throw new RuntimeException(e);
-        } catch (Exception e) {
-            //just wait
-            logger.error(e.getMessage(), e);
-        }
     }
 
 }
