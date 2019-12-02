@@ -28,6 +28,7 @@ import com.github.naturs.logger.Logger;
 
 import io.taucoin.android.wallet.MyApplication;
 import io.taucoin.android.wallet.base.BaseHandler;
+import io.taucoin.android.wallet.util.NetworkStatsUtil;
 import io.taucoin.android.wallet.util.SysUtil;
 import io.taucoin.android.wallet.util.TrafficInfo;
 import io.taucoin.foundation.util.ThreadPool;
@@ -100,7 +101,14 @@ class ResManager implements BaseHandler.HandleCallBack{
                      TrafficUtil.saveTrafficAll(traffic);
 
                      SysUtil.MemoryInfo info =  mSysUtil.loadAppProcess();
-                     info.netDataSize = TrafficUtil.getTrafficTotal();
+
+                     long summaryTotal = NetworkStatsUtil.getSummaryTotal(context);
+                     if(summaryTotal != -1){
+                         info.netDataSize = summaryTotal;
+                     }else{
+                         info.netDataSize = TrafficUtil.getTrafficTotal();
+                     }
+
                      Bundle bundle = new Bundle();
                      bundle.putParcelable("data", info);
                      Message message = mHandler.obtainMessage(2);

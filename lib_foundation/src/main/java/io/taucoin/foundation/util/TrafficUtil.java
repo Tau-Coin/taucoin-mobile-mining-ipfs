@@ -43,7 +43,7 @@ public class TrafficUtil {
         if(trafficAll > trafficClient){
             trafficAll = trafficAll - trafficClient;
         }
-        long totalTraffic = trafficClient + trafficAll / 3;
+        long totalTraffic = trafficClient + trafficAll / 2;
         Logger.d("trafficClient=%s(%s), trafficAll=%s(%s), totalTraffic=%s(%s)",
                 formatFileSizeMb(trafficClient), trafficClient,
                 formatFileSizeMb(trafficAll), trafficAll,
