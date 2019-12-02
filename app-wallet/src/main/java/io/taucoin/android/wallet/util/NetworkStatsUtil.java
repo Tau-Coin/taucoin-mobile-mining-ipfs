@@ -33,6 +33,9 @@ public class NetworkStatsUtil {
     }
 
     public static long getSummaryTotal(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return -1;
+        }
         if (context == null) {
             return -1;
         }
@@ -74,8 +77,8 @@ public class NetworkStatsUtil {
 
     private static long getSummaryTotal(int uid) {
         init();
-        long summaryMobile = 0;
-        long summaryWifi = 0;
+        long summaryMobile = -1;
+        long summaryWifi = -1;
         try {
             NetworkStats summaryStats;
             NetworkStats.Bucket summaryBucket = new NetworkStats.Bucket();
@@ -102,6 +105,15 @@ public class NetworkStatsUtil {
             } while (summaryStats.hasNextBucket());
         }catch (Exception e) {
             Logger.e(e, "networkStatsManager.querySummary is error");
+        }
+        if(summaryMobile == -1 && summaryWifi == -1){
+            return -1;
+        }else{
+            if(summaryMobile == -1){
+                summaryMobile = 0;
+            }else if(summaryWifi == -1){
+                summaryWifi = 0;
+            }
         }
         long summaryTotal = summaryMobile + summaryWifi;
         Logger.i("uid:%s, mobile:%s(%s), wifi:%s(%s), total:%s(%s)", uid,
