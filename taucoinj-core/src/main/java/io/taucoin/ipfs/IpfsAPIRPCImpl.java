@@ -158,68 +158,54 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
     private Runnable blockChainSubscribe = new Runnable() {
         @Override
         public void run() {
-            while (!Thread.currentThread().isInterrupted()) {
+//            while (!Thread.currentThread().isInterrupted()) {
                 try {
                     awaitInit();
 
                     logger.info("Start to sub from topic:[idc].");
                     ipfs.pubsub.sub("idc", hashcCircularFifoQueue::add, x -> logger.error(x.getMessage(), x));
-                } catch (NullPointerException e) {
-                    logger.error(e.getMessage(), e);
-                    //just wait for now
-//                    throw new RuntimeException(e);
                 } catch (IOException e) {
                     //InterruptedIOException、ConnectException、ClosedByInterruptException or others, re-connect
-                    logger.error(e.getMessage(), e);
-                    onIpfsDaemonDisconnected();
+                    logger.error("IO:" + e.getMessage(), e);
+//                    onIpfsDaemonDisconnected();
 //                    throw new RuntimeException(e);
-                } catch (Exception e) {
-                    //just wait
-                    logger.error(e.getMessage(), e);
                 }
 
-                //sleep 3 s when exception happens
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    logger.info(e.getMessage(), e);
-                    Thread.currentThread().interrupt();
-                }
-            }
+//                //sleep 3 s when exception happens
+//                try {
+//                    Thread.sleep(3000);
+//                } catch (InterruptedException e) {
+//                    logger.info(e.getMessage(), e);
+//                    Thread.currentThread().interrupt();
+//                }
+//            }
         }
     };
 
     private Runnable transactionListSubscribe = new Runnable() {
         @Override
         public void run() {
-            while (!Thread.currentThread().isInterrupted()) {
+//            while (!Thread.currentThread().isInterrupted()) {
                 try {
                     awaitInit();
 
                     logger.info("Start to sub from topic:[idl].");
                     ipfs.pubsub.sub("idl", hashlCircularFifoQueue::add, x -> logger.error(x.getMessage(), x));
-                } catch (NullPointerException e) {
-                    logger.error(e.getMessage(), e);
-                    //just wait for now
-//                    throw new RuntimeException(e);
                 } catch (IOException e) {
                     //InterruptedIOException、ConnectException、ClosedByInterruptException or others, re-connect
-                    logger.error(e.getMessage(), e);
-                    onIpfsDaemonDisconnected();
+                    logger.error("IO:" + e.getMessage(), e);
+//                    onIpfsDaemonDisconnected();
 //                    throw new RuntimeException(e);
-                } catch (Exception e) {
-                    //just wait
-                    logger.error(e.getMessage(), e);
                 }
 
-                //sleep 3 s when exception happens
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    logger.info(e.getMessage(), e);
-                    Thread.currentThread().interrupt();
-                }
-            }
+//                //sleep 3 s when exception happens
+//                try {
+//                    Thread.sleep(3000);
+//                } catch (InterruptedException e) {
+//                    logger.info(e.getMessage(), e);
+//                    Thread.currentThread().interrupt();
+//                }
+//            }
         }
     };
 
@@ -378,14 +364,17 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
     }
 
     public void startDownload() {
+        logger.info("Ready to start download...");
 //        try {
             if (null == blockChainProcessThread || !blockChainProcessThread.isAlive()) {
                 blockChainProcessThread = new Thread(blockChainProcessSubscribe, "blockChainProcessThread");
                 blockChainProcessThread.start();
+                logger.info("Start to process block chain in a new thread.");
             }
             if (null == blockChainSubThread || !blockChainSubThread.isAlive()) {
                 blockChainSubThread = new Thread(blockChainSubscribe, "blockChainSubThread");
                 blockChainSubThread.start();
+                logger.info("Start to sub block chain in a new thread.");
             }
 //        } catch (Exception e) {
 //            if (isDaemonDisconnected(e)) {
@@ -401,17 +390,21 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
     }
 
     public void stopDownload() {
+        logger.info("Ready to stop download...");
         stopSubscribeTransactions();
 //        if (null != transactionListProcessThread) {
 //            transactionListProcessThread.interrupt();
 //        }
         if (null != transactionListSubThread) {
+            logger.info("Interrupt tx tx list subThread.");
             transactionListSubThread.interrupt();
         }
         if (null != blockChainProcessThread) {
+            logger.info("Interrupt block chain process thread.");
             blockChainProcessThread.interrupt();
         }
         if (null != blockChainSubThread) {
+            logger.info("Interrupt block chain subThread.");
             blockChainSubThread.interrupt();
         }
     }
@@ -696,7 +689,10 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
                 //sleep 1s
                 Thread.sleep(1000);
             } catch (NullPointerException e) {
+                //interrupt will cause NullPointerException when ipfs get, so just interrupt
                 logger.error(e.getMessage(), e);
+                logger.info("-----start to interrupt-----");
+                Thread.currentThread().interrupt();
                 //just wait for now
 //                    throw new RuntimeException(e);
             } catch (IOException e) {
@@ -750,6 +746,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
         //compare local height with remote height
         while (latestHashPair.getNumber() > currentNumber) {
             if (Thread.currentThread().isInterrupted()) {
+                logger.info("Got interrupt signal and return.");
                 return;
             }
             int index = (int) currentNumber / (HASH_PAIR_CID_INTERVAL);
@@ -771,6 +768,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
             //compare best block number with hash pair number to decide if need to sync
             while (hashPair.getNumber() > currentNumber) {
                 if (Thread.currentThread().isInterrupted()) {
+                    logger.info("Got interrupt signal and return.");
                     return;
                 }
                 //sync hash pair list
@@ -800,6 +798,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
                 //find common fork point
                 while (!Arrays.equals(blockRemote.getHash(), blockLocal.getHash())) {
                     if (Thread.currentThread().isInterrupted()) {
+                        logger.info("Got interrupt signal and return.");
                         return;
                     }
                     logger.info("Number :[{}], remote block hash :[{}], local block hash :[{}]",
@@ -846,6 +845,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
             logger.info("There are {} blocks to sync", size);
             for (int i = size - 1; i >= 0; i--) {
                 if (Thread.currentThread().isInterrupted()) {
+                    logger.info("Got interrupt signal and return.");
                     return;
                 }
                 hashPair = hashPairList.get(i);
@@ -904,6 +904,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
 
     public void stopSubscribeTransactions() {
         if (txSubTimer != null) {
+            logger.info("Interrupt tx subtimer.");
             txSubTimer.cancel(true);
         }
     }
