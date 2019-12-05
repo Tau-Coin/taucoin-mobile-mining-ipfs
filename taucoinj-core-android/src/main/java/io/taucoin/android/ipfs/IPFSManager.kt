@@ -115,7 +115,10 @@ class IPFSManager(private var service: Service) {
                 val nodeA = json(nodeA)
                 if(nodeA !in methods) methods.add(nodeA)
             }
-            obj("Discovery").obj("MDNS").addProperty("Enabled", true)
+            obj("Discovery").obj("MDNS").addProperty("Enabled", false)
+            obj("Datastore").addProperty("StorageMax", "1GB")
+            obj("Datastore").addProperty("StorageGCWatermark", 1)
+            obj("Datastore").addProperty("GCPeriod", "0.1h")
         }
 
         val closeChildThread = object : Thread() {
