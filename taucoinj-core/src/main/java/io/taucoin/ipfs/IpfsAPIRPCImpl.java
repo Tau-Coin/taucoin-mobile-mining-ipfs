@@ -365,28 +365,47 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
 
     public void startDownload() {
         logger.info("Ready to start download...");
-//        try {
-            if (null == blockChainProcessThread || !blockChainProcessThread.isAlive()) {
+        try {
+            boolean needToNew = false;
+            if (null == blockChainProcessThread) {
+                needToNew = true;
+            } else {
+                if (blockChainProcessThread.isAlive()) {
+                    while (blockChainProcessThread.isAlive() && blockChainProcessThread.isInterrupted()) {
+                        needToNew = true;
+                        logger.info("Wait to thread exit!");
+                        Thread.sleep(3000);
+                    }
+                }
+            }
+            if (needToNew) {
                 blockChainProcessThread = new Thread(blockChainProcessSubscribe, "blockChainProcessThread");
                 blockChainProcessThread.start();
                 logger.info("Start to process block chain in a new thread.");
             }
-            if (null == blockChainSubThread || !blockChainSubThread.isAlive()) {
+
+            needToNew = false;
+            if (null == blockChainSubThread) {
+                needToNew = true;
+            } else {
+                if (blockChainSubThread.isAlive()) {
+                    while (blockChainSubThread.isAlive() && blockChainSubThread.isInterrupted()) {
+                        needToNew = true;
+                        logger.info("Wait to thread exit!");
+                        Thread.sleep(3000);
+                    }
+                }
+            }
+            if (needToNew) {
                 blockChainSubThread = new Thread(blockChainSubscribe, "blockChainSubThread");
                 blockChainSubThread.start();
                 logger.info("Start to sub block chain in a new thread.");
             }
-//        } catch (Exception e) {
-//            if (isDaemonDisconnected(e)) {
-//                onIpfsDaemonDisconnected();
-//                try {
-//                    Thread.sleep(5000);
-//                } catch (Exception ex) {
-//                    logger.error(ex.getMessage(), e);
-//                }
-//                startDownload();
-//            }
-//        }
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+
     }
 
     public void stopDownload() {
