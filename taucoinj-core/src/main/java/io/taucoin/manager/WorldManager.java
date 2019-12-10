@@ -16,10 +16,12 @@ import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import static io.taucoin.crypto.HashUtil.EMPTY_TRIE_HASH;
 import static io.taucoin.config.SystemProperties.CONFIG;
 
 /**
@@ -211,6 +213,8 @@ public class WorldManager {
                 Object object= blockStore.getClass();
                 logger.info("blockStore class : {}",((Class) object).getName());
 
+                genesis.setStateRoot(repository.getRoot());
+
                 HashPair genesisHashPair = new HashPair(Genesis.getInstance(config).getNumber(),
                         Genesis.getInstance(config).getCid(), Genesis.getInstance(config).getCid());
                 logger.info("genesis hash pair cid: {}", genesisHashPair.getCid().toString());
@@ -256,6 +260,11 @@ public class WorldManager {
                     }
                 });
             }
+        }
+
+        if (!Arrays.equals(blockchain.getBestBlock().getHash(), EMPTY_TRIE_HASH)) {
+            this.repository.syncToRoot(blockchain.getBestBlock().getStateRoot());
+            this.repository.flushNoReconnect();
         }
 
 /* todo: return it when there is no state conflicts on the chain

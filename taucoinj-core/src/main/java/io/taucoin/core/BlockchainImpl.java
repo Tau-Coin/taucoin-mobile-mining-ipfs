@@ -208,7 +208,7 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
         State push = stateStack.push(new State());
         this.bestBlock = blockStore.getBlockByHash(bestBlockHash);
         totalDifficulty = blockStore.getTotalDifficultyForHash(bestBlockHash);
-//        this.repository = this.repository.getSnapshotTo(this.bestBlock.getStateRoot());
+        this.repository = this.repository.getSnapshotTo(this.bestBlock.getStateRoot());
         return push;
     }
 
@@ -539,6 +539,8 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
 //            }
 //            track.commit();
 //        }
+
+        block.setStateRoot(repository.getRoot());
 
         logger.info("----> state root:{}", repository.getRoot());
 

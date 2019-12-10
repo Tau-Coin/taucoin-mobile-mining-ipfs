@@ -56,6 +56,9 @@ public class Block {
     private byte[] generationSignature;
     private BigInteger cumulativeDifficulty = BigInteger.ZERO; //this is total chain difficulty
     private BigInteger cumulativeFee = BigInteger.ZERO;
+
+    private byte[] stateRoot;
+
     private byte[] forgerPubkey = null;
     private byte[] forgerAddress = null;
 
@@ -165,9 +168,11 @@ public class Block {
             // Parse option
             this.option = block.get(10).getRLPData() == null ? (byte) 0 : block.get(10).getRLPData()[0];
 
-            if(block.size() > 11) {
+            this.stateRoot = block.get(11).getRLPData();
+
+            if(block.size() > 12) {
                 // Parse Transactions
-                RLPList txTransactions = (RLPList) block.get(11);
+                RLPList txTransactions = (RLPList) block.get(12);
                 this.parseTxs(txTransactions, true);
             }
         } else {
@@ -345,6 +350,15 @@ public class Block {
 
     public void setCumulativeFee(BigInteger cumulativeFee) {
         this.cumulativeFee = cumulativeFee;
+    }
+
+    public void setStateRoot(byte[] stateRoot) {
+        this.stateRoot = stateRoot;
+    }
+
+    public byte[] getStateRoot() {
+        if (!parsed) parseRLP();
+        return this.stateRoot;
     }
 
     public List<Transaction> getTransactionsList() {
@@ -624,6 +638,7 @@ public class Block {
         byte[] cumulativeFee = RLP.encodeBigInteger(this.cumulativeFee == null ? BigInteger.ZERO: this.cumulativeFee);
         byte[] forgerpubkey = RLP.encodeElement(this.forgerPubkey);
         byte[] option = getOptionEncoded();
+        byte[] stateRootEncoded = RLP.encodeElement(this.stateRoot);
         byte[] transactions = getFullTransactionsEncoded();
 
         List<byte[]> body = new ArrayList<>();
@@ -634,6 +649,7 @@ public class Block {
         body.add(cumulativeFee);
         body.add(forgerpubkey);
         body.add(option);
+        body.add(stateRootEncoded);
         body.add(transactions);
 
         return body;
