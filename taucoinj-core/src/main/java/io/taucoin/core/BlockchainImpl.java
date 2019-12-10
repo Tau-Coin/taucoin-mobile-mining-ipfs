@@ -108,6 +108,8 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
 
     private boolean fork = false;
 
+    private Stack<State> stateStack = new Stack<>();
+
     private RefWatcher refWatcher;
 
     public BlockchainImpl() {
@@ -202,6 +204,25 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
         return blockStore;
     }
 
+    private State pushState(byte[] bestBlockHash) {
+        State push = stateStack.push(new State());
+        this.bestBlock = blockStore.getBlockByHash(bestBlockHash);
+        totalDifficulty = blockStore.getTotalDifficultyForHash(bestBlockHash);
+//        this.repository = this.repository.getSnapshotTo(this.bestBlock.getStateRoot());
+        return push;
+    }
+
+    private void popState() {
+        State state = stateStack.pop();
+        this.repository = state.savedRepo;
+        this.bestBlock = state.savedBest;
+        this.totalDifficulty = state.savedTD;
+    }
+
+    public void dropState() {
+        stateStack.pop();
+    }
+
     public synchronized ImportResult tryConnectAndFork(final Block block) {
         if (isMoreThan(block.getCumulativeDifficulty(), this.totalDifficulty)) {
             //cumulative difficulty is more than current chain
@@ -228,7 +249,6 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
                 logger.info("Try to disconnect block, block number: {}, hash: {}",
                         undoBlock.getNumber(), Hex.toHexString(undoBlock.getHash()));
                 logger.debug("before roll back.....");
-                cacheTrack.showRepositoryChange();
                 //roll back
                 List<Transaction> txs = undoBlock.getTransactionsList();
                 int size = txs.size();
@@ -245,7 +265,6 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
                     executor.undoTransaction();
                 }
                 logger.debug("after roll back.....");
-                cacheTrack.showRepositoryChange();
                 cacheTrack.commit();
 
                 if(Hex.toHexString(undoBlock.getForgerAddress()).equals("847ca210e2b61e9722d1584fcc0daea4c3639b09")){
@@ -304,7 +323,7 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
 
                 //if (needFlush(block)) {
                     blockStore.flush();
-                    repository.flush(block.getNumber());
+                    repository.flush();
                     System.gc();
                 //}
 
@@ -521,11 +540,13 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
 //            track.commit();
 //        }
 
+        logger.info("----> state root:{}", repository.getRoot());
+
         storeBlock(block, true);
 
         //if (needFlush(block)) {
             blockStore.flush();
-            repository.flush(block.getNumber());
+            repository.flush();
             System.gc();
         //}
 
@@ -855,7 +876,6 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
              * total 3 levels changes.
              */
             logger.debug("=====below operation is level 1 , on level 1 wrap transaction occur =====");
-            repo.showRepositoryChange();
             logger.debug("=====below operation is level 2 , on level 2 fee distribute occur =====");
             if (!config.blockChainOnly()) {
                 return applyBlock(block, repo);
@@ -916,7 +936,6 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
          * what more level 0 will save these into disk.
          * why process do like this is showing illegal balance.
          */
-        repo.showRepositoryChange();
         if (!isValid) {
             return false;
         }
@@ -1168,65 +1187,72 @@ public class BlockchainImpl implements io.taucoin.facade.Blockchain {
 
     @Override
     public synchronized boolean checkSanity() {
-        long blockStoreMaxNumber = blockStore.getMaxNumber();
-        long stateMaxNumber = repository.getMaxNumber();
-
-        logger.info("blockstore max number {}, state max number {}",
-                blockStoreMaxNumber, stateMaxNumber);
-        if (blockStoreMaxNumber == stateMaxNumber || stateMaxNumber == -1L) {
-            return false;
-        }
-
-        // From method 'tryConnect' and 'tryConnectAndFork' it can be found
-        // repository state database is updated firstly and then block store.
-        // But when app is killed, database consistency maybe happens.
-        if (stateMaxNumber == blockStoreMaxNumber + 1) {
-            /*
-            // Rollback state database
-            BlockWrapper wrapper = fileBlockStore.get(blockStoreMaxNumber + 1);
-            if (wrapper == null) {
-                // Fatal error and we don't know how to handle it.
-                // Just log out this fatal error.
-                logger.error("Fatal error, filesys block store corrupted:{}/{}",
-                        stateMaxNumber, blockStoreMaxNumber);
-                return false;
-            }
-
-            Block undoBlock = wrapper.getBlock();
-
-            track = repository.startTracking();
-            logger.info("Try to disconnect block with number: {}, hash: {}",
-                    undoBlock.getNumber(), Hex.toHexString(undoBlock.getHash()));
-
-            List<Transaction> txs = undoBlock.getTransactionsList();
-            int size = txs.size();
-
-            for (int i = size - 1; i >= 0; i--) {
-                TransactionExecutor executor = new TransactionExecutor(txs.get(i), track, this, listener);
-                executor.setCoinbase(undoBlock.getForgerAddress());
-                if (executor.undoTransaction()) {
-                    StakeHolderIdentityUpdate stakeHolderIdentityUpdate =
-                            new StakeHolderIdentityUpdate(txs.get(i), track, undoBlock.getForgerAddress(),
-                                    undoBlock.getNumber() - 1);
-                    stakeHolderIdentityUpdate.rollbackStakeHolderIdentity();
-                }
-            }
-
-            track.commit();
-            repository.flush(blockStoreMaxNumber);
-            */
-        } else if (blockStoreMaxNumber == stateMaxNumber + 1) {
-            // Note: for the based-ipfs solution, this maybe happen.
-            // Because firstly flush blockstore and then flush states db.
-            blockStore.delChainBlockByNumber(blockStoreMaxNumber);
-        } else {
-            String errorStr = String.format(
-                    "database corruption, blockstore number %s, statedb number %s",
-                    blockStoreMaxNumber, stateMaxNumber);
-            logger.error(errorStr);
-            //throw new DBCorruptionException(errorStr);
-        }
+//        long blockStoreMaxNumber = blockStore.getMaxNumber();
+//        long stateMaxNumber = repository.getMaxNumber();
+//
+//        logger.info("blockstore max number {}, state max number {}",
+//                blockStoreMaxNumber, stateMaxNumber);
+//        if (blockStoreMaxNumber == stateMaxNumber || stateMaxNumber == -1L) {
+//            return false;
+//        }
+//
+//        // From method 'tryConnect' and 'tryConnectAndFork' it can be found
+//        // repository state database is updated firstly and then block store.
+//        // But when app is killed, database consistency maybe happens.
+//        if (stateMaxNumber == blockStoreMaxNumber + 1) {
+//            /*
+//            // Rollback state database
+//            BlockWrapper wrapper = fileBlockStore.get(blockStoreMaxNumber + 1);
+//            if (wrapper == null) {
+//                // Fatal error and we don't know how to handle it.
+//                // Just log out this fatal error.
+//                logger.error("Fatal error, filesys block store corrupted:{}/{}",
+//                        stateMaxNumber, blockStoreMaxNumber);
+//                return false;
+//            }
+//
+//            Block undoBlock = wrapper.getBlock();
+//
+//            track = repository.startTracking();
+//            logger.info("Try to disconnect block with number: {}, hash: {}",
+//                    undoBlock.getNumber(), Hex.toHexString(undoBlock.getHash()));
+//
+//            List<Transaction> txs = undoBlock.getTransactionsList();
+//            int size = txs.size();
+//
+//            for (int i = size - 1; i >= 0; i--) {
+//                TransactionExecutor executor = new TransactionExecutor(txs.get(i), track, this, listener);
+//                executor.setCoinbase(undoBlock.getForgerAddress());
+//                if (executor.undoTransaction()) {
+//                    StakeHolderIdentityUpdate stakeHolderIdentityUpdate =
+//                            new StakeHolderIdentityUpdate(txs.get(i), track, undoBlock.getForgerAddress(),
+//                                    undoBlock.getNumber() - 1);
+//                    stakeHolderIdentityUpdate.rollbackStakeHolderIdentity();
+//                }
+//            }
+//
+//            track.commit();
+//            repository.flush(blockStoreMaxNumber);
+//            */
+//        } else if (blockStoreMaxNumber == stateMaxNumber + 1) {
+//            // Note: for the based-ipfs solution, this maybe happen.
+//            // Because firstly flush blockstore and then flush states db.
+//            blockStore.delChainBlockByNumber(blockStoreMaxNumber);
+//        } else {
+//            String errorStr = String.format(
+//                    "database corruption, blockstore number %s, statedb number %s",
+//                    blockStoreMaxNumber, stateMaxNumber);
+//            logger.error(errorStr);
+//            //throw new DBCorruptionException(errorStr);
+//        }
 
         return true;
     }
+
+    private class State {
+        Repository savedRepo = repository;
+        Block savedBest = bestBlock;
+        BigInteger savedTD = totalDifficulty;
+    }
+
 }

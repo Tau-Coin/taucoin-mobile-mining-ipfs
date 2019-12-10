@@ -249,7 +249,7 @@ public class StateLoader {
 
     private void flushStates() {
         repository.updateBatch(stateBatch);
-        repository.flush(tagNumber);
+        repository.flush();
         stateBatch.clear();
     }
 

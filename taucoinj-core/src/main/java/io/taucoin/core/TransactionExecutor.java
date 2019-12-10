@@ -428,7 +428,8 @@ public class TransactionExecutor {
             senderAccountState.getTranHistory().remove( ByteUtil.byteArrayToLong(tx.getTime()) );
         }
 
-        track.reduceForgePower(tx.getSender());
+        //undo for now
+//        track.reduceForgePower(tx.getSender());
 
         return true;
     }

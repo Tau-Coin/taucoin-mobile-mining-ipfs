@@ -1,7 +1,8 @@
 package io.taucoin.db;
 
-import io.taucoin.config.MainNetParams;
-import io.taucoin.core.*;
+import io.taucoin.core.AccountState;
+import io.taucoin.core.Block;
+import io.taucoin.core.Repository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,6 @@ import java.math.BigInteger;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import static io.taucoin.crypto.HashUtil.EMPTY_DATA_HASH;
@@ -29,9 +29,13 @@ public class RepositoryTrack implements Repository {
 
     private static final Logger logger = LoggerFactory.getLogger("repository");
 
-    Map<ByteArrayWrapper, AccountState> cacheAccounts = new HashMap<>();
+    HashMap<ByteArrayWrapper, AccountState> cacheAccounts = new HashMap<>();
 
     Repository repository;
+
+    public RepositoryTrack() {
+        this.repository = new RepositoryDummy();
+    }
 
     public RepositoryTrack(Repository repository) {
         this.repository = repository;
@@ -46,14 +50,6 @@ public class RepositoryTrack implements Repository {
         cacheAccounts.put(wrap(addr), accountState);
 
         return accountState;
-    }
-    @Override
-    public AccountState createGenesisAccount(final byte[] addr){
-        return new AccountState();
-    }
-    @Override
-    public BigInteger addGenesisBalance(byte[] addr, BigInteger value){
-        return BigInteger.ZERO;
     }
 
     @Override
@@ -79,7 +75,7 @@ public class RepositoryTrack implements Repository {
     }
 
     @Override
-    public void loadAccount(byte[] addr, Map<ByteArrayWrapper, AccountState> cacheAccounts) {
+    public void loadAccount(byte[] addr, HashMap<ByteArrayWrapper, AccountState> cacheAccounts) {
 
         AccountState accountState = this.cacheAccounts.get(wrap(addr));
 
@@ -116,23 +112,6 @@ public class RepositoryTrack implements Repository {
         return accountState.getforgePower();
     }
 
-    @Override
-    public BigInteger reduceForgePower(byte[] addr) {
-
-        AccountState accountState = getAccountState(addr);
-
-        if (accountState == null)
-            accountState = createAccount(addr);
-
-        BigInteger savePower = accountState.getforgePower();
-        accountState.reduceForgePower();
-
-        logger.trace("reduce forgePower addr: [{}], from: [{}], to: [{}]", Hex.toHexString(addr),
-                savePower, accountState.getforgePower());
-
-        return accountState.getforgePower();
-    }
-
     public BigInteger setforgePower(byte[] addr, BigInteger bigInteger) {
         AccountState accountState = getAccountState(addr);
 
@@ -164,6 +143,7 @@ public class RepositoryTrack implements Repository {
 
     @Override
     public BigInteger addBalance(byte[] addr, BigInteger value) {
+
         AccountState accountState = getAccountState(addr);
         if (accountState == null) {
             accountState = createAccount(addr);
@@ -176,9 +156,20 @@ public class RepositoryTrack implements Repository {
         return newBalance;
     }
 
+    @Override
+    public Set<byte[]> getAccountsKeys() {
+        throw new UnsupportedOperationException();
+        //return null;
+    }
+
 
     public Set<ByteArrayWrapper> getFullAddressSet() {
         return cacheAccounts.keySet();
+    }
+
+    @Override
+    public void dumpState(Block block, long gasUsed, int txNumber, byte[] txHash) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -197,12 +188,7 @@ public class RepositoryTrack implements Repository {
     }
 
     @Override
-    public void flush(long number) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public long getMaxNumber() {
+    public void flushNoReconnect() {
         throw new UnsupportedOperationException();
     }
 
@@ -214,6 +200,12 @@ public class RepositoryTrack implements Repository {
         logger.debug("committed changes");
     }
 
+
+    @Override
+    public void syncToRoot(byte[] root) {
+        throw new UnsupportedOperationException();
+    }
+
     @Override
     public void rollback() {
         logger.debug("rollback changes");
@@ -222,9 +214,18 @@ public class RepositoryTrack implements Repository {
     }
 
     @Override
-    public void updateBatch(Map<ByteArrayWrapper, AccountState> accountStates) {
-        cacheAccounts.putAll(accountStates);
+    public void updateBatch(HashMap<ByteArrayWrapper, AccountState> accountStates) {
+
+        for (ByteArrayWrapper hash : accountStates.keySet()) {
+            cacheAccounts.put(hash, accountStates.get(hash));
+        }
     }
+
+    @Override // that's the idea track is here not for root calculations
+    public byte[] getRoot() {
+        throw new UnsupportedOperationException();
+    }
+
 
     @Override
     public boolean isClosed() {
@@ -241,17 +242,14 @@ public class RepositoryTrack implements Repository {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public Repository getSnapshotTo(byte[] root) {
+        throw new UnsupportedOperationException();
+    }
+
     public Repository getOriginRepository() {
         return (repository instanceof RepositoryTrack)
                 ? ((RepositoryTrack) repository).getOriginRepository()
                 : repository;
-    }
-
-    public void showRepositoryChange() {
-        for (ByteArrayWrapper hash : cacheAccounts.keySet()) {
-            Address temp = new Address(MainNetParams.get(), hash.getData());
-            AccountState account = cacheAccounts.get(hash);
-            logger.debug("address: {} balance {}", temp.toBase58(),account.getBalance());
-        }
     }
 }
