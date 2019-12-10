@@ -186,6 +186,7 @@ public class MiningUtil {
                     Thread.sleep(2000);
                 }
                 deleteBlockChainFileDir(isReDownload);
+                BlockInfoDaoUtils.getInstance().reloadBlocks(isReDownload);
 //                int blockSync = BlockInfoDaoUtils.getInstance().reloadBlocks(isReDownload);
 //                if(logicObserver == null){
 //                    EventBusUtil.post(MessageEvent.EventCode.IRREPARABLE_ERROR, blockSync);

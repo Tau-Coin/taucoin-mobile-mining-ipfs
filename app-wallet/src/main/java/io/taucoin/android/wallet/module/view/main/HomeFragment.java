@@ -391,6 +391,10 @@ public class HomeFragment extends BaseFragment implements IHomeView {
                 loadRewardData();
             }
             UserUtil.setNextBlockNo(tvNextBlockNo, blockInfo);
+
+            if(tvHashPairSync != null && blockInfo.getBlockSync() == 0){
+                tvHashPairSync.setVisibility(View.GONE);
+            }
         }
     }
 
