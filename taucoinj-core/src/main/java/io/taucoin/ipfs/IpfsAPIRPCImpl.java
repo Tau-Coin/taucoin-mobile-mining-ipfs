@@ -366,36 +366,56 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
     public void startDownload() {
         logger.info("Ready to start download...");
         try {
-            boolean needToNew = false;
+            boolean needToNew = true;
             if (null == blockChainProcessThread) {
-                needToNew = true;
+                logger.info("Start block chain process thread first time.");
             } else {
                 if (blockChainProcessThread.isAlive()) {
-                    while (blockChainProcessThread.isAlive() && blockChainProcessThread.isInterrupted()) {
-                        needToNew = true;
-                        logger.info("Wait to thread exit!");
-                        Thread.sleep(3000);
+                    //sleep first to wait interrupt signal
+                    Thread.sleep(3000);
+                    if (blockChainProcessThread.isInterrupted()) {
+                        logger.info("There is a interrupt signal.");
+                        while (blockChainProcessThread.isAlive() && blockChainProcessThread.isInterrupted()) {
+                            logger.info("Wait to thread exit!");
+                            Thread.sleep(3000);
+                        }
+                    } else {
+                        logger.info("Block chain process thread is alive and there is no interrupt signal.");
+                        needToNew = false;
                     }
+                } else {
+                    logger.info("Block chain process thread is dead already.");
                 }
             }
+
             if (needToNew) {
                 blockChainProcessThread = new Thread(blockChainProcessSubscribe, "blockChainProcessThread");
                 blockChainProcessThread.start();
                 logger.info("Start to process block chain in a new thread.");
             }
 
-            needToNew = false;
+            needToNew = true;
             if (null == blockChainSubThread) {
-                needToNew = true;
+                logger.info("Start block chain sub thread first time.");
             } else {
                 if (blockChainSubThread.isAlive()) {
-                    while (blockChainSubThread.isAlive() && blockChainSubThread.isInterrupted()) {
-                        needToNew = true;
-                        logger.info("Wait to thread exit!");
-                        Thread.sleep(3000);
+                    //sleep first to wait interrupt signal
+                    Thread.sleep(3000);
+                    if (blockChainSubThread.isInterrupted()) {
+                        logger.info("There is a interrupt signal.");
+                        while (blockChainSubThread.isAlive() && blockChainSubThread.isInterrupted()) {
+                            logger.info("Wait to thread exit!");
+                            Thread.sleep(3000);
+                        }
+                    } else {
+                        logger.info("Block chain sub thread is alive and there is no interrupt signal.");
+                        needToNew = false;
                     }
+                } else {
+                    logger.info("Block chain sub thread is dead already.");
                 }
             }
+
             if (needToNew) {
                 blockChainSubThread = new Thread(blockChainSubscribe, "blockChainSubThread");
                 blockChainSubThread.start();
