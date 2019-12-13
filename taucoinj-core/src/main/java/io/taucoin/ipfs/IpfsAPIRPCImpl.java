@@ -209,6 +209,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
         }
     };
 
+    private boolean isStarting = false;
     private Thread blockChainProcessThread = null;
     private Thread blockChainSubThread = null;
 //    private Thread transactionListProcessThread = null;
@@ -363,7 +364,13 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
         }
     }
 
-    public synchronized void startDownload() {
+    public void startDownload() {
+        if (isStarting) {
+            logger.info("Starting already...");
+            return;
+        }
+        isStarting = true;
+
         logger.info("Ready to start download...");
         try {
             boolean needToNew = true;
@@ -426,6 +433,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
             logger.error(e.getMessage(), e);
         }
 
+        isStarting = false;
     }
 
     public void stopDownload() {
