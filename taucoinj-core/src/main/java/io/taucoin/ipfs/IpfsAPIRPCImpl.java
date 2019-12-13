@@ -363,7 +363,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
         }
     }
 
-    public void startDownload() {
+    public synchronized void startDownload() {
         logger.info("Ready to start download...");
         try {
             boolean needToNew = true;
