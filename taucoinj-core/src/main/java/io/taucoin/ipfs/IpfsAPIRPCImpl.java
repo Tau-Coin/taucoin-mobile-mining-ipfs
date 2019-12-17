@@ -919,7 +919,7 @@ public class IpfsAPIRPCImpl implements IpfsAPI, ForgerListener {
             //
             while (!queue.isBlocksEmpty()) {
                 logger.info("Sleep 1s until block queue is empty.");
-                Thread.sleep(1000);
+                Thread.sleep(2000);
             }
             //get best block info
             bestBlock = blockchain.getBestBlock();
