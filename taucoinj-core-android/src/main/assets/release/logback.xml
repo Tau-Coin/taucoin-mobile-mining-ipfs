@@ -3,7 +3,7 @@
         <include resource="assets/logback-console.xml"/>
     </includes>
 
-    <property name="LOG_DIR" value="/sdcard/tau-mobile/logs" />
+    <property name="LOG_DIR" value="/sdcard/Android/data/io.taucoin.android.wallet/logs" />
 
     <timestamp datePattern="yyyyMMdd" key="today"/>
 
@@ -23,7 +23,7 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <fileNamePattern>${LOG_DIR}/tau.%i.log.zip</fileNamePattern>
             <minIndex>1</minIndex>
-            <maxIndex>30</maxIndex>
+            <maxIndex>10</maxIndex>
         </rollingPolicy>
 
         <triggeringPolicy class="io.taucoin.android.util.LogbackSizeBasedTriggeringPolicy">

@@ -12,7 +12,7 @@ public class LoggerManager {
 
     private static final Logger logger = LoggerFactory.getLogger("loggerMgr");
 
-    private static final String LOG_PATH = "/sdcard/tau-mobile/logs";
+    private static final String LOG_PATH = "/sdcard/Android/data/io.taucoin.android.wallet/logs";
 
     // Remove old log files and just store latest 3 days' log.
     public static void removeOldLogFiles() {
