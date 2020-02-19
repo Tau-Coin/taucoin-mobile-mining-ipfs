@@ -48,4 +48,6 @@ dependencies {
     releaseApi rootProject.ext.leakcanaryrelease
     api rootProject.ext.rxlifecycleComponents
     api rootProject.ext.multidex
+    api rootProject.ext.glide
+    annotationProcessor rootProject.ext.glideCompiler
 }

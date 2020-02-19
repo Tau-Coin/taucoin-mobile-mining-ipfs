@@ -22,8 +22,12 @@ import android.os.Build;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.github.naturs.logger.Logger;
 
@@ -149,6 +153,25 @@ public class NotchUtil {
                 attributes.flags |= flagTranslucentStatus;
 //                attributes.flags |= flagTranslucentNavigation;
                 window.setAttributes(attributes);
+            }
+        }
+    }
+
+    public static void resetStatusBarOrNotchHeight(ViewGroup searchBar) {
+        int statusBarHeight = getStatusBarOrNotchHeight(searchBar.getContext());
+        if(statusBarHeight > 0){
+            ViewParent parent = searchBar.getParent();
+            if(null == parent){
+                return;
+            }
+            if(parent instanceof LinearLayout){
+                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) searchBar.getLayoutParams();
+                layoutParams.topMargin = statusBarHeight;
+                searchBar.setLayoutParams(layoutParams);
+            }else if(parent instanceof RelativeLayout){
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) searchBar.getLayoutParams();
+                layoutParams.topMargin = statusBarHeight;
+                searchBar.setLayoutParams(layoutParams);
             }
         }
     }

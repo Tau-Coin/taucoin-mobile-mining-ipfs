@@ -57,6 +57,8 @@ ext {
     leakcanaryrelease = project.property('DEP_LEAKCANARYRELEASE')
     rxlifecycleComponents = project.property('DEP_RXLIFECYCLE_COMPONENTS')
     multidex = project.property('DEP_MULTIDEX')
+    glide = project.property('DEP_GLIDE')
+    glideCompiler = project.property('DEP_GLIDE_COMPILER')
 }
 
 allprojects {

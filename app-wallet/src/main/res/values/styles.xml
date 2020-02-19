@@ -36,6 +36,18 @@
         <item name="android:windowIsFloating">true</item>
     </style>
 
+    <style name="AnimationActivity" parent="@style/AppTheme">
+        <item name="android:windowAnimationStyle">@style/anim_fade</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="anim_fade" parent="@style/Theme.AppCompat.NoActionBar">
+        <item name="android:activityOpenEnterAnimation">@anim/action_sheet_dialog_in</item>
+<!--        <item name="android:activityOpenExitAnimation">@anim/action_sheet_dialog_out</item>-->
+<!--        <item name="android:activityCloseEnterAnimation">@anim/action_sheet_dialog_out</item>-->
+<!--        <item name="android:activityCloseExitAnimation">@anim/action_sheet_dialog_in</item>-->
+    </style>
+
     <!--<style name="leftMenuItemStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -89,6 +101,16 @@
 
     <style name="style_big_white">
         <item name="android:textSize">@dimen/dimen_size_18</item>
+        <item name="android:textColor">@color/color_white</item>
+    </style>
+
+    <style name="style_browse_white">
+        <item name="android:textSize">@dimen/dimen_size_28</item>
+        <item name="android:textColor">@color/color_white</item>
+    </style>
+
+    <style name="style_create_white">
+        <item name="android:textSize">@dimen/dimen_size_30</item>
         <item name="android:textColor">@color/color_white</item>
     </style>
 

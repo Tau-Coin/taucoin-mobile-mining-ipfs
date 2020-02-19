@@ -45,8 +45,8 @@ public class MainActivity extends BaseActivity implements IMainView {
     RadioButton rbHome;
     @BindView(R.id.rb_send_receive)
     RadioButton rbSendReceive;
-    @BindView(R.id.rb_de_fi)
-    RadioButton rbDeFi;
+    @BindView(R.id.rb_forum)
+    RadioButton rbForum;
     @BindView(R.id.rb_manager)
     RadioButton rbManager;
 
@@ -70,10 +70,10 @@ public class MainActivity extends BaseActivity implements IMainView {
 
     @Override
     public void initBottomTabView() {
-        DrawablesUtil.setTopDrawable(rbHome, R.drawable.selector_tab_home,24);
-        DrawablesUtil.setTopDrawable(rbSendReceive, R.drawable.selector_tab_send, 24);
-        DrawablesUtil.setTopDrawable(rbManager, R.drawable.selector_tab_manage, 24);
-        DrawablesUtil.setTopDrawable(rbDeFi, R.drawable.selector_tab_de_fi, 24);
+        DrawablesUtil.setTopDrawable(rbForum, R.drawable.selector_tab_home, 28);
+        DrawablesUtil.setTopDrawable(rbHome, R.drawable.selector_tab_mining,28);
+        DrawablesUtil.setTopDrawable(rbSendReceive, R.drawable.selector_tab_send, 28);
+        DrawablesUtil.setTopDrawable(rbManager, R.drawable.selector_tab_manage, 28);
     }
 
     @Override
@@ -82,11 +82,11 @@ public class MainActivity extends BaseActivity implements IMainView {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if(null == mFragments[tabIndex]){
             if(tabIndex == 0){
-                fragment = new HomeFragment();
+                fragment = new ForumFragment();
             }else if(tabIndex == 1){
-                fragment = new SendReceiveFragment();
+                fragment = new HomeFragment();
             }else if(tabIndex == 2){
-                fragment = new DeFiFragment();
+                fragment = new SendReceiveFragment();
             }else if(tabIndex == 3){
                 fragment = new ManageFragment();
             }
@@ -112,20 +112,20 @@ public class MainActivity extends BaseActivity implements IMainView {
         }
     }
 
-    @OnCheckedChanged({R.id.rb_home, R.id.rb_manager, R.id.rb_send_receive, R.id.rb_de_fi})
+    @OnCheckedChanged({R.id.rb_forum, R.id.rb_home, R.id.rb_manager, R.id.rb_send_receive})
     void onRadioCheck(CompoundButton view, boolean isChanged) {
         switch (view.getId()) {
-            case R.id.rb_home:
+            case R.id.rb_forum:
                 if (isChanged) {
                     changeTab(0);
                 }
                 break;
-            case R.id.rb_send_receive:
+            case R.id.rb_home:
                 if (isChanged) {
                     changeTab(1);
                 }
                 break;
-            case R.id.rb_de_fi:
+            case R.id.rb_send_receive:
                 if (isChanged) {
                     changeTab(2);
                 }

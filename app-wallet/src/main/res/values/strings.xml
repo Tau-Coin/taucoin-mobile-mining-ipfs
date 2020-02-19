@@ -6,6 +6,7 @@
     <string name="common_cancel">Cancel</string>
     <string name="common_ok">OK</string>
     <string name="common_done">Done</string>
+    <string name="common_back">Back</string>
     <string name="common_yes">Yes</string>
     <string name="common_no">No</string>
     <string name="common_continue">Continue</string>
@@ -257,8 +258,12 @@
     <string name="setting_transaction_expiry_limit">Transaction valid time range: %d - %d minutes.</string>
     <string name="setting_address_book">Keys Management</string>
     <string name="setting_ipfs_info">IPFS Info</string>
+    <string name="setting_change_name">Change Name</string>
+    <string name="setting_mode_fast">Fast Mode Mining</string>
+    <string name="setting_mode_full_node">Full Node Mode Mining</string>
     <string name="setting_transaction_expiry">Transaction Expiry</string>
     <string name="setting_transaction_expiry_tip">Please enter the transaction expiry</string>
+    <string name="setting_new_name">New Name</string>
     <string name="setting_reset_data">Restart Verify</string>
     <string name="setting_reset_data_success">Successful</string>
     <string name="setting_reset_data_fail">Failed</string>
@@ -287,5 +292,58 @@
     <string name="ipfs_version">Version</string>
     <string name="ipfs_all_peers">All Peers ID (%s)</string>
     <string name="ipfs_go_ipfs_version">go-ipfs %s</string>
+
+    <string name="forum_title">TAUcoin.io</string>
+    <string name="forum_search">Search</string>
+    <string name="forum_safe">S</string>
+    <string name="forum_normal">N</string>
+    <string name="forum_create">+</string>
+    <string name="forum_Permalink">Permalinks</string>
+    <string name="forum_permalink_prefix">Permalinks(</string>
+    <string name="forum_permalink_suffix">)</string>
+    <string name="forum_vote">Vote</string>
+    <string name="forum_comment">Comment</string>
+    <string name="forum_best_comment">Best Comments</string>
+    <string name="forum_add_comment">Add a comment</string>
+    <string name="forum_comment_name_block">yang · block 123</string>
+    <string name="forum_gateway_checked">36/36 gateway checked</string>
+    <string name="forum_gateway_offline">-&#160;Offline&#160;-&#160;%s</string>
+    <string name="forum_gateway_online" formatted="false">-&#160;Online&#160;-&#160;<Data><![CDATA[<font color="#0E88EF">%s</font>]]> </Data></string>
+    <string name="forum_relevant_posts">Relevant Posts</string>
+    <string name="forum_search_posts">Posts</string>
+    <string name="forum_search_result">Search result</string>
+    <string name="forum_your_comment">Your comment</string>
+    <string name="forum_comment_send">Send</string>
+    <string name="forum_post">Post</string>
+    <string name="forum_post_title">Thread Post</string>
+    <string name="forum_post_successfully">Post Successfully</string>
+    <string name="forum_post_failed">Post Failed</string>
+    <string name="forum_comment_successfully">Comment Successfully</string>
+    <string name="forum_comment_failed">Comment Failed</string>
+    <string name="forum_length_limit">Length of text must less than 144 words</string>
+    <string name="forum_vote_successfully">Vote Successfully</string>
+    <string name="forum_vote_failed">Vote Failed</string>
+    <string name="forum_change_name_successfully">Change Name Successfully</string>
+    <string name="forum_change_name_failed">Change Name Failed</string>
+
+    <string name="forum_switched_fast_title">Switched to fast mining</string>
+    <string name="forum_switched_full_node_title">Switched to full node mining</string>
+
+    <string name="forum_switched_fast_content">Fast mining is one that has verified all prior transactions. It takes less resources on the phone.</string>
+    <string name="forum_switched_full_node_content">A full node is a complete copy of the blockchain and is able to verify all transactions since the beginning.
+    This requires more storage.</string>
+
+    <string name="forum_switched_fast">Switched to fast mining mode</string>
+    <string name="forum_switched_full_node">Switched to full node mining mode</string>
+
+    <string name="forum_tau_community">TAU community</string>
+    <string name="forum_topic_title_hint">An interesting title</string>
+    <string name="forum_topic_text_hint">Your text post (optional)</string>
+    <string name="forum_camera">Camera</string>
+    <string name="forum_library">Library</string>
+    <string name="forum_voice">Voice</string>
+
+    <string name="forum_posted">Posted by u/yang123</string>
+    <string name="forum_block">Block 222</string>
 
 </resources>

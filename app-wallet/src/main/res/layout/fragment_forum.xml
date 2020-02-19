@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_main_bg"
+    android:orientation="vertical">
+
+    <io.taucoin.android.wallet.widget.ToolbarView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:leftBackImage="@mipmap/icon_close"
+        app:leftImagePadding="0dp"
+        app:titleText="@string/forum_title" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp">
+
+        <TextView
+            android:id="@+id/tv_browse"
+            style="@style/style_browse_white"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/shape_oval_young"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical|center"
+            android:text="@string/forum_normal"/>
+
+        <LinearLayout
+            android:id="@+id/ll_search_bar"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:background="@drawable/light_grey_rect_round_bg">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:contentDescription="@null"
+                android:layout_height="22dp"
+                android:layout_marginStart="15dp"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/icon_search"/>
+
+            <TextView
+                style="@style/style_normal_light_grey"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:text="@string/forum_search"
+                android:gravity="center_vertical"
+                android:layout_marginEnd="15dp"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_create"
+            style="@style/style_create_white"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@color/color_white"
+            android:src="@mipmap/icon_post"/>
+
+    </LinearLayout>
+
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:srlAccentColor="#00000000"
+        app:srlEnablePreviewInEditMode="true"
+        app:srlPrimaryColor="#00000000">
+
+        <io.taucoin.android.wallet.widget.refresh.ClassicsHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <ListView
+            android:id="@+id/list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@color/color_home_bg"
+            android:dividerHeight="10dp"
+            android:scrollbars="none" />
+
+        <io.taucoin.android.wallet.widget.refresh.ClassicsFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+</LinearLayout>

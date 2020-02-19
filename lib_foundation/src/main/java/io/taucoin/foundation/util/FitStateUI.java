@@ -85,7 +85,7 @@ public class FitStateUI {
             }
             decorViewGroup.setSystemUiVisibility(ui);
         }
-        // 兼容小米4.4.X手机状态栏
+        // Compatible with mi 4.4. X mobile status bar
         setMiUiStatusBarDarkMode(activity, lightStatusBar);
     }
 }

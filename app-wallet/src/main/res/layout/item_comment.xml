@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/color_white"
+    android:paddingStart="15dp"
+    android:paddingEnd="15dp"
+    android:paddingTop="15dp"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/style_middle_grey_light"
+        android:id="@+id/tv_username"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_height="match_parent"
+        android:includeFontPadding="false"
+        android:text="@string/forum_comment_name_block"/>
+
+    <TextView
+        style="@style/style_normal_black"
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:includeFontPadding="false"
+        android:lineSpacingExtra="0.1dp"
+        android:lineSpacingMultiplier="1"
+        android:text="The new coronavirus (2019-nCoV), was discovered in 2019 in Wuhan." />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_gravity="end"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/iv_vote_down"
+            android:contentDescription="@null"
+            android:layout_width="24dp"
+            android:layout_height="18dp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:src="@mipmap/icon_dislike"/>
+
+        <TextView
+            style="@style/style_middle_grey_dark"
+            android:id="@+id/tv_vote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/color_grey_dark"
+            android:maxLines="1"
+            android:hint="@string/forum_vote"/>
+
+        <ImageView
+            android:id="@+id/iv_vote_up"
+            android:contentDescription="@null"
+            android:layout_width="24dp"
+            android:layout_height="18dp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:src="@mipmap/icon_like"/>
+
+    </LinearLayout>
+
+</LinearLayout>

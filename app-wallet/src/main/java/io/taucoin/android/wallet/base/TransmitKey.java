@@ -95,4 +95,16 @@ public class TransmitKey {
     public static final String STATES_TAG_LOADED = "states_tag_loaded";
     public static final String STATES_TAG_DOWNLOAD = "states_tag_download";
     public static final String STATES_TAG_START_NO = "states_tag_start_no";
+
+    public static final String FORUM_BROWSE_MODEL = "forum_browse_model";
+    public static class ForumBrowseModel{
+        public static final String SAFE = "safe";
+        public static final String NORMAL = "normal";
+    }
+
+    public static final String MINING_MODEL = "mining_model";
+    public static class MiningModel{
+        public static final String FAST = "fast";
+        public static final String FULL_NODE = "full_node";
+    }
 }

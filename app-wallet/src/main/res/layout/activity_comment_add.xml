@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/color_main_bg">
+
+    <RelativeLayout
+        android:id="@+id/ll_toolbar"
+        android:paddingTop="15dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="15dp"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_cancel"
+            android:contentDescription="@null"
+            android:layout_width="40dp"
+            android:layout_height="28dp"
+            android:rotation="90"
+            android:src="@mipmap/icon_down"/>
+
+        <TextView
+            android:id="@+id/tv_send"
+            style="@style/style_normal_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:padding="5dp"
+            android:text="@string/forum_comment_send"
+            tools:ignore="RelativeOverlap" />
+
+
+    </RelativeLayout>
+
+    <TextView
+        style="@style/style_normal_black"
+        android:id="@+id/tv_topic_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:includeFontPadding="false"
+        android:textStyle="bold"
+        android:lineSpacingExtra="0.1dp"
+        android:lineSpacingMultiplier="1"
+        android:text="The new coronavirus (2019-nCoV), was discovered in 2019 in Wuhan." />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/color_home_bg"/>
+
+    <EditText
+        android:id="@+id/et_comment"
+        style="@style/style_normal_black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:gravity="top|start"
+        android:minHeight="150dp"
+        android:autofillHints="@string/forum_your_comment"
+        android:background="@null"
+        android:inputType="textMultiLine"
+        android:hint="@string/forum_your_comment" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp">
+
+        <TextView
+            android:id="@+id/tv_fee_title"
+            style="@style/style_normal_grey"
+            android:layout_width="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"
+            android:text="@string/tx_transaction_median_fee" />
+
+        <io.taucoin.android.wallet.widget.EditInput
+            android:id="@+id/et_fee"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="50dp" />
+
+        <ImageView
+            android:id="@+id/iv_fee"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:paddingStart="2dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingEnd="2dp"
+            android:contentDescription="@null"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/icon_arrow" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

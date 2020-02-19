@@ -37,6 +37,9 @@
 
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+
     <application
         android:name="io.taucoin.android.wallet.MyApplication"
         android:allowBackup="false"
@@ -158,6 +161,24 @@
             android:configChanges="orientation|keyboardHidden|screenSize"/>
 
         <activity android:name="io.taucoin.android.wallet.module.view.manage.IPFSInfoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
+
+        <activity android:name="io.taucoin.android.wallet.module.view.forum.TopicDetailActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
+
+        <activity android:name="io.taucoin.android.wallet.module.view.forum.PermalinkActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
+
+        <activity android:name="io.taucoin.android.wallet.module.view.forum.TopicAddActivity"
+            android:theme="@style/AnimationActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
+
+        <activity android:name="io.taucoin.android.wallet.module.view.forum.TopicSearchActivity"
+            android:theme="@style/AnimationActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
+
+        <activity android:name="io.taucoin.android.wallet.module.view.forum.CommentAddActivity"
+            android:theme="@style/AnimationActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"/>
 
     </application>

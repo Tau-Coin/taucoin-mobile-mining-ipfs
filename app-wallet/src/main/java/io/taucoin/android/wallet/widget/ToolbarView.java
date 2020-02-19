@@ -125,16 +125,8 @@ public class ToolbarView extends RelativeLayout {
         RelativeLayout rlToolBar;
 
         @OnClick(R.id.iv_left_back)
-        void leftBack() {
-            try {
-                FragmentActivity activity = (FragmentActivity)getContext();
-                if(activity instanceof MainActivity){
-                    showCloseAppDialog(activity);
-                }else{
-                    activity.finish();
-                    KeyboardUtils.hideSoftInput((FragmentActivity)getContext());
-                }
-            }catch (Exception ignore){}
+        void leftBack(View view) {
+            handleLeftBack(view);
         }
 
         ViewHolder(View view) {
@@ -142,11 +134,23 @@ public class ToolbarView extends RelativeLayout {
         }
     }
 
-    private void showCloseAppDialog(FragmentActivity activity) {
+    public static void handleLeftBack(View view){
+        try {
+            FragmentActivity activity = (FragmentActivity)view.getContext();
+            if(activity instanceof MainActivity){
+                showCloseAppDialog(activity);
+            }else{
+                activity.finish();
+                KeyboardUtils.hideSoftInput((FragmentActivity)view.getContext());
+            }
+        }catch (Exception ignore){}
+    }
+
+    private static void showCloseAppDialog(FragmentActivity activity) {
         View view = LinearLayout.inflate(activity, R.layout.view_dialog_keys, null);
         TextView tvMsg = view.findViewById(R.id.tv_msg);
         tvMsg.setText(R.string.common_exit);
-        new CommonDialog.Builder(getContext())
+        new CommonDialog.Builder(activity)
                 .setContentView(view)
                 .setButtonWidth(240)
                 .setPositiveButton(R.string.common_yes, (dialog, which) -> {

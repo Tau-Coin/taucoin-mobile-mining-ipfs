@@ -27,66 +27,68 @@
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/rb_home"
+                android:id="@+id/rb_forum"
                 style="@style/style_normal_black"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="bottom"
                 android:layout_weight="1"
                 android:background="@color/color_transparent"
+                android:paddingBottom="@dimen/dimen_size_10"
+                android:paddingTop="@dimen/dimen_size_10"
                 android:button="@null"
                 android:checked="true"
                 android:clickable="true"
                 android:focusable="true"
+                android:gravity="bottom"
+                android:textSize="0sp" />
+
+            <RadioButton
+                android:id="@+id/rb_home"
+                style="@style/style_normal_black"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                android:background="@color/color_transparent"
+                android:paddingBottom="@dimen/dimen_size_10"
+                android:paddingTop="@dimen/dimen_size_10"
+                android:button="@null"
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="center"
-                android:text="@string/main_home"
-                android:textColor="@drawable/bottom_tab_color" />
+                android:textSize="0sp"/>
 
             <RadioButton
                 android:id="@+id/rb_send_receive"
                 style="@style/style_normal_black"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1.2"
-                android:background="@color/color_transparent"
-                android:button="@null"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center"
-                android:singleLine="true"
-                android:text="@string/main_send_receive"
-                android:textColor="@drawable/bottom_tab_color" />
-
-            <RadioButton
-                android:visibility="gone"
-                android:id="@+id/rb_de_fi"
-                style="@style/style_normal_black"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="bottom"
                 android:layout_weight="1"
                 android:background="@color/color_transparent"
+                android:paddingBottom="@dimen/dimen_size_10"
+                android:paddingTop="@dimen/dimen_size_10"
                 android:button="@null"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
                 android:singleLine="true"
-                android:text="@string/main_de_fi"
-                android:textColor="@drawable/bottom_tab_color" />
+                android:textSize="0sp" />
 
             <RadioButton
                 android:id="@+id/rb_manager"
                 style="@style/style_normal_black"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="bottom"
                 android:layout_weight="1"
                 android:background="@color/color_transparent"
+                android:paddingBottom="@dimen/dimen_size_10"
+                android:paddingTop="@dimen/dimen_size_10"
                 android:button="@null"
                 android:gravity="center"
-                android:text="@string/main_manage"
-                android:textColor="@drawable/bottom_tab_color" />
+                android:textSize="0sp" />
 
         </RadioGroup>
     </LinearLayout>

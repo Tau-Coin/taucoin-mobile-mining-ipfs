@@ -1,0 +1,99 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:gravity="center_vertical">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:layout_weight="1">
+
+        <ImageView
+            android:layout_toStartOf="@+id/tv_vote"
+            android:id="@+id/iv_vote_down"
+            android:contentDescription="@null"
+            android:layout_width="24dp"
+            android:layout_height="18dp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/icon_dislike"/>
+
+        <TextView
+            style="@style/style_middle_grey_dark"
+            android:id="@+id/tv_vote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/color_grey_dark"
+            android:layout_centerInParent="true"
+            android:maxLines="1"
+            android:hint="@string/forum_vote"/>
+
+        <ImageView
+            android:layout_toEndOf="@+id/tv_vote"
+            android:id="@+id/iv_vote_up"
+            android:contentDescription="@null"
+            android:layout_width="24dp"
+            android:layout_height="18dp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/icon_like"/>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.2">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_vertical"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:contentDescription="@null"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@mipmap/icon_comment"/>
+
+            <TextView
+                style="@style/style_middle_grey_dark"
+                android:id="@+id/tv_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColorHint="@color/color_grey_dark"
+                android:includeFontPadding="false"
+                android:layout_marginStart="7dp"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:hint="@string/forum_comment"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <TextView
+        style="@style/style_middle_grey_dark"
+        android:id="@+id/tv_amount"
+        android:layout_width="0dp"
+        android:layout_weight="1.2"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:text="TAU 1,232"
+        android:includeFontPadding="false"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal|center"
+        android:maxLines="1"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMaxTextSize="14dp"
+        app:autoSizeMinTextSize="8dp"
+        app:autoSizeStepGranularity="@dimen/dimen_size_05"/>
+
+</LinearLayout>
