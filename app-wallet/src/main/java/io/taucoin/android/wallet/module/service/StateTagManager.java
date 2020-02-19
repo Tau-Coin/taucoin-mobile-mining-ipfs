@@ -1,7 +1,7 @@
 package io.taucoin.android.wallet.module.service;
 
 import android.net.Uri;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.ArrayMap;
 
 import com.github.naturs.logger.Logger;

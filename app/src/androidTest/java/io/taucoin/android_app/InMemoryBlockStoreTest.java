@@ -1,7 +1,7 @@
 package io.taucoin.android_app;
 
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
-import java.io.File;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;

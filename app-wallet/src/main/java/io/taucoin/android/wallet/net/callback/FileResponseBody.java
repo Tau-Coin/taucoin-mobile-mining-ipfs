@@ -15,9 +15,7 @@
  */
 package io.taucoin.android.wallet.net.callback;
 
-import android.support.annotation.NonNull;
-
-import com.github.naturs.logger.Logger;
+import androidx.annotation.NonNull;
 
 import org.greenrobot.eventbus.EventBus;
 

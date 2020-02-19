@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -33,15 +33,12 @@ import io.taucoin.android.service.events.PendingTransactionsEventData;
 import io.taucoin.android.service.events.TraceEventData;
 import io.taucoin.android.service.events.VMTraceCreatedEventData;
 
-import io.taucoin.core.Base58;
 import io.taucoin.core.Transaction;
 import io.taucoin.core.Utils;
 import io.taucoin.core.transaction.TransactionOptions;
 import io.taucoin.core.transaction.TransactionVersion;
 import io.taucoin.net.p2p.HelloMessage;
 import io.taucoin.util.ByteUtil;
-
-import org.spongycastle.util.encoders.Hex;
 
 public class RemoteConnectorManager implements ConnectorHandler {
 

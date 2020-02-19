@@ -16,7 +16,7 @@
 package io.taucoin.android.wallet;
 
 import android.app.Activity;
-import android.support.multidex.MultiDexApplication;
+import androidx.multidex.MultiDexApplication;
 import android.os.Bundle;
 
 import io.fabric.sdk.android.Fabric;

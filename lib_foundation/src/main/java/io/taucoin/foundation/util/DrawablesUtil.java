@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.ArrayRes;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.ArrayRes;
+import androidx.core.content.ContextCompat;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 

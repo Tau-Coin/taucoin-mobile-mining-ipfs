@@ -16,10 +16,9 @@
 package io.taucoin.android.wallet.util;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.app.NotificationManagerCompat;
+import androidx.core.app.NotificationManagerCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.widget.TextView;

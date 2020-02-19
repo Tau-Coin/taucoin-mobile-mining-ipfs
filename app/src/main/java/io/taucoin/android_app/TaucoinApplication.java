@@ -1,6 +1,6 @@
 package io.taucoin.android_app;
 
-import android.support.multidex.MultiDexApplication;
+import androidx.multidex.MultiDexApplication;
 
 public class TaucoinApplication extends MultiDexApplication {
 

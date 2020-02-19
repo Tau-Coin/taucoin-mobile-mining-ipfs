@@ -2,7 +2,7 @@ package io.taucoin.android.wallet.module.view.manage;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.github.naturs.logger.Logger;
 

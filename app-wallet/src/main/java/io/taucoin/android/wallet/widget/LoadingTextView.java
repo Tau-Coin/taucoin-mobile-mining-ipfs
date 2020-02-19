@@ -18,7 +18,7 @@ package io.taucoin.android.wallet.widget;
 
 import android.content.Context;
 import android.os.Message;
-import android.support.v7.widget.AppCompatTextView;
+import androidx.appcompat.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
 import io.taucoin.android.wallet.base.BaseHandler;

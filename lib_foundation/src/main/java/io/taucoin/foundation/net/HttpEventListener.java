@@ -1,6 +1,6 @@
 package io.taucoin.foundation.net;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.github.naturs.logger.Logger;
 

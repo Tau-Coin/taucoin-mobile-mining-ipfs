@@ -20,8 +20,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.NotificationManagerCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.core.app.NotificationManagerCompat;
 
 import io.taucoin.android.wallet.R;
 

@@ -26,11 +26,11 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 
 import java.lang.reflect.InvocationTargetException;
@@ -225,7 +225,7 @@ public class EasyPermissions {
      * @param activity       Activity requesting permissions. Should implement
      *                       {@link ActivityCompat.OnRequestPermissionsResultCallback}
      *                       or
-     *                       {@link android.support.v13.app.FragmentCompat.OnRequestPermissionsResultCallback}
+     *                       {@link androidx.core.app.FragmentCompat.OnRequestPermissionsResultCallback}
      * @param rationale      a message explaining why the application needs this set of permissions, will
      *                       be displayed if the user rejects the request the first time.
      * @param positiveButton custom text for positive button
@@ -253,7 +253,7 @@ public class EasyPermissions {
      * @param fragment        Fragment requesting permissions. Should implement
      *                       {@link ActivityCompat.OnRequestPermissionsResultCallback}
      *                       or
-     *                       {@link android.support.v13.app.FragmentCompat.OnRequestPermissionsResultCallback}
+     *                       {@link androidx.core.app.FragmentCompat.OnRequestPermissionsResultCallback}
      * @param rationale      a message explaining why the application needs this set of permissions, will
      *                       be displayed if the user rejects the request the first time.
      * @param positiveButton custom text for positive button
@@ -282,7 +282,7 @@ public class EasyPermissions {
      * @param fragment        Fragment requesting permissions. Should implement
      *                       {@link ActivityCompat.OnRequestPermissionsResultCallback}
      *                       or
-     *                       {@link android.support.v13.app.FragmentCompat.OnRequestPermissionsResultCallback}
+     *                       {@link androidx.core.app.FragmentCompat.OnRequestPermissionsResultCallback}
      * @param rationale      a message explaining why the application needs this set of permissions, will
      *                       be displayed if the user rejects the request the first time.
      * @param positiveButton custom text for positive button
@@ -311,7 +311,7 @@ public class EasyPermissions {
      * @param activity       Activity requesting permissions. Should implement
      *                       {@link ActivityCompat.OnRequestPermissionsResultCallback}
      *                       or
-     *                       {@link android.support.v13.app.FragmentCompat.OnRequestPermissionsResultCallback}
+     *                       {@link androidx.core.app.FragmentCompat.OnRequestPermissionsResultCallback}
      * @param rationale      a message explaining why the application needs this set of permissions, will
      *                       be displayed if the user rejects the request the first time.
      * @param callback    {@link PermissionCallbacks}
@@ -341,7 +341,7 @@ public class EasyPermissions {
      * @param fragment        Fragment requesting permissions. Should implement
      *                       {@link ActivityCompat.OnRequestPermissionsResultCallback}
      *                       or
-     *                       {@link android.support.v13.app.FragmentCompat.OnRequestPermissionsResultCallback}
+     *                       {@link androidx.core.app.FragmentCompat.OnRequestPermissionsResultCallback}
      * @param rationale      a message explaining why the application needs this set of permissions, will
      *                       be displayed if the user rejects the request the first time.
      * @param callback       {@link PermissionCallbacks}
@@ -371,7 +371,7 @@ public class EasyPermissions {
      * @param fragment        Fragment requesting permissions. Should implement
      *                       {@link ActivityCompat.OnRequestPermissionsResultCallback}
      *                       or
-     *                       {@link android.support.v13.app.FragmentCompat.OnRequestPermissionsResultCallback}
+     *                       {@link androidx.core.app.FragmentCompat.OnRequestPermissionsResultCallback}
      * @param rationale      a message explaining why the application needs this set of permissions, will
      *                       be displayed if the user rejects the request the first time.
      * @param callback       {@link PermissionCallbacks}
@@ -401,7 +401,7 @@ public class EasyPermissions {
      * @param object         Activity or Fragment requesting permissions. Should implement
      *                       {@link ActivityCompat.OnRequestPermissionsResultCallback}
      *                       or
-     *                       {@link android.support.v13.app.FragmentCompat.OnRequestPermissionsResultCallback}
+     *                       {@link androidx.core.app.FragmentCompat.OnRequestPermissionsResultCallback}
      * @param rationale      a message explaining why the application needs this set of permissions, will
      *                       be displayed if the user rejects the request the first time.
      * @param callback       {@link PermissionCallbacks}

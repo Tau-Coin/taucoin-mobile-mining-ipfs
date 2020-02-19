@@ -17,7 +17,7 @@ package io.taucoin.android.wallet.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +31,6 @@ import io.taucoin.android.wallet.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.taucoin.android.wallet.module.service.TxService;
 import io.taucoin.android.wallet.module.view.main.MainActivity;
 import io.taucoin.android.wallet.util.NotchUtil;
 import io.taucoin.android.wallet.util.KeyboardUtils;
