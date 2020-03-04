@@ -87,10 +87,20 @@ android {
     }
 }
 
+repositories {
+    maven {
+        url "https://jitpack.io"
+    }
+}
+
 dependencies {
     implementation(project(':lib_platform'))
+    implementation(project(':videocompressor'))
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.6'
+    implementation 'com.github.adrielcafe:AndroidAudioConverter:0.0.8'
 
     testImplementation rootProject.ext.junit
     androidTestImplementation rootProject.ext.test

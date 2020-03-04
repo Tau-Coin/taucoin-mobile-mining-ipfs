@@ -20,6 +20,7 @@ import android.widget.TextView;
 import io.taucoin.android.wallet.R;
 import io.taucoin.android.wallet.base.TransmitKey;
 import io.taucoin.android.wallet.widget.ItemTextView;
+import io.taucoin.foundation.net.callback.LogicObserver;
 import io.taucoin.foundation.util.StringUtil;
 
 public class ForumUtil {

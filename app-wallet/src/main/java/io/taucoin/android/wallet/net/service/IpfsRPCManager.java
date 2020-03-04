@@ -17,20 +17,30 @@ package io.taucoin.android.wallet.net.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongycastle.util.encoders.Hex;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 import io.ipfs.api.IPFS;
+import io.ipfs.api.MerkleNode;
+import io.ipfs.api.NamedStreamable;
 import io.ipfs.api.Peer;
+import io.ipfs.multihash.Multihash;
 import io.taucoin.android.wallet.base.TransmitKey;
 import io.taucoin.android.wallet.module.service.TxService;
 import io.taucoin.core.Transaction;
+import io.taucoin.foundation.net.callback.LogicObserver;
+import io.taucoin.foundation.util.StringUtil;
 import io.taucoin.foundation.util.ThreadPool;
 import io.taucoin.http.tau.message.NewTxMessage;
 import io.taucoin.ipfs.config.Topic;
@@ -59,6 +69,7 @@ public class IpfsRPCManager {
     private static final long RECONNECT_IPFS_DAEMON_DURATION = 3000;
 
     private static final String LOCAL_IPFS = "/ip4/127.0.0.1/tcp/5001";
+    public static final String FILE_IPFS = "http://127.0.0.1:8080/ipfs/";
 
     // temp home node id, just for test.
     private static final String HOME_NODE_ID = "id";
@@ -265,4 +276,100 @@ public class IpfsRPCManager {
     public void restartIpfsProgress() {
         TxService.startTxService(TransmitKey.ServiceType.RESTART_IPFS_PROCESS);
     }
+
+    public String uploadFile(String path) {
+        awaitInit();
+
+        if (StringUtil.isEmpty(path)) {
+            return null;
+        }
+        try {
+            File file = new File(path);
+            NamedStreamable namedStreamable = new NamedStreamable.FileWrapper(file);
+            List<MerkleNode> nodes = ipfs.add(namedStreamable, false);
+            if (nodes != null && nodes.size() == 1) {
+                return nodes.get(0).hash.toBase58();
+            }
+        } catch (IOException ioe) {
+            logger.error("uploadFile ioexception: ", ioe);
+        } catch (Exception e) {
+            logger.error("uploadFile exception: ", e);
+            if (isDaemonDisconnected(e)) {
+                onIpfsDaemonDisconnected();
+                return uploadFile(path);
+            }
+        }
+        return null;
+    }
+
+    public String putObjectData(String data) {
+        awaitInit();
+
+        if (StringUtil.isEmpty(data)) {
+            return null;
+        }
+        try {
+            byte[] dataBytes = data.getBytes(StandardCharsets.UTF_8);
+            NamedStreamable namedStreamable = new NamedStreamable.ByteArrayWrapper(dataBytes);
+            List<MerkleNode> nodes = ipfs.add(namedStreamable);
+            if (nodes != null && nodes.size() == 1) {
+                return nodes.get(0).hash.toBase58();
+            }
+        } catch (IOException ioe) {
+            logger.error("uploadObjectData ioexception: ", ioe);
+        } catch (Exception e) {
+            logger.error("uploadObjectData exception: ", e);
+            if (isDaemonDisconnected(e)) {
+                onIpfsDaemonDisconnected();
+                return putObjectData(data);
+            }
+        }
+        return null;
+    }
+
+    public byte[] getObjectData(String hash) {
+        awaitInit();
+
+        if (StringUtil.isEmpty(hash)) {
+            return null;
+        }
+        try {
+            Multihash multihash = Multihash.fromBase58(hash);
+            byte[] nodes = ipfs.cat(multihash);
+            if (nodes != null) {
+                return nodes;
+            }
+        } catch (IOException ioe) {
+            logger.error("uploadObjectData ioexception: ", ioe);
+        } catch (Exception e) {
+            logger.error("uploadObjectData exception: ", e);
+            if (isDaemonDisconnected(e)) {
+                onIpfsDaemonDisconnected();
+                return getObjectData(hash);
+            }
+        }
+        return null;
+    }
+//
+//    public byte[] getMediaData(String hash) {
+//        if (StringUtil.isEmpty(hash)) {
+//            return null;
+//        }
+//        try {
+//            Multihash multihash = Multihash.fromBase58(hash);
+//            byte[] mediaBytes  = ipfs.cat(multihash);
+//            if (mediaBytes != null) {
+//                return mediaBytes;
+//            }
+//        } catch (IOException ioe) {
+//            logger.error("getMediaData ioexception: ", ioe);
+//        } catch (Exception e) {
+//            logger.error("getMediaData exception: ", e);
+//            if (isDaemonDisconnected(e)) {
+//                onIpfsDaemonDisconnected();
+//                return getMediaData(hash);
+//            }
+//        }
+//        return null;
+//    }
 }

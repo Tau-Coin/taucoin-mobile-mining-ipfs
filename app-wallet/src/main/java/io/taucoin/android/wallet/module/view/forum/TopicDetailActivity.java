@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.google.gson.Gson;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 
@@ -14,11 +15,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.taucoin.android.wallet.R;
-import io.taucoin.android.wallet.base.BaseActivity;
+import io.taucoin.android.wallet.base.ForumBaseActivity;
+import io.taucoin.android.wallet.base.TransmitKey;
+import io.taucoin.android.wallet.db.entity.ForumTopic;
+import io.taucoin.android.wallet.module.presenter.ForumPresenter;
 import io.taucoin.android.wallet.util.ActivityUtil;
+import io.taucoin.android.wallet.util.MediaPlayerUtil;
 import io.taucoin.foundation.util.StringUtil;
 
-public class TopicDetailActivity extends BaseActivity {
+public class TopicDetailActivity extends ForumBaseActivity {
 
     @BindView(R.id.ll_best_comment)
     LinearLayout llBestComment;
@@ -36,6 +41,7 @@ public class TopicDetailActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_detail);
         ButterKnife.bind(this);
+        mPresenter = new ForumPresenter();
         initView();
     }
 
@@ -47,8 +53,10 @@ public class TopicDetailActivity extends BaseActivity {
         mAdapter = new CommentAdapter(this);
         listView.setAdapter(mAdapter);
 
+        String data = getIntent().getStringExtra(TransmitKey.DATA);
+        ForumTopic bean = new Gson().fromJson(data, ForumTopic.class);
         TopicAdapter.ViewHolder viewHolder = new TopicAdapter.ViewHolder(itemTopic);
-        TopicAdapter.handleDetailView(this, viewHolder, 0);
+        TopicAdapter.handleDetailView(this, viewHolder, bean);
     }
 
     @OnClick({R.id.tv_add_comment, R.id.ll_best_comment, R.id.iv_to_top_bottom})
@@ -90,5 +98,29 @@ public class TopicDetailActivity extends BaseActivity {
     @Override
     public void onLoadmore(RefreshLayout refreshlayout) {
         refreshLayout.finishLoadmore(100);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MediaPlayerUtil.getInstance().resume(TopicDetailActivity.class);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MediaPlayerUtil.getInstance().pause(TopicDetailActivity.class);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        MediaPlayerUtil.getInstance().destroyView(1);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MediaPlayerUtil.getInstance().destroyView(2);
     }
 }

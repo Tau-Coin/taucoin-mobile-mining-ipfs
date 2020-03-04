@@ -19,6 +19,8 @@ import android.app.Activity;
 import androidx.multidex.MultiDexApplication;
 import android.os.Bundle;
 
+import cafe.adriel.androidaudioconverter.AndroidAudioConverter;
+import cafe.adriel.androidaudioconverter.callback.ILoadCallback;
 import io.fabric.sdk.android.Fabric;
 import io.taucoin.android.wallet.db.entity.KeyValue;
 import io.taucoin.android.wallet.module.bean.MessageEvent;
@@ -87,6 +89,17 @@ public class MyApplication extends MultiDexApplication {
         registerCurrentActivityLifecycleCallbacks();
 
         mRemoteConnector = new RemoteConnectorManager();
+
+        AndroidAudioConverter.load(this, new ILoadCallback() {
+            @Override
+            public void onSuccess() {
+                Logger.i("AndroidAudioConverter load onSuccess");
+            }
+            @Override
+            public void onFailure(Exception error) {
+                Logger.i("FFmpeg is not supported by device");
+            }
+        });
     }
 
     private void initKeyValue() {

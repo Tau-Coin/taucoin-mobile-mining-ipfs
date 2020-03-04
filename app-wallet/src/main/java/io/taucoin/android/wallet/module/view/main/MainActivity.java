@@ -24,7 +24,7 @@ import butterknife.OnCheckedChanged;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 import io.taucoin.android.wallet.MyApplication;
-import io.taucoin.android.wallet.base.BaseActivity;
+import io.taucoin.android.wallet.base.ForumBaseActivity;
 import io.taucoin.android.wallet.base.TransmitKey;
 import io.taucoin.android.wallet.module.service.DaemonJobService;
 import io.taucoin.android.wallet.module.service.NotifyManager;
@@ -40,7 +40,7 @@ import io.taucoin.foundation.util.ActivityManager;
 import io.taucoin.foundation.util.AppUtil;
 import io.taucoin.foundation.util.DrawablesUtil;
 
-public class MainActivity extends BaseActivity implements IMainView {
+public class MainActivity extends ForumBaseActivity implements IMainView {
     @BindView(R.id.rb_home)
     RadioButton rbHome;
     @BindView(R.id.rb_send_receive)

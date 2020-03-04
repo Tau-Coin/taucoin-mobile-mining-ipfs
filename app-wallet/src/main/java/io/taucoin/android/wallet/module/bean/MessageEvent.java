@@ -25,7 +25,10 @@ public class MessageEvent {
         IRREPARABLE_ERROR,
         APP_BACK_TO_FRONT,
         SWITCH_STOP_MINING,
-        HASH_PAIR_SYNC
+        HASH_PAIR_SYNC,
+
+        COMPRESSION_FAIL,
+        COMPRESSION_SUCCESS,
     }
     private Object data;
 

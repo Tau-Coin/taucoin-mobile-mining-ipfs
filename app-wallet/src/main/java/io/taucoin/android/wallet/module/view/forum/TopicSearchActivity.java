@@ -14,6 +14,8 @@ import com.github.naturs.logger.Logger;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -23,15 +25,19 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import io.taucoin.android.wallet.R;
-import io.taucoin.android.wallet.base.BaseActivity;
+import io.taucoin.android.wallet.base.ForumBaseActivity;
+import io.taucoin.android.wallet.db.entity.ForumTopic;
+import io.taucoin.android.wallet.module.presenter.ForumPresenter;
 import io.taucoin.android.wallet.net.callback.CommonObserver;
 import io.taucoin.android.wallet.util.KeyboardUtils;
+import io.taucoin.android.wallet.util.MediaPlayerUtil;
 import io.taucoin.android.wallet.util.NotchUtil;
 import io.taucoin.android.wallet.widget.ToolbarView;
+import io.taucoin.foundation.net.callback.LogicObserver;
 import io.taucoin.foundation.util.FitStateUI;
 import io.taucoin.foundation.util.StringUtil;
 
-public class TopicSearchActivity extends BaseActivity {
+public class TopicSearchActivity extends ForumBaseActivity {
 
     @BindView(R.id.list_view)
     ListView listView;
@@ -45,14 +51,31 @@ public class TopicSearchActivity extends BaseActivity {
     TextView tvSearchKey;
 
     private TopicAdapter mAdapter;
+    private List<ForumTopic> topicsList = new ArrayList<>();
+    private int mPage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_search);
         ButterKnife.bind(this);
+        mPresenter = new ForumPresenter();
         initView();
         hideOrShowSearchView(false);
+        loadData();
+    }
+
+    private void loadData() {
+        mPresenter.getForumTopicList(new LogicObserver<List<ForumTopic>>() {
+            @Override
+            public void handleData(List<ForumTopic> forumTopics) {
+                topicsList.clear();
+                if(forumTopics.size() > 0){
+                    topicsList.addAll(forumTopics);
+                    mAdapter.setListData(topicsList);
+                }
+            }
+        });
     }
 
     // Initialize page view components
@@ -117,11 +140,13 @@ public class TopicSearchActivity extends BaseActivity {
 
     @Override
     public void onRefresh(RefreshLayout refreshlayout) {
+        loadData();
         refreshLayout.finishRefresh(100);
     }
 
     @Override
     public void onLoadmore(RefreshLayout refreshlayout) {
+        loadData();
         refreshLayout.finishLoadmore(100);
     }
 
@@ -136,5 +161,29 @@ public class TopicSearchActivity extends BaseActivity {
                 }
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MediaPlayerUtil.getInstance().resume(TopicSearchActivity.class);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MediaPlayerUtil.getInstance().pause(TopicSearchActivity.class);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        MediaPlayerUtil.getInstance().destroyView(1);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MediaPlayerUtil.getInstance().destroyView(1);
     }
 }
