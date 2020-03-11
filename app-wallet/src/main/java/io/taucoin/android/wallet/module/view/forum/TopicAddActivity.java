@@ -128,7 +128,7 @@ public class TopicAddActivity extends ForumBaseActivity implements PhotoItemSele
         forumTopic.setType(type);
         forumTopic.setFee(0);
         forumTopic.setTimeStamp(DateUtil.getTime());
-        forumTopic.setSender(MyApplication.getKeyValue().getAddress());
+        forumTopic.setTSender(MyApplication.getKeyValue().getAddress());
         switch (type){
             case 0:
                 forumTopic.setText(text);
@@ -142,7 +142,6 @@ public class TopicAddActivity extends ForumBaseActivity implements PhotoItemSele
             default:
                 break;
         }
-        ToastUtils.showShortToast(R.string.forum_post_successfully);
     }
 
     @Override

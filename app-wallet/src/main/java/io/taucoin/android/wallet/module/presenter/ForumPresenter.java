@@ -23,11 +23,18 @@ import java.util.List;
 import java.util.Map;
 
 import androidx.fragment.app.FragmentActivity;
+import io.taucoin.android.wallet.MyApplication;
+import io.taucoin.android.wallet.R;
 import io.taucoin.android.wallet.db.entity.ForumTopic;
 import io.taucoin.android.wallet.module.bean.MediaBean;
+import io.taucoin.android.wallet.module.bean.MessageEvent;
 import io.taucoin.android.wallet.module.model.ForumModel;
 import io.taucoin.android.wallet.module.model.IForumModel;
+import io.taucoin.android.wallet.util.DateUtil;
+import io.taucoin.android.wallet.util.EventBusUtil;
+import io.taucoin.android.wallet.util.ToastUtils;
 import io.taucoin.foundation.net.callback.LogicObserver;
+import io.taucoin.foundation.util.StringUtil;
 
 public class ForumPresenter {
     private IForumModel mForumModel;
@@ -44,11 +51,55 @@ public class ForumPresenter {
     }
 
     public void postMedia(ForumTopic forumTopic) {
-        mForumModel.postMedia(forumTopic);
+        mForumModel.postMedia(forumTopic, new LogicObserver<Boolean>() {
+            @Override
+            public void handleData(Boolean aBoolean) {
+                ToastUtils.showShortToast(R.string.forum_post_successfully);
+                EventBusUtil.post(MessageEvent.EventCode.TOPIC_REFRESH);
+            }
+
+            @Override
+            public void handleError(int code, String msg) {
+                ToastUtils.showShortToast(R.string.forum_post_failed);
+                EventBusUtil.post(MessageEvent.EventCode.TOPIC_REFRESH);
+            }
+        });
     }
 
-    public void getForumTopicList(LogicObserver<List<ForumTopic>> observer) {
-        mForumModel.getForumTopicList(observer);
+    public void postComment(ForumTopic forumTopic) {
+        if(forumTopic == null){
+            return;
+        }
+        if(StringUtil.isEmpty(forumTopic.getText())){
+            ToastUtils.showShortToast(R.string.forum_comment_invalid);
+            return;
+        }
+        forumTopic.setType(1);
+        mForumModel.postMedia(forumTopic, new LogicObserver<Boolean>() {
+            @Override
+            public void handleData(Boolean aBoolean) {
+                ToastUtils.showShortToast(R.string.forum_comment_successfully);
+                EventBusUtil.post(MessageEvent.EventCode.COMMENT_REFRESH);
+            }
+
+            @Override
+            public void handleError(int code, String msg) {
+                ToastUtils.showShortToast(R.string.forum_comment_failed);
+                EventBusUtil.post(MessageEvent.EventCode.COMMENT_REFRESH);
+            }
+        });
+    }
+
+    public void getForumTopicList(int pageNo, String time, LogicObserver<List<ForumTopic>> observer) {
+        mForumModel.getForumTopicList(pageNo, time, observer);
+    }
+
+    public void getCommentList(int pageNo, String time, String replayId, LogicObserver<List<ForumTopic>> observer) {
+        mForumModel.getCommentList(pageNo, time, replayId, observer);
+    }
+
+    public void getSearchTopicList(int pageNo, String time, String searchKey, LogicObserver<List<ForumTopic>> observer) {
+        mForumModel.getSearchTopicList(pageNo, time, searchKey, observer);
     }
 
     public void picCompression(LocalMedia localMedia) {
@@ -74,7 +125,7 @@ public class ForumPresenter {
 
             @Override
             public void handleError(int code, String msg) {
-                super.handleError(code, msg);
+                ToastUtils.showShortToast(R.string.forum_post_failed);
             }
         });
     }

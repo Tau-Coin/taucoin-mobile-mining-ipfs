@@ -24,12 +24,12 @@
         android:layout_marginTop="15dp">
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/tv_browse"
             style="@style/style_browse_white"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/shape_oval_young"
-            android:layout_marginEnd="10dp"
             android:layout_marginStart="10dp"
             android:gravity="center_vertical|center"
             android:text="@string/forum_normal"/>
@@ -39,6 +39,7 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
+            android:layout_marginStart="10dp"
             android:orientation="horizontal"
             android:background="@drawable/light_grey_rect_round_bg">
 
@@ -90,7 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@color/color_home_bg"
-            android:dividerHeight="10dp"
+            android:dividerHeight="7dp"
             android:scrollbars="none" />
 
         <io.taucoin.android.wallet.widget.refresh.ClassicsFooter

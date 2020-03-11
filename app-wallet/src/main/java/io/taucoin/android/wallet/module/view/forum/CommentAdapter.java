@@ -13,31 +13,30 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.taucoin.android.wallet.R;
-import io.taucoin.android.wallet.db.entity.KeyValue;
+import io.taucoin.android.wallet.db.entity.ForumTopic;
 
 public class CommentAdapter extends BaseAdapter {
 
-    private List<KeyValue> list = new ArrayList<>();
+    private List<ForumTopic> list = new ArrayList<>();
     private TopicDetailActivity activity;
 
     CommentAdapter(TopicDetailActivity activity) {
         this.activity = activity;
     }
 
-    void setListData(List<KeyValue> list) {
+    void setListData(List<ForumTopic> list) {
         this.list = list;
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return 10;
+        return list.size();
     }
 
     @Override
     public Object getItem(int position) {
-//        return list.get(position);
-        return position;
+        return list.get(position);
     }
 
     @Override
@@ -55,6 +54,8 @@ public class CommentAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+        ForumTopic bean = list.get(position);
+        viewHolder.tvTitle.setText(bean.getText());
         return convertView;
     }
 

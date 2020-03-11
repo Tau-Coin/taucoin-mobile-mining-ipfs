@@ -26,6 +26,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.taucoin.android.wallet.R;
+import io.taucoin.android.wallet.util.FmtMicrometer;
 
 public class ForumComment extends RelativeLayout {
     private ViewHolder viewHolder;
@@ -49,6 +50,28 @@ public class ForumComment extends RelativeLayout {
     private void loadView() {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_forum_commnet, this, true);
         viewHolder = new ViewHolder(view);
+    }
+
+    public void setData(int commentCount, long tauTotal) {
+        String commentCountStr = getResources().getString(R.string.forum_comment_count);
+
+        commentCountStr = String.format(commentCountStr, revisionUnit(commentCount));
+        viewHolder.tvComment.setText(commentCountStr);
+
+        String tauTotalStr = getResources().getString(R.string.forum_tau_count);
+        tauTotalStr = String.format(tauTotalStr, FmtMicrometer.fmtMoney(tauTotal));
+        viewHolder.tvAmount.setText(tauTotalStr);
+    }
+
+    private String revisionUnit(int commentCount) {
+        String revisionResult;
+        if(commentCount >= 1000){
+            revisionResult = FmtMicrometer.fmtDecimal((double) commentCount / 1000, FmtMicrometer.mDecimal1Pattern);
+            revisionResult += "k";
+        }else{
+            revisionResult = String.valueOf(commentCount);
+        }
+        return revisionResult;
     }
 
     class ViewHolder {

@@ -6,6 +6,7 @@
     android:gravity="center_vertical">
 
     <RelativeLayout
+        android:visibility="gone"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
@@ -86,7 +87,7 @@
         android:layout_weight="1.2"
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
-        android:text="TAU 1,232"
+        android:text="@string/forum_switched_fast_content"
         android:includeFontPadding="false"
         android:layout_height="match_parent"
         android:gravity="center_horizontal|center"

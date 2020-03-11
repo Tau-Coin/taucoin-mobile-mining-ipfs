@@ -10,6 +10,9 @@ import android.widget.TextView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,13 +23,14 @@ import io.taucoin.android.wallet.base.BaseFragment;
 import io.taucoin.android.wallet.base.ForumBaseActivity;
 import io.taucoin.android.wallet.base.TransmitKey;
 import io.taucoin.android.wallet.db.entity.ForumTopic;
+import io.taucoin.android.wallet.module.bean.MessageEvent;
 import io.taucoin.android.wallet.module.presenter.ForumPresenter;
 import io.taucoin.android.wallet.module.view.forum.TopicAdapter;
 import io.taucoin.android.wallet.module.view.forum.TopicAddActivity;
 import io.taucoin.android.wallet.module.view.forum.TopicSearchActivity;
 import io.taucoin.android.wallet.util.ActivityUtil;
+import io.taucoin.android.wallet.util.DateUtil;
 import io.taucoin.android.wallet.util.ForumUtil;
-import io.taucoin.android.wallet.util.MediaPlayerUtil;
 import io.taucoin.foundation.net.callback.LogicObserver;
 
 /**
@@ -44,7 +48,8 @@ public class ForumFragment extends BaseFragment {
     private ForumPresenter mPresenter;
     private TopicAdapter mAdapter;
     private List<ForumTopic> topicsList = new ArrayList<>();
-    private int mPage = 0;
+    private int mPageNo = 1;
+    private String mTime;
 
     @Override
     public View getViewLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,19 +57,25 @@ public class ForumFragment extends BaseFragment {
         butterKnifeBinder(this, view);
         mPresenter = new ForumPresenter();
         initView();
-        loadData();
+        onRefresh(null);
         return view;
     }
 
     private void loadData() {
-        mPresenter.getForumTopicList(new LogicObserver<List<ForumTopic>>() {
+        mPresenter.getForumTopicList(mPageNo, mTime, new LogicObserver<List<ForumTopic>>() {
             @Override
             public void handleData(List<ForumTopic> forumTopics) {
-                topicsList.clear();
+                if(mPageNo == 1){
+                    topicsList.clear();
+                }
                 if(forumTopics.size() > 0){
                     topicsList.addAll(forumTopics);
                     mAdapter.setListData(topicsList);
                 }
+                boolean isLoadMore = topicsList.size() % TransmitKey.PAGE_SIZE == 0 && topicsList.size() > 0;
+                refreshLayout.setEnableLoadmore(isLoadMore);
+                refreshLayout.finishLoadmore(100);
+                refreshLayout.finishRefresh(100);
             }
         });
     }
@@ -100,32 +111,27 @@ public class ForumFragment extends BaseFragment {
     }
 
     @Override
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(MessageEvent object) {
+        switch (object.getCode()) {
+            case TOPIC_REFRESH:
+                onRefresh(null);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
     public void onRefresh(RefreshLayout refreshlayout) {
+        mPageNo = 1;
+        mTime = DateUtil.getCurrentTime();
         loadData();
-        refreshLayout.finishRefresh(100);
     }
 
     @Override
     public void onLoadmore(RefreshLayout refreshlayout) {
+        mPageNo += 1;
         loadData();
-        refreshLayout.finishLoadmore(100);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        MediaPlayerUtil.getInstance().resume(ForumFragment.class);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        MediaPlayerUtil.getInstance().pause(ForumFragment.class);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        MediaPlayerUtil.getInstance().destroy();
     }
 }

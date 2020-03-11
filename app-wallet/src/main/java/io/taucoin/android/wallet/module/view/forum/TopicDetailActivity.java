@@ -1,6 +1,6 @@
 package io.taucoin.android.wallet.module.view.forum;
 
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,6 +11,14 @@ import com.google.gson.Gson;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -18,9 +26,11 @@ import io.taucoin.android.wallet.R;
 import io.taucoin.android.wallet.base.ForumBaseActivity;
 import io.taucoin.android.wallet.base.TransmitKey;
 import io.taucoin.android.wallet.db.entity.ForumTopic;
+import io.taucoin.android.wallet.module.bean.MessageEvent;
 import io.taucoin.android.wallet.module.presenter.ForumPresenter;
 import io.taucoin.android.wallet.util.ActivityUtil;
-import io.taucoin.android.wallet.util.MediaPlayerUtil;
+import io.taucoin.android.wallet.util.DateUtil;
+import io.taucoin.foundation.net.callback.LogicObserver;
 import io.taucoin.foundation.util.StringUtil;
 
 public class TopicDetailActivity extends ForumBaseActivity {
@@ -33,8 +43,14 @@ public class TopicDetailActivity extends ForumBaseActivity {
     ListView listView;
     @BindView(R.id.refresh_layout)
     SmartRefreshLayout refreshLayout;
+    @BindView(R.id.scroll_view)
+    NestedScrollView scrollView;
 
+    private List<ForumTopic> topicsList = new ArrayList<>();
     private CommentAdapter mAdapter;
+    private int mPageNo = 1;
+    private String mTime;
+    private String replyId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +71,12 @@ public class TopicDetailActivity extends ForumBaseActivity {
 
         String data = getIntent().getStringExtra(TransmitKey.DATA);
         ForumTopic bean = new Gson().fromJson(data, ForumTopic.class);
-        TopicAdapter.ViewHolder viewHolder = new TopicAdapter.ViewHolder(itemTopic);
-        TopicAdapter.handleDetailView(this, viewHolder, bean);
+        if(bean != null){
+            TopicAdapter.ViewHolder viewHolder = new TopicAdapter.ViewHolder(itemTopic);
+            TopicAdapter.handleDetailView(this, viewHolder, bean);
+            replyId = bean.getTxId();
+            onRefresh(null);
+        }
     }
 
     @OnClick({R.id.tv_add_comment, R.id.ll_best_comment, R.id.iv_to_top_bottom})
@@ -65,7 +85,7 @@ public class TopicDetailActivity extends ForumBaseActivity {
             case R.id.ll_best_comment:
                 break;
             case R.id.tv_add_comment:
-                ActivityUtil.startActivity(this, CommentAddActivity.class);
+                ActivityUtil.startActivity(getIntent(), this, CommentAddActivity.class);
                 break;
             case R.id.iv_to_top_bottom:
                 scrollToTopOrBottom((ImageView)view);
@@ -78,49 +98,62 @@ public class TopicDetailActivity extends ForumBaseActivity {
     private void scrollToTopOrBottom(ImageView view){
         int tag = StringUtil.getIntTag(view);
         if (tag == 0) {
-            listView.smoothScrollByOffset(10);
-            listView.smoothScrollToPosition(listView.getCount() - 1);
+            scrollView.fullScroll(NestedScrollView.FOCUS_DOWN);
             view.setTag(1);
             view.setImageResource(R.mipmap.icon_up);
         }else{
-            listView.smoothScrollByOffset(10);
-            listView.smoothScrollToPosition(0);
+            scrollView.fullScroll(NestedScrollView.FOCUS_UP);
             view.setTag(0);
             view.setImageResource(R.mipmap.icon_down);
         }
     }
 
+    private void loadData() {
+        mPresenter.getCommentList(mPageNo, mTime, replyId, new LogicObserver<List<ForumTopic>>() {
+            @Override
+            public void handleData(List<ForumTopic> forumTopics) {
+                if(mPageNo == 1){
+                    topicsList.clear();
+                }
+                if(forumTopics.size() > 0){
+                    topicsList.addAll(forumTopics);
+                    mAdapter.setListData(topicsList);
+                }
+                boolean isLoadMore = topicsList.size() % TransmitKey.PAGE_SIZE == 0 && topicsList.size() > 0;
+                refreshLayout.setEnableLoadmore(isLoadMore);
+                refreshLayout.finishLoadmore(100);
+                refreshLayout.finishRefresh(100);
+            }
+        });
+    }
+
+    @Override
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(MessageEvent object) {
+        switch (object.getCode()) {
+            case COMMENT_REFRESH:
+                onRefresh(null);
+                break;
+            default:
+                break;
+        }
+    }
+
     @Override
     public void onRefresh(RefreshLayout refreshlayout) {
-        refreshLayout.finishRefresh(100);
+        mPageNo = 1;
+        mTime = DateUtil.getCurrentTime();
+        loadData();
     }
 
     @Override
     public void onLoadmore(RefreshLayout refreshlayout) {
-        refreshLayout.finishLoadmore(100);
+        mPageNo += 1;
+        loadData();
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        MediaPlayerUtil.getInstance().resume(TopicDetailActivity.class);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        MediaPlayerUtil.getInstance().pause(TopicDetailActivity.class);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        MediaPlayerUtil.getInstance().destroyView(1);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        MediaPlayerUtil.getInstance().destroyView(2);
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

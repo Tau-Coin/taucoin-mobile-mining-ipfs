@@ -101,6 +101,7 @@ dependencies {
 
     implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.6'
     implementation 'com.github.adrielcafe:AndroidAudioConverter:0.0.8'
+    implementation 'com.github.itlwy:LPopupMenu:v1.1'
 
     testImplementation rootProject.ext.junit
     androidTestImplementation rootProject.ext.test

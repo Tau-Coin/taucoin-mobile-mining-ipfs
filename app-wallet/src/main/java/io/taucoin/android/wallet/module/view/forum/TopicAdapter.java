@@ -20,6 +20,8 @@ import com.google.gson.Gson;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DateUtils;
+import com.lwy.righttopmenu.MenuItem;
+import com.lwy.righttopmenu.RightTopMenu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,9 @@ import io.taucoin.android.wallet.util.ActivityUtil;
 import io.taucoin.android.wallet.util.ForumUtil;
 import io.taucoin.android.wallet.util.GlideEngine;
 import io.taucoin.android.wallet.util.MediaPlayerUtil;
+import io.taucoin.android.wallet.util.PopupMenuUtil;
+import io.taucoin.android.wallet.util.ToastUtils;
+import io.taucoin.android.wallet.widget.ForumComment;
 import io.taucoin.foundation.net.callback.LogicObserver;
 import io.taucoin.foundation.util.StringUtil;
 
@@ -130,6 +135,7 @@ public class TopicAdapter extends BaseAdapter {
 
         int txtRid = pageType == 2 ? R.string.forum_block : R.string.forum_posted;
         viewHolder.tvUsername.setText(txtRid);
+        viewHolder.forumComment.setData(bean.getCommentCount(), bean.getTauTotal());
 
         if(pageType != 3){
             viewHolder.rootView.setOnClickListener(v -> {
@@ -137,8 +143,10 @@ public class TopicAdapter extends BaseAdapter {
                 intent.putExtra(TransmitKey.DATA, new Gson().toJson(bean));
                 ActivityUtil.startActivity(intent, activity, TopicDetailActivity.class);});
         }
-        viewHolder.llPermalink.setVisibility(pageType == 2 ? View.GONE : View.VISIBLE);
-        viewHolder.llPermalink.setOnClickListener(v -> ActivityUtil.startActivity(activity, PermalinkActivity.class));
+//        viewHolder.llPermalink.setVisibility(pageType == 2 ? View.GONE : View.VISIBLE);
+//        viewHolder.llPermalink.setOnClickListener(v -> ActivityUtil.startActivity(activity, PermalinkActivity.class));
+        viewHolder.llPermalink.setVisibility(View.GONE);
+        viewHolder.tvMore.setOnClickListener(v -> showMenuItem(activity, v, bean));
     }
 
     private static void handlePicView(ForumBaseActivity activity, ViewHolder viewHolder, ForumTopic bean) {
@@ -274,6 +282,10 @@ public class TopicAdapter extends BaseAdapter {
         View rlAudio;
         @BindView(R.id.iv_play_pause)
         public ImageView ivPlayPause;
+        @BindView(R.id.tv_more)
+        public TextView tvMore;
+        @BindView(R.id.forum_comment)
+        public ForumComment forumComment;
         View rootView;
 
         public int pageType;
@@ -297,5 +309,27 @@ public class TopicAdapter extends BaseAdapter {
                 .isNotPreviewDownload(true)
                 .loadImageEngine(GlideEngine.createGlideEngine())
                 .openExternalPreview(0, selectList);
+    }
+
+
+    private static void showMenuItem(FragmentActivity activity, View view, ForumTopic bean){
+        List<MenuItem> menuItems = new ArrayList<>();
+        menuItems.add(new MenuItem(R.mipmap.icon_add, "Favorite"));
+        menuItems.add(new MenuItem(R.mipmap.icon_add, "IPFS Address"));
+        menuItems.add(new MenuItem(R.mipmap.icon_add, "Spam Address"));
+        menuItems.add(new MenuItem(R.mipmap.icon_add, "Follow Address"));
+        PopupMenuUtil.showMenuItem(activity, view, menuItems, pos -> {
+            ToastUtils.showShortToast("pos=" + pos);
+            switch (pos){
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                default:
+                    break;
+            }
+        });
     }
 }

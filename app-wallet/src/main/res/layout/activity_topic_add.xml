@@ -42,199 +42,218 @@
 
     </RelativeLayout>
 
-    <TextView
-        style="@style/style_normal_black"
-        android:id="@+id/tv_topic_title"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:includeFontPadding="false"
-        android:textStyle="bold"
-        android:lineSpacingExtra="0.1dp"
-        android:lineSpacingMultiplier="1"
-        android:text="@string/forum_tau_community" />
+        android:layout_height="match_parent">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:background="@color/color_home_bg"/>
-
-    <EditText
-        android:id="@+id/et_title"
-        style="@style/style_normal_black"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:gravity="top|start"
-        android:minHeight="50dp"
-        android:autofillHints="@string/forum_topic_title_hint"
-        android:background="@null"
-        android:inputType="textMultiLine"
-        android:hint="@string/forum_topic_title_hint" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/color_home_bg"/>
-
-    <EditText
-        android:id="@+id/et_text"
-        style="@style/style_normal_black"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:gravity="top|start"
-        android:minHeight="80dp"
-        android:autofillHints="@string/forum_topic_text_hint"
-        android:background="@null"
-        android:inputType="textMultiLine"
-        android:hint="@string/forum_topic_text_hint" />
-
-    <include
-        android:id="@+id/media_view"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginTop="10dp"
-        layout="@layout/gv_filter_image"/>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:baselineAligned="false"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginTop="30dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/iv_camera"
-                android:contentDescription="@null"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:src="@mipmap/icon_comment"/>
 
             <TextView
                 style="@style/style_normal_black"
-                android:layout_below="@+id/iv_camera"
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_topic_title"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="5dp"
-                android:gravity="center_horizontal"
-                android:text="@string/forum_camera"/>
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:includeFontPadding="false"
+                android:textStyle="bold"
+                android:lineSpacingExtra="0.1dp"
+                android:lineSpacingMultiplier="1"
+                android:text="@string/forum_tau_community" />
 
-        </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/color_home_bg"/>
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/iv_library"
-                android:contentDescription="@null"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:src="@mipmap/icon_comment"/>
-
-            <TextView
+            <EditText
+                android:id="@+id/et_title"
                 style="@style/style_normal_black"
-                android:layout_below="@+id/iv_library"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="5dp"
-                android:gravity="center_horizontal"
-                android:text="@string/forum_library"/>
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:gravity="top|start"
+                android:minHeight="50dp"
+                android:autofillHints="@string/forum_topic_title_hint"
+                android:background="@null"
+                android:inputType="textMultiLine"
+                android:hint="@string/forum_topic_title_hint" />
 
-        </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/color_home_bg"/>
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/iv_voice"
-                android:contentDescription="@null"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:src="@mipmap/icon_comment"/>
-
-            <TextView
+            <EditText
+                android:id="@+id/et_text"
                 style="@style/style_normal_black"
-                android:layout_below="@+id/iv_voice"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="5dp"
-                android:gravity="center_horizontal"
-                android:text="@string/forum_voice"/>
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:gravity="top|start"
+                android:minHeight="100dp"
+                android:maxHeight="240dp"
+                android:autofillHints="@string/forum_topic_text_hint"
+                android:background="@null"
+                android:inputType="textMultiLine"
+                android:hint="@string/forum_topic_text_hint" />
 
-        </RelativeLayout>
+            <include
+                android:visibility="gone"
+                android:id="@+id/media_view"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="10dp"
+                layout="@layout/gv_filter_image"/>
 
-    </LinearLayout>
+            <LinearLayout
+                android:visibility="gone"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="end"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="15dp">
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tv_fee_title"
-            style="@style/style_normal_grey"
-            android:layout_width="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_height="wrap_content"
-            android:text="@string/tx_transaction_median_fee" />
+                    <ImageView
+                        android:id="@+id/iv_camera"
+                        android:contentDescription="@null"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerHorizontal="true"
+                        android:src="@mipmap/icon_comment"/>
 
-        <io.taucoin.android.wallet.widget.EditInput
-            android:id="@+id/et_fee"
-            android:layout_marginStart="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="50dp" />
+                    <TextView
+                        style="@style/style_normal_black"
+                        android:layout_below="@+id/iv_camera"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_horizontal"
+                        android:text="@string/forum_camera"/>
 
-        <ImageView
-            android:id="@+id/iv_fee"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:paddingStart="2dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
-            android:paddingEnd="2dp"
-            android:contentDescription="@null"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/icon_arrow" />
+                </RelativeLayout>
 
-    </LinearLayout>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/iv_library"
+                        android:contentDescription="@null"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerHorizontal="true"
+                        android:src="@mipmap/icon_comment"/>
+
+                    <TextView
+                        style="@style/style_normal_black"
+                        android:layout_below="@+id/iv_library"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_horizontal"
+                        android:text="@string/forum_library"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/iv_voice"
+                        android:contentDescription="@null"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerHorizontal="true"
+                        android:src="@mipmap/icon_comment"/>
+
+                    <TextView
+                        style="@style/style_normal_black"
+                        android:layout_below="@+id/iv_voice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_horizontal"
+                        android:text="@string/forum_voice"/>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/color_home_bg"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="15dp">
+
+                <TextView
+                    android:id="@+id/tv_fee_title"
+                    style="@style/style_normal_grey"
+                    android:layout_width="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tx_transaction_median_fee" />
+
+                <io.taucoin.android.wallet.widget.EditInput
+                    android:id="@+id/et_fee"
+                    android:layout_marginStart="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="50dp" />
+
+                <ImageView
+                    android:id="@+id/iv_fee"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:paddingStart="2dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:paddingEnd="2dp"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/icon_arrow" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

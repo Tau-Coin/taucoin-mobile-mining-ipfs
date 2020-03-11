@@ -16,16 +16,19 @@
 package io.taucoin.android.wallet.module.model;
 
 import com.github.naturs.logger.Logger;
+import com.google.bitcoin.bouncycastle.util.encoders.Hex;
 import com.google.gson.Gson;
 import com.luck.picture.lib.entity.LocalMedia;
 
 import java.io.File;
 import java.util.List;
+import java.util.Random;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import io.taucoin.android.wallet.MyApplication;
 import io.taucoin.android.wallet.db.entity.ForumTopic;
 import io.taucoin.android.wallet.db.util.ForumTopicDaoUtils;
 import io.taucoin.android.wallet.module.bean.AudioBean;
@@ -35,6 +38,7 @@ import io.taucoin.android.wallet.module.bean.NameAndType;
 import io.taucoin.android.wallet.module.bean.PicBean;
 import io.taucoin.android.wallet.module.bean.VideoBean;
 import io.taucoin.android.wallet.net.service.IpfsRPCManager;
+import io.taucoin.android.wallet.util.DateUtil;
 import io.taucoin.android.wallet.util.EventBusUtil;
 import io.taucoin.android.wallet.util.MultimediaUtil;
 import io.taucoin.foundation.net.callback.LogicObserver;
@@ -47,14 +51,46 @@ import static io.taucoin.android.wallet.module.bean.MessageEvent.EventCode.COMPR
 public class ForumModel implements IForumModel{
 
     @Override
-    public void postMedia(ForumTopic forumTopic) {
-        ForumTopicDaoUtils.getInstance().insert(forumTopic);
+    public void postMedia(ForumTopic forumTopic, LogicObserver<Boolean> observer) {
+        Observable.create((ObservableOnSubscribe<Boolean>) emitter -> {
+            String txId = String.valueOf(new Random(1000).nextDouble());
+            forumTopic.setTxId(txId);
+            forumTopic.setTimeStamp(DateUtil.getTime());
+            forumTopic.setTSender(MyApplication.getKeyValue().getAddress());
+            long result = ForumTopicDaoUtils.getInstance().insert(forumTopic);
+            emitter.onNext(result > 0);
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(observer);
     }
 
     @Override
-    public void getForumTopicList(LogicObserver<List<ForumTopic>> observer) {
+    public void getForumTopicList(int pageNo, String time, LogicObserver<List<ForumTopic>> observer) {
         Observable.create((ObservableOnSubscribe<List<ForumTopic>>) emitter -> {
-            List<ForumTopic> list = ForumTopicDaoUtils.getInstance().query();
+            List<ForumTopic> list = ForumTopicDaoUtils.getInstance().query(pageNo, time, 0);
+            emitter.onNext(list);
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(observer);
+    }
+
+    @Override
+    public void getCommentList(int pageNo, String time, String replayId, LogicObserver<List<ForumTopic>> observer) {
+        Observable.create((ObservableOnSubscribe<List<ForumTopic>>) emitter -> {
+            List<ForumTopic> list = ForumTopicDaoUtils.getInstance().queryComment(pageNo, time, replayId, 1);
+            emitter.onNext(list);
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(observer);
+    }
+
+    @Override
+    public void getSearchTopicList(int pageNo, String time, String searchKey, LogicObserver<List<ForumTopic>> observer){
+        Observable.create((ObservableOnSubscribe<List<ForumTopic>>) emitter -> {
+            List<ForumTopic> list = ForumTopicDaoUtils.getInstance().query(pageNo, time, searchKey);
             emitter.onNext(list);
         }).observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())

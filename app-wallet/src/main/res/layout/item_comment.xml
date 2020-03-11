@@ -5,7 +5,8 @@
     android:background="@color/color_white"
     android:paddingStart="15dp"
     android:paddingEnd="15dp"
-    android:paddingTop="15dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="7dp"
     android:orientation="vertical">
 
     <TextView
@@ -22,13 +23,14 @@
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="7dp"
         android:includeFontPadding="false"
         android:lineSpacingExtra="0.1dp"
         android:lineSpacingMultiplier="1"
-        android:text="The new coronavirus (2019-nCoV), was discovered in 2019 in Wuhan." />
+        android:text="" />
 
     <LinearLayout
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:layout_gravity="end"

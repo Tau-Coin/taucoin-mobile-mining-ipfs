@@ -29,6 +29,8 @@ public class MessageEvent {
 
         COMPRESSION_FAIL,
         COMPRESSION_SUCCESS,
+        TOPIC_REFRESH,
+        COMMENT_REFRESH,
     }
     private Object data;
 

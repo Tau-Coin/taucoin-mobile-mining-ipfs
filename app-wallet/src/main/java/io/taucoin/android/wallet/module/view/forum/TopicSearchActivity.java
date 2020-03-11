@@ -1,6 +1,5 @@
 package io.taucoin.android.wallet.module.view.forum;
 
-
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,11 +25,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import io.taucoin.android.wallet.R;
 import io.taucoin.android.wallet.base.ForumBaseActivity;
+import io.taucoin.android.wallet.base.TransmitKey;
 import io.taucoin.android.wallet.db.entity.ForumTopic;
 import io.taucoin.android.wallet.module.presenter.ForumPresenter;
 import io.taucoin.android.wallet.net.callback.CommonObserver;
+import io.taucoin.android.wallet.util.DateUtil;
 import io.taucoin.android.wallet.util.KeyboardUtils;
-import io.taucoin.android.wallet.util.MediaPlayerUtil;
 import io.taucoin.android.wallet.util.NotchUtil;
 import io.taucoin.android.wallet.widget.ToolbarView;
 import io.taucoin.foundation.net.callback.LogicObserver;
@@ -52,7 +52,8 @@ public class TopicSearchActivity extends ForumBaseActivity {
 
     private TopicAdapter mAdapter;
     private List<ForumTopic> topicsList = new ArrayList<>();
-    private int mPage = 0;
+    private int mPageNo = 1;
+    private String mTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,20 +63,28 @@ public class TopicSearchActivity extends ForumBaseActivity {
         mPresenter = new ForumPresenter();
         initView();
         hideOrShowSearchView(false);
-        loadData();
     }
 
     private void loadData() {
-        mPresenter.getForumTopicList(new LogicObserver<List<ForumTopic>>() {
-            @Override
-            public void handleData(List<ForumTopic> forumTopics) {
-                topicsList.clear();
-                if(forumTopics.size() > 0){
-                    topicsList.addAll(forumTopics);
-                    mAdapter.setListData(topicsList);
+        if(etSearchKey != null && mPresenter != null){
+            String searchKey = etSearchKey.getText().toString().trim();
+            mPresenter.getSearchTopicList(mPageNo, mTime, searchKey, new LogicObserver<List<ForumTopic>>() {
+                @Override
+                public void handleData(List<ForumTopic> forumTopics) {
+                    if(mPageNo == 1){
+                        topicsList.clear();
+                    }
+                    if(forumTopics.size() > 0){
+                        topicsList.addAll(forumTopics);
+                        mAdapter.setListData(topicsList);
+                    }
+                    boolean isLoadMore = topicsList.size() % TransmitKey.PAGE_SIZE == 0 && topicsList.size() > 0;
+                    refreshLayout.setEnableLoadmore(isLoadMore);
+                    refreshLayout.finishLoadmore(100);
+                    refreshLayout.finishRefresh(100);
                 }
-            }
-        });
+            });
+        }
     }
 
     // Initialize page view components
@@ -102,6 +111,7 @@ public class TopicSearchActivity extends ForumBaseActivity {
                     tvSearchKey.setText(searchKey);
                     etSearchKey.setTag(searchKey);
                     hideOrShowSearchView(StringUtil.isNotEmpty(searchKey));
+                    onRefresh(null);
                 }
                 try {
                     KeyboardUtils.hideSoftInput(this);
@@ -140,14 +150,15 @@ public class TopicSearchActivity extends ForumBaseActivity {
 
     @Override
     public void onRefresh(RefreshLayout refreshlayout) {
+        mPageNo = 1;
+        mTime = DateUtil.getCurrentTime();
         loadData();
-        refreshLayout.finishRefresh(100);
     }
 
     @Override
     public void onLoadmore(RefreshLayout refreshlayout) {
+        mPageNo += 1;
         loadData();
-        refreshLayout.finishLoadmore(100);
     }
 
     private void hideOrShowSearchView(boolean isVisible){
@@ -161,29 +172,5 @@ public class TopicSearchActivity extends ForumBaseActivity {
                 }
             }
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        MediaPlayerUtil.getInstance().resume(TopicSearchActivity.class);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        MediaPlayerUtil.getInstance().pause(TopicSearchActivity.class);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        MediaPlayerUtil.getInstance().destroyView(1);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        MediaPlayerUtil.getInstance().destroyView(1);
     }
 }

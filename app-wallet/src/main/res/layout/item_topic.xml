@@ -5,7 +5,7 @@
     android:background="@color/color_white"
     android:paddingStart="15dp"
     android:paddingEnd="15dp"
-    android:paddingTop="15dp"
+    android:paddingTop="10dp"
     android:orientation="vertical">
 
     <LinearLayout
@@ -18,7 +18,7 @@
             style="@style/style_normal_black"
             android:id="@+id/tv_community_name"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:includeFontPadding="false"
             android:textStyle="bold"
             android:text="c/TAUcoin · "/>
@@ -26,11 +26,24 @@
         <TextView
             style="@style/style_middle_grey_light"
             android:id="@+id/tv_username"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_gravity="center_vertical"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:includeFontPadding="false"
             android:text="@string/forum_posted"/>
+
+        <TextView
+            style="@style/style_big_black"
+            android:id="@+id/tv_more"
+            android:layout_gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:paddingEnd="10dp"
+            android:textSize="24dp"
+            android:textStyle="bold"
+            android:text="@string/forum_more"/>
 
     </LinearLayout>
 
@@ -104,6 +117,7 @@
             android:id="@+id/tv_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:maxLines="3"
             android:ellipsize="end"
             android:includeFontPadding="false"

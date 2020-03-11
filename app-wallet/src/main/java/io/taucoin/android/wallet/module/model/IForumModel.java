@@ -25,9 +25,13 @@ import io.taucoin.foundation.net.callback.LogicObserver;
 
 public interface IForumModel {
 
-    void postMedia(ForumTopic forumTopic);
+    void postMedia(ForumTopic forumTopic, LogicObserver<Boolean> observer);
 
-    void getForumTopicList(LogicObserver<List<ForumTopic>> observer);
+    void getForumTopicList(int pageNo, String time, LogicObserver<List<ForumTopic>> observer);
+
+    void getCommentList(int pageNo, String time, String replayId, LogicObserver<List<ForumTopic>> observer);
+
+    void getSearchTopicList(int pageNo, String time, String searchKey, LogicObserver<List<ForumTopic>> observer);
 
     void picCompression(LocalMedia localMedia);
 

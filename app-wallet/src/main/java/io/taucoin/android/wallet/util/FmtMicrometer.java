@@ -27,7 +27,11 @@ import io.taucoin.android.wallet.core.Constants;
 public class FmtMicrometer {
     
     private static String mDecimal = "100";
+    private static String mDecimal8 = "100000000";
+    private static String mDecimal8Pattern = "###,##0.00######";
+    public static String mDecimal1Pattern = "###,##0.#";
     private static int mScale = 2;
+    private static int mScale8 = 8;
 
     public static String fmtBalance(Long balance) {
         DecimalFormat df = getDecimalFormatInstance();
@@ -185,5 +189,32 @@ public class FmtMicrometer {
         } catch (Exception e) {
             return amount;
         }
+    }
+
+    public static String fmtMoney(long value) {
+        try {
+            value = fmtDecimal8(value);
+            return fmtDecimal(value, mDecimal8Pattern);
+        } catch (Exception ignore) {
+        }
+        return new BigInteger("0").toString();
+    }
+
+    public static String fmtDecimal(double value, String pattern) {
+        try {
+            DecimalFormat df = getDecimalFormatInstance();
+            df.applyPattern(pattern);
+            df.setRoundingMode(RoundingMode.FLOOR);
+            BigDecimal bigDecimal = new BigDecimal(value);
+            return df.format(bigDecimal);
+        } catch (Exception ignore) {
+        }
+        return new BigInteger("0").toString();
+    }
+
+    private static long fmtDecimal8(long money) {
+        BigDecimal bigDecimal = new BigDecimal(money);
+        bigDecimal = bigDecimal.divide(new BigDecimal(mDecimal8), mScale8, RoundingMode.HALF_UP);
+        return bigDecimal.longValue();
     }
 }

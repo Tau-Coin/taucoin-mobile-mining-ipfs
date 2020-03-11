@@ -15,15 +15,23 @@
  */
 package io.taucoin.android.wallet.db.util;
 
+import android.database.Cursor;
+
+import org.greenrobot.greendao.query.QueryBuilder;
+import org.greenrobot.greendao.query.WhereCondition;
+
 import java.util.List;
 
+import io.taucoin.android.wallet.base.TransmitKey;
 import io.taucoin.android.wallet.db.GreenDaoManager;
 import io.taucoin.android.wallet.db.entity.BlockInfo;
 import io.taucoin.android.wallet.db.entity.ForumTopic;
 import io.taucoin.android.wallet.db.entity.KeyValue;
+import io.taucoin.android.wallet.db.entity.TransactionHistory;
 import io.taucoin.android.wallet.db.greendao.BlockInfoDao;
 import io.taucoin.android.wallet.db.greendao.ForumTopicDao;
 import io.taucoin.android.wallet.db.greendao.KeyValueDao;
+import io.taucoin.android.wallet.db.greendao.TransactionHistoryDao;
 
 /**
  * @version 1.0
@@ -57,10 +65,62 @@ public class ForumTopicDaoUtils {
         return -1;
     }
 
-    public List<ForumTopic> query() {
-        return getForumTopicDao().queryBuilder()
-                .where(ForumTopicDao.Properties.ReferId.isNull())
+    public List<ForumTopic> query(int pageNo, String time, int type ) {
+//        WhereCondition.StringCondition groupCondition = new WhereCondition.StringCondition(
+//                TransactionHistoryDao.Properties.TxId.columnName + " IS NOT NULL GROUP BY " + TransactionHistoryDao.Properties.TxId.columnName);
+        QueryBuilder<ForumTopic> db = getForumTopicDao().queryBuilder();
+        db.where(ForumTopicDao.Properties.TimeStamp.lt(time),
+                ForumTopicDao.Properties.Type.eq(type))
                 .orderDesc(ForumTopicDao.Properties.TimeStamp)
-                .list();
+                .offset((pageNo - 1) * TransmitKey.PAGE_SIZE).limit(TransmitKey.PAGE_SIZE);
+
+        List<ForumTopic> list = db.list();
+        if(list != null && list.size() > 0){
+            for (ForumTopic bean: list) {
+                statisticsCountAndTau(bean);
+            }
+        }
+        return list;
+    }
+
+    private void statisticsCountAndTau(ForumTopic bean) {
+        String sql = "select count(*), sum(" +
+                ForumTopicDao.Properties.Fee.columnName +
+                ") from " +
+                ForumTopicDao.TABLENAME +
+                " where type=1 and " +
+                ForumTopicDao.Properties.ReferId.columnName +
+                "='" +
+                bean.getTxId() +
+                "'";
+        Cursor cursor = daoManager.getDaoSession().getDatabase().rawQuery(sql, null);
+        if(cursor != null && cursor.getColumnCount() == 2){
+            if(cursor.moveToFirst()){
+                bean.setCommentCount(cursor.getInt(0));
+                bean.setTauTotal(cursor.getLong(1));
+                cursor.close();
+            }
+        }
+    }
+
+    public List<ForumTopic> queryComment(int pageNo, String time, String replyId, int type ) {
+        QueryBuilder<ForumTopic> db = getForumTopicDao().queryBuilder();
+        db.where(ForumTopicDao.Properties.TimeStamp.lt(time),
+                ForumTopicDao.Properties.ReferId.eq(replyId),
+                ForumTopicDao.Properties.Type.eq(type))
+                .orderDesc(ForumTopicDao.Properties.TimeStamp)
+                .offset((pageNo - 1) * TransmitKey.PAGE_SIZE).limit(TransmitKey.PAGE_SIZE);
+        return db.list();
+    }
+
+    public List<ForumTopic> query(int pageNo, String time, String searchKey) {
+        searchKey = "%" + searchKey + "%";
+        QueryBuilder<ForumTopic> db = getForumTopicDao().queryBuilder();
+        db.where(ForumTopicDao.Properties.TimeStamp.lt(time),
+                ForumTopicDao.Properties.Type.eq(0),
+                db.or(ForumTopicDao.Properties.Title.like(searchKey), ForumTopicDao.Properties.Text.like(searchKey)))
+                .orderDesc(ForumTopicDao.Properties.TimeStamp)
+                .offset((pageNo - 1) * TransmitKey.PAGE_SIZE).limit(TransmitKey.PAGE_SIZE);
+        return db.list();
     }
 }

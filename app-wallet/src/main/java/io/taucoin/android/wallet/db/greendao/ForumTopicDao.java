@@ -25,14 +25,25 @@ public class ForumTopicDao extends AbstractDao<ForumTopic, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property Title = new Property(1, String.class, "title", false, "TITLE");
-        public final static Property Text = new Property(2, String.class, "text", false, "TEXT");
-        public final static Property Fee = new Property(3, long.class, "fee", false, "FEE");
-        public final static Property Sender = new Property(4, String.class, "sender", false, "SENDER");
+        public final static Property Chainid = new Property(1, String.class, "chainid", false, "CHAINID");
+        public final static Property TxId = new Property(2, String.class, "txId", false, "TX_ID");
+        public final static Property BlockHash = new Property(3, String.class, "blockHash", false, "BLOCK_HASH");
+        public final static Property Nounce = new Property(4, long.class, "nounce", false, "NOUNCE");
         public final static Property TimeStamp = new Property(5, long.class, "timeStamp", false, "TIME_STAMP");
-        public final static Property ReferId = new Property(6, String.class, "referId", false, "REFER_ID");
-        public final static Property Type = new Property(7, int.class, "type", false, "TYPE");
-        public final static Property Hash = new Property(8, String.class, "hash", false, "HASH");
+        public final static Property TSender = new Property(6, String.class, "tSender", false, "T_SENDER");
+        public final static Property Isender = new Property(7, String.class, "isender", false, "ISENDER");
+        public final static Property RelayMa = new Property(8, String.class, "relayMa", false, "RELAY_MA");
+        public final static Property Fee = new Property(9, long.class, "fee", false, "FEE");
+        public final static Property Title = new Property(10, String.class, "title", false, "TITLE");
+        public final static Property Text = new Property(11, String.class, "text", false, "TEXT");
+        public final static Property Type = new Property(12, int.class, "type", false, "TYPE");
+        public final static Property Hash = new Property(13, String.class, "hash", false, "HASH");
+        public final static Property ContactInfo = new Property(14, String.class, "contactInfo", false, "CONTACT_INFO");
+        public final static Property UserName = new Property(15, String.class, "userName", false, "USER_NAME");
+        public final static Property Profile = new Property(16, String.class, "profile", false, "PROFILE");
+        public final static Property ReferId = new Property(17, String.class, "referId", false, "REFER_ID");
+        public final static Property Intro = new Property(18, String.class, "intro", false, "INTRO");
+        public final static Property Content = new Property(19, String.class, "content", false, "CONTENT");
     }
 
 
@@ -49,14 +60,25 @@ public class ForumTopicDao extends AbstractDao<ForumTopic, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"FORUM_TOPIC\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
-                "\"TITLE\" TEXT," + // 1: title
-                "\"TEXT\" TEXT," + // 2: text
-                "\"FEE\" INTEGER NOT NULL ," + // 3: fee
-                "\"SENDER\" TEXT," + // 4: sender
+                "\"CHAINID\" TEXT," + // 1: chainid
+                "\"TX_ID\" TEXT," + // 2: txId
+                "\"BLOCK_HASH\" TEXT," + // 3: blockHash
+                "\"NOUNCE\" INTEGER NOT NULL ," + // 4: nounce
                 "\"TIME_STAMP\" INTEGER NOT NULL ," + // 5: timeStamp
-                "\"REFER_ID\" TEXT," + // 6: referId
-                "\"TYPE\" INTEGER NOT NULL ," + // 7: type
-                "\"HASH\" TEXT);"); // 8: hash
+                "\"T_SENDER\" TEXT," + // 6: tSender
+                "\"ISENDER\" TEXT," + // 7: isender
+                "\"RELAY_MA\" TEXT," + // 8: relayMa
+                "\"FEE\" INTEGER NOT NULL ," + // 9: fee
+                "\"TITLE\" TEXT," + // 10: title
+                "\"TEXT\" TEXT," + // 11: text
+                "\"TYPE\" INTEGER NOT NULL ," + // 12: type
+                "\"HASH\" TEXT," + // 13: hash
+                "\"CONTACT_INFO\" TEXT," + // 14: contactInfo
+                "\"USER_NAME\" TEXT," + // 15: userName
+                "\"PROFILE\" TEXT," + // 16: profile
+                "\"REFER_ID\" TEXT," + // 17: referId
+                "\"INTRO\" TEXT," + // 18: intro
+                "\"CONTENT\" TEXT);"); // 19: content
     }
 
     /** Drops the underlying database table. */
@@ -74,32 +96,83 @@ public class ForumTopicDao extends AbstractDao<ForumTopic, Long> {
             stmt.bindLong(1, id);
         }
  
+        String chainid = entity.getChainid();
+        if (chainid != null) {
+            stmt.bindString(2, chainid);
+        }
+ 
+        String txId = entity.getTxId();
+        if (txId != null) {
+            stmt.bindString(3, txId);
+        }
+ 
+        String blockHash = entity.getBlockHash();
+        if (blockHash != null) {
+            stmt.bindString(4, blockHash);
+        }
+        stmt.bindLong(5, entity.getNounce());
+        stmt.bindLong(6, entity.getTimeStamp());
+ 
+        String tSender = entity.getTSender();
+        if (tSender != null) {
+            stmt.bindString(7, tSender);
+        }
+ 
+        String isender = entity.getIsender();
+        if (isender != null) {
+            stmt.bindString(8, isender);
+        }
+ 
+        String relayMa = entity.getRelayMa();
+        if (relayMa != null) {
+            stmt.bindString(9, relayMa);
+        }
+        stmt.bindLong(10, entity.getFee());
+ 
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(2, title);
+            stmt.bindString(11, title);
         }
  
         String text = entity.getText();
         if (text != null) {
-            stmt.bindString(3, text);
+            stmt.bindString(12, text);
         }
-        stmt.bindLong(4, entity.getFee());
- 
-        String sender = entity.getSender();
-        if (sender != null) {
-            stmt.bindString(5, sender);
-        }
-        stmt.bindLong(6, entity.getTimeStamp());
- 
-        String referId = entity.getReferId();
-        if (referId != null) {
-            stmt.bindString(7, referId);
-        }
-        stmt.bindLong(8, entity.getType());
+        stmt.bindLong(13, entity.getType());
  
         String hash = entity.getHash();
         if (hash != null) {
-            stmt.bindString(9, hash);
+            stmt.bindString(14, hash);
+        }
+ 
+        String contactInfo = entity.getContactInfo();
+        if (contactInfo != null) {
+            stmt.bindString(15, contactInfo);
+        }
+ 
+        String userName = entity.getUserName();
+        if (userName != null) {
+            stmt.bindString(16, userName);
+        }
+ 
+        String profile = entity.getProfile();
+        if (profile != null) {
+            stmt.bindString(17, profile);
+        }
+ 
+        String referId = entity.getReferId();
+        if (referId != null) {
+            stmt.bindString(18, referId);
+        }
+ 
+        String intro = entity.getIntro();
+        if (intro != null) {
+            stmt.bindString(19, intro);
+        }
+ 
+        String content = entity.getContent();
+        if (content != null) {
+            stmt.bindString(20, content);
         }
     }
 
@@ -112,32 +185,83 @@ public class ForumTopicDao extends AbstractDao<ForumTopic, Long> {
             stmt.bindLong(1, id);
         }
  
+        String chainid = entity.getChainid();
+        if (chainid != null) {
+            stmt.bindString(2, chainid);
+        }
+ 
+        String txId = entity.getTxId();
+        if (txId != null) {
+            stmt.bindString(3, txId);
+        }
+ 
+        String blockHash = entity.getBlockHash();
+        if (blockHash != null) {
+            stmt.bindString(4, blockHash);
+        }
+        stmt.bindLong(5, entity.getNounce());
+        stmt.bindLong(6, entity.getTimeStamp());
+ 
+        String tSender = entity.getTSender();
+        if (tSender != null) {
+            stmt.bindString(7, tSender);
+        }
+ 
+        String isender = entity.getIsender();
+        if (isender != null) {
+            stmt.bindString(8, isender);
+        }
+ 
+        String relayMa = entity.getRelayMa();
+        if (relayMa != null) {
+            stmt.bindString(9, relayMa);
+        }
+        stmt.bindLong(10, entity.getFee());
+ 
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(2, title);
+            stmt.bindString(11, title);
         }
  
         String text = entity.getText();
         if (text != null) {
-            stmt.bindString(3, text);
+            stmt.bindString(12, text);
         }
-        stmt.bindLong(4, entity.getFee());
- 
-        String sender = entity.getSender();
-        if (sender != null) {
-            stmt.bindString(5, sender);
-        }
-        stmt.bindLong(6, entity.getTimeStamp());
- 
-        String referId = entity.getReferId();
-        if (referId != null) {
-            stmt.bindString(7, referId);
-        }
-        stmt.bindLong(8, entity.getType());
+        stmt.bindLong(13, entity.getType());
  
         String hash = entity.getHash();
         if (hash != null) {
-            stmt.bindString(9, hash);
+            stmt.bindString(14, hash);
+        }
+ 
+        String contactInfo = entity.getContactInfo();
+        if (contactInfo != null) {
+            stmt.bindString(15, contactInfo);
+        }
+ 
+        String userName = entity.getUserName();
+        if (userName != null) {
+            stmt.bindString(16, userName);
+        }
+ 
+        String profile = entity.getProfile();
+        if (profile != null) {
+            stmt.bindString(17, profile);
+        }
+ 
+        String referId = entity.getReferId();
+        if (referId != null) {
+            stmt.bindString(18, referId);
+        }
+ 
+        String intro = entity.getIntro();
+        if (intro != null) {
+            stmt.bindString(19, intro);
+        }
+ 
+        String content = entity.getContent();
+        if (content != null) {
+            stmt.bindString(20, content);
         }
     }
 
@@ -150,14 +274,25 @@ public class ForumTopicDao extends AbstractDao<ForumTopic, Long> {
     public ForumTopic readEntity(Cursor cursor, int offset) {
         ForumTopic entity = new ForumTopic( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // title
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // text
-            cursor.getLong(offset + 3), // fee
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // sender
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // chainid
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // txId
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // blockHash
+            cursor.getLong(offset + 4), // nounce
             cursor.getLong(offset + 5), // timeStamp
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // referId
-            cursor.getInt(offset + 7), // type
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // hash
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // tSender
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // isender
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // relayMa
+            cursor.getLong(offset + 9), // fee
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // title
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // text
+            cursor.getInt(offset + 12), // type
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // hash
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // contactInfo
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // userName
+            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // profile
+            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // referId
+            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18), // intro
+            cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19) // content
         );
         return entity;
     }
@@ -165,14 +300,25 @@ public class ForumTopicDao extends AbstractDao<ForumTopic, Long> {
     @Override
     public void readEntity(Cursor cursor, ForumTopic entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setTitle(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setText(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setFee(cursor.getLong(offset + 3));
-        entity.setSender(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setChainid(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setTxId(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setBlockHash(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setNounce(cursor.getLong(offset + 4));
         entity.setTimeStamp(cursor.getLong(offset + 5));
-        entity.setReferId(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setType(cursor.getInt(offset + 7));
-        entity.setHash(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setTSender(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setIsender(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setRelayMa(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setFee(cursor.getLong(offset + 9));
+        entity.setTitle(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setText(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setType(cursor.getInt(offset + 12));
+        entity.setHash(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setContactInfo(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setUserName(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setProfile(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
+        entity.setReferId(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
+        entity.setIntro(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
+        entity.setContent(cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19));
      }
     
     @Override
