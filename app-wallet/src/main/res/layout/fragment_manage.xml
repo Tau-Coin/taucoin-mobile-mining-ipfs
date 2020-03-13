@@ -101,20 +101,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="1dp"
-                    app:leftImage="@mipmap/icon_ipfs_info"
+                    app:leftImage="@mipmap/icon_rename"
                     app:rightText="@string/setting_change_name"
                     app:rightTextColor="@color/color_black" />
 
                 <io.taucoin.android.wallet.widget.ItemLineView
-                    android:id="@+id/item_ipfs_info"
+                    android:id="@+id/item_msg_que"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="1dp"
-                    app:leftImage="@mipmap/icon_ipfs_info"
-                    app:rightText="@string/setting_ipfs_info"
+                    app:leftImage="@mipmap/icon_msg_que"
+                    app:rightText="@string/setting_message_que"
                     app:rightTextColor="@color/color_black" />
 
                 <RelativeLayout
+                    android:visibility="gone"
                     android:background="@color/color_white"
                     android:layout_marginTop="1dp"
                     android:layout_width="match_parent"
@@ -169,6 +170,25 @@
                 </RelativeLayout>
 
                 <io.taucoin.android.wallet.widget.ItemLineView
+                    android:id="@+id/item_ipfs_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="1dp"
+                    app:leftImage="@mipmap/icon_ipfs_info"
+                    app:rightText="@string/setting_ipfs_info"
+                    app:rightTextColor="@color/color_black" />
+
+                <io.taucoin.android.wallet.widget.ItemLineView
+                    android:id="@+id/item_spammer"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="1dp"
+                    app:leftImage="@mipmap/icon_spam"
+                    app:rightText="@string/setting_spammer"
+                    app:rightTextColor="@color/color_black" />
+
+                <io.taucoin.android.wallet.widget.ItemLineView
+                    android:visibility="gone"
                     android:id="@+id/item_reset_data"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"

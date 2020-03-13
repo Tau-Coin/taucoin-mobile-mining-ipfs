@@ -77,9 +77,11 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
         if (EventBusUtil.isRegistered(this)) {
             EventBusUtil.unregister(this);
         }
-        if(mUnBinder != null){
-            mUnBinder.unbind();
-        }
+        try {
+            if(mUnBinder != null){
+                mUnBinder.unbind();
+            }
+        }catch (Exception ignore){}
     }
 
     @Override

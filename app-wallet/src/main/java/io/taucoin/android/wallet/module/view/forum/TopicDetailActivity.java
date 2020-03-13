@@ -33,6 +33,8 @@ import io.taucoin.android.wallet.util.DateUtil;
 import io.taucoin.foundation.net.callback.LogicObserver;
 import io.taucoin.foundation.util.StringUtil;
 
+import static android.view.ViewTreeObserver.*;
+
 public class TopicDetailActivity extends ForumBaseActivity {
 
     @BindView(R.id.ll_best_comment)
@@ -45,6 +47,8 @@ public class TopicDetailActivity extends ForumBaseActivity {
     SmartRefreshLayout refreshLayout;
     @BindView(R.id.scroll_view)
     NestedScrollView scrollView;
+    @BindView(R.id.iv_to_top_bottom)
+    ImageView ivToTopBottom;
 
     private List<ForumTopic> topicsList = new ArrayList<>();
     private CommentAdapter mAdapter;
@@ -77,6 +81,23 @@ public class TopicDetailActivity extends ForumBaseActivity {
             replyId = bean.getTxId();
             onRefresh(null);
         }
+
+        listView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            if(ivToTopBottom != null){
+                ivToTopBottom.setVisibility(canScroll() ? View.VISIBLE : View.GONE);
+            }
+        });
+    }
+
+    public boolean canScroll() {
+        if(scrollView != null){
+            View child = scrollView.getChildAt(0);
+            if (child != null) {
+                int childHeight = child.getHeight();
+                return scrollView.getHeight() < childHeight;
+            }
+        }
+        return false;
     }
 
     @OnClick({R.id.tv_add_comment, R.id.ll_best_comment, R.id.iv_to_top_bottom})
@@ -150,10 +171,5 @@ public class TopicDetailActivity extends ForumBaseActivity {
     public void onLoadmore(RefreshLayout refreshlayout) {
         mPageNo += 1;
         loadData();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
     }
 }

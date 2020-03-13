@@ -107,4 +107,7 @@ public class TransmitKey {
         public static final String FAST = "fast";
         public static final String FULL_NODE = "full_node";
     }
+
+    public static final String POS_X = "pos_x";
+    public static final String POS_Y = "pos_y";
 }

@@ -347,4 +347,8 @@
         <attr name="moveSpeed" format="float"/>
     </declare-styleable>
 
+    <style name="TabLayout" parent="@android:style/TextAppearance.Widget.TabWidget">
+        <item name="android:textSize">@dimen/dimen_size_16</item>
+    </style>
+
 </resources>

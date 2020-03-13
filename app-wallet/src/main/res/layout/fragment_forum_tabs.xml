@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_main_bg"
+    android:orientation="vertical">
+
+    <io.taucoin.android.wallet.widget.ToolbarView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:leftBackImage="@mipmap/icon_close"
+        app:leftImagePadding="0dp"
+        app:titleText="@string/forum_title" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="15dp">
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tv_browse"
+            style="@style/style_browse_white"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/shape_oval_young"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical|center"
+            android:text="@string/forum_normal"/>
+
+        <LinearLayout
+            android:id="@+id/ll_search_bar"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:orientation="horizontal"
+            android:background="@drawable/light_grey_rect_round_bg">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:contentDescription="@null"
+                android:layout_height="22dp"
+                android:layout_marginStart="15dp"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/icon_forum_search"/>
+
+            <TextView
+                style="@style/style_normal_light_grey"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:text="@string/forum_search"
+                android:gravity="center_vertical"
+                android:layout_marginEnd="15dp"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_create"
+            style="@style/style_create_white"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@color/color_white"
+            android:src="@mipmap/icon_post"/>
+
+    </LinearLayout>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        app:tabMinWidth="90dp"
+        app:tabMode="scrollable"
+        app:tabTextAppearance="@style/TabLayout"
+        app:tabIndicatorHeight="2dp"
+        app:tabIndicatorColor="@color/color_blue"
+        app:tabSelectedTextColor="@color/color_grey_dark"
+        app:tabTextColor="@color/color_grey_dark"
+        app:tabBackground="@color/color_transparent"
+        app:tabRippleColor="@color/color_transparent"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_main_line"/>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

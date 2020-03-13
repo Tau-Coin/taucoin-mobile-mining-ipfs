@@ -83,7 +83,7 @@ public class ManageFragment extends BaseFragment implements IManageView {
 
     @OnClick({R.id.tv_nick, R.id.item_keys, R.id.item_address_book, R.id.item_help, R.id.tv_version,
             R.id.item_reset_data, R.id.item_p2p_exchange, R.id.item_mining_group, R.id.item_transaction_expiry,
-            R.id.item_ipfs_info, R.id.item_change_name, R.id.item_mode_switched})
+            R.id.item_ipfs_info, R.id.item_change_name, R.id.item_mode_switched, R.id.item_msg_que, R.id.item_spammer})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_nick:
@@ -124,6 +124,12 @@ public class ManageFragment extends BaseFragment implements IManageView {
                 break;
             case R.id.item_mode_switched:
                 showModeSwitchDialog((ItemTextView)view);
+                break;
+            case R.id.item_msg_que:
+                ToastUtils.showShortToast("item_msg_que");
+                break;
+            case R.id.item_spammer:
+                ToastUtils.showShortToast("item_spammer");
                 break;
             default:
                 break;

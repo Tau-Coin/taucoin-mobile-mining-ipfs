@@ -52,7 +52,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        style="@style/style_normal_light_grey"
+                        style="@style/style_middle_light_grey"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="15dp"
@@ -62,9 +62,9 @@
                     <ImageView
                         android:contentDescription="@null"
                         android:layout_marginStart="10dp"
-                        android:layout_width="@dimen/dimen_size_20"
-                        android:layout_height="@dimen/dimen_size_20"
-                        android:src="@mipmap/icon_down"/>
+                        android:layout_width="@dimen/dimen_size_16"
+                        android:layout_height="@dimen/dimen_size_16"
+                        android:src="@mipmap/icon_fold"/>
                 </LinearLayout>
 
                 <io.taucoin.android.wallet.widget.ScrollDisabledListView

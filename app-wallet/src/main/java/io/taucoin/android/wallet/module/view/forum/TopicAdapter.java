@@ -314,18 +314,14 @@ public class TopicAdapter extends BaseAdapter {
 
     private static void showMenuItem(FragmentActivity activity, View view, ForumTopic bean){
         List<MenuItem> menuItems = new ArrayList<>();
-        menuItems.add(new MenuItem(R.mipmap.icon_add, "Favorite"));
-        menuItems.add(new MenuItem(R.mipmap.icon_add, "IPFS Address"));
-        menuItems.add(new MenuItem(R.mipmap.icon_add, "Spam Address"));
-        menuItems.add(new MenuItem(R.mipmap.icon_add, "Follow Address"));
+        menuItems.add(new MenuItem(R.mipmap.icon_bmark_no, "Bookmark"));
+        menuItems.add(new MenuItem(R.mipmap.icon_ipfs, "IPFS Address"));
         PopupMenuUtil.showMenuItem(activity, view, menuItems, pos -> {
-            ToastUtils.showShortToast("pos=" + pos);
+            ToastUtils.showShortToast(bean.getTSender() + pos);
             switch (pos){
                 case 0:
                     break;
                 case 1:
-                    break;
-                case 2:
                     break;
                 default:
                     break;

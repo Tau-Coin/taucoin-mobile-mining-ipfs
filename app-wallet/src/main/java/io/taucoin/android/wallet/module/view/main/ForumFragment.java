@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 import io.taucoin.android.wallet.R;
 import io.taucoin.android.wallet.base.BaseFragment;
 import io.taucoin.android.wallet.base.ForumBaseActivity;
@@ -26,11 +24,7 @@ import io.taucoin.android.wallet.db.entity.ForumTopic;
 import io.taucoin.android.wallet.module.bean.MessageEvent;
 import io.taucoin.android.wallet.module.presenter.ForumPresenter;
 import io.taucoin.android.wallet.module.view.forum.TopicAdapter;
-import io.taucoin.android.wallet.module.view.forum.TopicAddActivity;
-import io.taucoin.android.wallet.module.view.forum.TopicSearchActivity;
-import io.taucoin.android.wallet.util.ActivityUtil;
 import io.taucoin.android.wallet.util.DateUtil;
-import io.taucoin.android.wallet.util.ForumUtil;
 import io.taucoin.foundation.net.callback.LogicObserver;
 
 /**
@@ -65,6 +59,9 @@ public class ForumFragment extends BaseFragment {
         mPresenter.getForumTopicList(mPageNo, mTime, new LogicObserver<List<ForumTopic>>() {
             @Override
             public void handleData(List<ForumTopic> forumTopics) {
+                if(refreshLayout == null || mAdapter == null){
+                    return;
+                }
                 if(mPageNo == 1){
                     topicsList.clear();
                 }
@@ -90,24 +87,6 @@ public class ForumFragment extends BaseFragment {
         }
         mAdapter = new TopicAdapter(activity, 1);
         listView.setAdapter(mAdapter);
-    }
-
-    @OnClick({R.id.iv_create, R.id.tv_browse, R.id.ll_search_bar})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.iv_create:
-                ActivityUtil.startActivity(getActivity(), TopicAddActivity.class);
-                break;
-            case R.id.ll_search_bar:
-                ActivityUtil.startActivity(getActivity(), TopicSearchActivity.class);
-                break;
-            case R.id.tv_browse:
-                ForumUtil.switchBrowseModel((TextView)view);
-                mAdapter.switchBrowseModel();
-                break;
-            default:
-                break;
-        }
     }
 
     @Override

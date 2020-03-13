@@ -258,7 +258,9 @@
     <string name="setting_transaction_expiry_limit">Transaction valid time range: %d - %d minutes.</string>
     <string name="setting_address_book">Keys Management</string>
     <string name="setting_ipfs_info">IPFS Info</string>
-    <string name="setting_change_name">Change Name</string>
+    <string name="setting_change_name">Rename</string>
+    <string name="setting_spammer">Spammer</string>
+    <string name="setting_message_que">Message Que</string>
     <string name="setting_mode_fast">Fast Mode Mining</string>
     <string name="setting_mode_full_node">Full Node Mode Mining</string>
     <string name="setting_transaction_expiry">Transaction Expiry</string>
@@ -309,7 +311,7 @@
     <string name="forum_gateway_checked">36/36 gateway checked</string>
     <string name="forum_gateway_offline">-&#160;Offline&#160;-&#160;%s</string>
     <string name="forum_gateway_online" formatted="false">-&#160;Online&#160;-&#160;<Data><![CDATA[<font color="#0E88EF">%s</font>]]> </Data></string>
-    <string name="forum_relevant_posts">Relevant Posts</string>
+    <string name="forum_relevant_posts">RELEVANT</string>
     <string name="forum_search_posts">Posts</string>
     <string name="forum_search_result">Search result</string>
     <string name="forum_your_comment">Your comment</string>
@@ -349,5 +351,9 @@
     <string name="forum_posted">u/yang123</string>
     <string name="forum_more">···</string>
     <string name="forum_block">Block 222</string>
+
+    <string name="forum_home">Home</string>
+    <string name="forum_bookmark">Bookmark</string>
+    <string name="forum_follow">Follow</string>
 
 </resources>

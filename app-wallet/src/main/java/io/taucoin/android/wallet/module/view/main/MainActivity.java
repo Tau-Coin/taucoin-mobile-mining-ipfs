@@ -82,7 +82,7 @@ public class MainActivity extends ForumBaseActivity implements IMainView {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if(null == mFragments[tabIndex]){
             if(tabIndex == 0){
-                fragment = new ForumFragment();
+                fragment = new ForumTabsFragment();
             }else if(tabIndex == 1){
                 fragment = new HomeFragment();
             }else if(tabIndex == 2){
