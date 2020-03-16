@@ -16,13 +16,11 @@
 package io.taucoin.android.wallet.module.model;
 
 import com.github.naturs.logger.Logger;
-import com.google.bitcoin.bouncycastle.util.encoders.Hex;
 import com.google.gson.Gson;
 import com.luck.picture.lib.entity.LocalMedia;
 
 import java.io.File;
 import java.util.List;
-import java.util.Random;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
@@ -30,7 +28,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import io.taucoin.android.wallet.MyApplication;
 import io.taucoin.android.wallet.db.entity.ForumTopic;
+import io.taucoin.android.wallet.db.entity.Spammer;
 import io.taucoin.android.wallet.db.util.ForumTopicDaoUtils;
+import io.taucoin.android.wallet.db.util.SpammerDaoUtils;
 import io.taucoin.android.wallet.module.bean.AudioBean;
 import io.taucoin.android.wallet.module.bean.MediaBaseBean;
 import io.taucoin.android.wallet.module.bean.MediaBean;
@@ -53,10 +53,11 @@ public class ForumModel implements IForumModel{
     @Override
     public void postMedia(ForumTopic forumTopic, LogicObserver<Boolean> observer) {
         Observable.create((ObservableOnSubscribe<Boolean>) emitter -> {
-            String txId = String.valueOf(new Random(1000).nextDouble());
-            forumTopic.setTxId(txId);
+            List<ForumTopic> list = ForumTopicDaoUtils.getInstance().queryAll();
+            forumTopic.setTxId(String.valueOf(list.size() + 1));
             forumTopic.setTimeStamp(DateUtil.getTime());
             forumTopic.setTSender(MyApplication.getKeyValue().getAddress());
+            forumTopic.setIsender("ipfsadress222222222222222");
             long result = ForumTopicDaoUtils.getInstance().insert(forumTopic);
             emitter.onNext(result > 0);
         }).observeOn(AndroidSchedulers.mainThread())
@@ -66,9 +67,27 @@ public class ForumModel implements IForumModel{
     }
 
     @Override
-    public void getForumTopicList(int pageNo, String time, LogicObserver<List<ForumTopic>> observer) {
+    public void updateBookmark(String txId, int bookmark, LogicObserver<Boolean> observer){
+        Observable.create((ObservableOnSubscribe<Boolean>) emitter -> {
+            ForumTopic bean = ForumTopicDaoUtils.getInstance().queryByTxId(txId);
+            if(bean != null){
+                bean.setBookmark(bookmark);
+                emitter.onNext(true);
+                long result = ForumTopicDaoUtils.getInstance().insert(bean);
+                emitter.onNext(result > 0);
+            }else{
+                emitter.onNext(false);
+            }
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(observer);
+    }
+
+    @Override
+    public void getForumTopicList(int pageNo, String time, int bookmark, LogicObserver<List<ForumTopic>> observer) {
         Observable.create((ObservableOnSubscribe<List<ForumTopic>>) emitter -> {
-            List<ForumTopic> list = ForumTopicDaoUtils.getInstance().query(pageNo, time, 0);
+            List<ForumTopic> list = ForumTopicDaoUtils.getInstance().query(pageNo, time, bookmark, 0);
             emitter.onNext(list);
         }).observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -81,6 +100,29 @@ public class ForumModel implements IForumModel{
         Observable.create((ObservableOnSubscribe<List<ForumTopic>>) emitter -> {
             List<ForumTopic> list = ForumTopicDaoUtils.getInstance().queryComment(pageNo, time, replayId, 1);
             emitter.onNext(list);
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(observer);
+    }
+
+
+    @Override
+    public void getMessageQue(int pageNo, String time, LogicObserver<List<ForumTopic>> observer) {
+        Observable.create((ObservableOnSubscribe<List<ForumTopic>>) emitter -> {
+            List<ForumTopic> list = ForumTopicDaoUtils.getInstance().getMessageQue(pageNo, time);
+            emitter.onNext(list);
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(observer);
+    }
+
+    @Override
+    public void deleteMessage(long id, LogicObserver<Boolean> observer) {
+        Observable.create((ObservableOnSubscribe<Boolean>) emitter -> {
+            ForumTopicDaoUtils.getInstance().deleteMessage(id);
+            emitter.onNext(true);
         }).observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -298,5 +340,43 @@ public class ForumModel implements IForumModel{
             mediaBean.setBatchMedia(videoBatch);
             MultimediaUtil.videoExtract9Pic(mediaBean, compressPicPath, compressAudioPath);
         }
+    }
+
+    @Override
+    public void spamAddress(String tSender) {
+        Observable.create((ObservableOnSubscribe<Boolean>) emitter -> {
+            Spammer spammer = SpammerDaoUtils.getInstance().queryByAddress(tSender);
+            if(spammer == null){
+                long result = SpammerDaoUtils.getInstance().insert(tSender);
+                emitter.onNext(result > 0);
+            }else {
+                emitter.onNext(true);
+            }
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
+    @Override
+    public void getSpamList(int pageNo, String time, LogicObserver<List<Spammer>> observer) {
+        Observable.create((ObservableOnSubscribe<List<Spammer>>) emitter -> {
+            List<Spammer> list = SpammerDaoUtils.getInstance().getSpamList(pageNo, time);
+            emitter.onNext(list);
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(observer);
+    }
+
+    @Override
+    public void unSpamList(List<String> list, LogicObserver<Boolean> observer) {
+        Observable.create((ObservableOnSubscribe<Boolean>) emitter -> {
+            SpammerDaoUtils.getInstance().unSpamList(list);
+            emitter.onNext(true);
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(observer);
     }
 }

@@ -18,14 +18,12 @@ package io.taucoin.android.wallet.module.presenter;
 import com.github.naturs.logger.Logger;
 import com.luck.picture.lib.entity.LocalMedia;
 
-import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
 
-import androidx.fragment.app.FragmentActivity;
 import io.taucoin.android.wallet.MyApplication;
 import io.taucoin.android.wallet.R;
 import io.taucoin.android.wallet.db.entity.ForumTopic;
+import io.taucoin.android.wallet.db.entity.Spammer;
 import io.taucoin.android.wallet.module.bean.MediaBean;
 import io.taucoin.android.wallet.module.bean.MessageEvent;
 import io.taucoin.android.wallet.module.model.ForumModel;
@@ -39,11 +37,6 @@ import io.taucoin.foundation.util.StringUtil;
 public class ForumPresenter {
     private IForumModel mForumModel;
 //    private LifecycleProvider<ActivityEvent> provider;
-
-    public ForumPresenter(FragmentActivity activity) {
-        mForumModel = new ForumModel();
-//        provider = activity;
-    }
 
     public ForumPresenter() {
         mForumModel = new ForumModel();
@@ -64,6 +57,46 @@ public class ForumPresenter {
                 EventBusUtil.post(MessageEvent.EventCode.TOPIC_REFRESH);
             }
         });
+    }
+
+    public void updateBookmark(String txId, int bookmark) {
+
+        mForumModel.updateBookmark(txId, bookmark, new LogicObserver<Boolean>() {
+            @Override
+            public void handleData(Boolean aBoolean) {
+                EventBusUtil.post(MessageEvent.EventCode.BOOKMARK_REFRESH);
+            }
+
+            @Override
+            public void handleError(int code, String msg) {
+                EventBusUtil.post(MessageEvent.EventCode.BOOKMARK_REFRESH);
+            }
+        });
+    }
+
+    public void changeName() {
+        ForumTopic forumTopic = new ForumTopic();
+        forumTopic.setType(2);
+        forumTopic.setFee(12);
+        forumTopic.setUserName("yang");
+        forumTopic.setContactInfo("T12345678");
+        forumTopic.setProfile("News show");
+        forumTopic.setTimeStamp(DateUtil.getTime());
+        forumTopic.setTSender(MyApplication.getKeyValue().getAddress());
+        mForumModel.postMedia(forumTopic, new LogicObserver<Boolean>() {
+            @Override
+            public void handleData(Boolean aBoolean) {
+                ToastUtils.showShortToast(R.string.forum_change_name_successfully);
+                EventBusUtil.post(MessageEvent.EventCode.TOPIC_REFRESH);
+            }
+
+            @Override
+            public void handleError(int code, String msg) {
+                ToastUtils.showShortToast(R.string.forum_change_name_failed);
+                EventBusUtil.post(MessageEvent.EventCode.TOPIC_REFRESH);
+            }
+        });
+        ToastUtils.showShortToast(R.string.forum_change_name_successfully);
     }
 
     public void postComment(ForumTopic forumTopic) {
@@ -90,8 +123,8 @@ public class ForumPresenter {
         });
     }
 
-    public void getForumTopicList(int pageNo, String time, LogicObserver<List<ForumTopic>> observer) {
-        mForumModel.getForumTopicList(pageNo, time, observer);
+    public void getForumTopicList(int pageNo, String time, int bookmark, LogicObserver<List<ForumTopic>> observer) {
+        mForumModel.getForumTopicList(pageNo, time, bookmark, observer);
     }
 
     public void getCommentList(int pageNo, String time, String replayId, LogicObserver<List<ForumTopic>> observer) {
@@ -132,5 +165,25 @@ public class ForumPresenter {
 
     public void getMediaData(String hash, LogicObserver<String> observer) {
         mForumModel.getMediaData(hash, observer);
+    }
+
+    public void spamAddress(String tSender) {
+        mForumModel.spamAddress(tSender);
+    }
+
+    public void getSpamList(int pageNo, String time, LogicObserver<List<Spammer>> observer) {
+        mForumModel.getSpamList(pageNo, time, observer);
+    }
+
+    public void unSpamList(List<String> list, LogicObserver<Boolean> observer) {
+        mForumModel.unSpamList(list, observer);
+    }
+
+    public void getMessageQue(int pageNo, String time, LogicObserver<List<ForumTopic>> observer) {
+        mForumModel.getMessageQue(pageNo, time, observer);
+    }
+
+    public void deleteMessage(long id, LogicObserver<Boolean> observer) {
+        mForumModel.deleteMessage(id, observer);
     }
 }

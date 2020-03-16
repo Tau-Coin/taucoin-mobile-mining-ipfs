@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import io.taucoin.android.wallet.R;
 import io.taucoin.android.wallet.base.TransmitKey;
+import io.taucoin.android.wallet.db.entity.ForumTopic;
 import io.taucoin.android.wallet.widget.ItemTextView;
 import io.taucoin.foundation.net.callback.LogicObserver;
 import io.taucoin.foundation.util.StringUtil;
@@ -63,5 +64,18 @@ public class ForumUtil {
     public static boolean isFastMiningModel() {
         String browseModel = SharedPreferencesHelper.getInstance().getString(TransmitKey.MINING_MODEL, TransmitKey.MiningModel.FAST);
         return StringUtil.isSame(browseModel, TransmitKey.MiningModel.FAST);
+    }
+
+    public static String getUserName(String name, String address) {
+        String userName = "";
+        if(StringUtil.isNotEmpty(name)){
+            userName = name;
+        }else if(StringUtil.isNotEmpty(address)){
+            userName = address;
+            if(userName.length() > 6){
+                userName = userName.substring(userName.length() - 6);
+            }
+        }
+        return userName;
     }
 }

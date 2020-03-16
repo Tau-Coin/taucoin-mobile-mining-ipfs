@@ -38,12 +38,13 @@ public class ForumTopicDao extends AbstractDao<ForumTopic, Long> {
         public final static Property Text = new Property(11, String.class, "text", false, "TEXT");
         public final static Property Type = new Property(12, int.class, "type", false, "TYPE");
         public final static Property Hash = new Property(13, String.class, "hash", false, "HASH");
-        public final static Property ContactInfo = new Property(14, String.class, "contactInfo", false, "CONTACT_INFO");
-        public final static Property UserName = new Property(15, String.class, "userName", false, "USER_NAME");
-        public final static Property Profile = new Property(16, String.class, "profile", false, "PROFILE");
-        public final static Property ReferId = new Property(17, String.class, "referId", false, "REFER_ID");
-        public final static Property Intro = new Property(18, String.class, "intro", false, "INTRO");
-        public final static Property Content = new Property(19, String.class, "content", false, "CONTENT");
+        public final static Property Bookmark = new Property(14, int.class, "bookmark", false, "BOOKMARK");
+        public final static Property ContactInfo = new Property(15, String.class, "contactInfo", false, "CONTACT_INFO");
+        public final static Property UserName = new Property(16, String.class, "userName", false, "USER_NAME");
+        public final static Property Profile = new Property(17, String.class, "profile", false, "PROFILE");
+        public final static Property ReferId = new Property(18, String.class, "referId", false, "REFER_ID");
+        public final static Property Intro = new Property(19, String.class, "intro", false, "INTRO");
+        public final static Property Content = new Property(20, String.class, "content", false, "CONTENT");
     }
 
 
@@ -73,12 +74,13 @@ public class ForumTopicDao extends AbstractDao<ForumTopic, Long> {
                 "\"TEXT\" TEXT," + // 11: text
                 "\"TYPE\" INTEGER NOT NULL ," + // 12: type
                 "\"HASH\" TEXT," + // 13: hash
-                "\"CONTACT_INFO\" TEXT," + // 14: contactInfo
-                "\"USER_NAME\" TEXT," + // 15: userName
-                "\"PROFILE\" TEXT," + // 16: profile
-                "\"REFER_ID\" TEXT," + // 17: referId
-                "\"INTRO\" TEXT," + // 18: intro
-                "\"CONTENT\" TEXT);"); // 19: content
+                "\"BOOKMARK\" INTEGER NOT NULL ," + // 14: bookmark
+                "\"CONTACT_INFO\" TEXT," + // 15: contactInfo
+                "\"USER_NAME\" TEXT," + // 16: userName
+                "\"PROFILE\" TEXT," + // 17: profile
+                "\"REFER_ID\" TEXT," + // 18: referId
+                "\"INTRO\" TEXT," + // 19: intro
+                "\"CONTENT\" TEXT);"); // 20: content
     }
 
     /** Drops the underlying database table. */
@@ -144,35 +146,36 @@ public class ForumTopicDao extends AbstractDao<ForumTopic, Long> {
         if (hash != null) {
             stmt.bindString(14, hash);
         }
+        stmt.bindLong(15, entity.getBookmark());
  
         String contactInfo = entity.getContactInfo();
         if (contactInfo != null) {
-            stmt.bindString(15, contactInfo);
+            stmt.bindString(16, contactInfo);
         }
  
         String userName = entity.getUserName();
         if (userName != null) {
-            stmt.bindString(16, userName);
+            stmt.bindString(17, userName);
         }
  
         String profile = entity.getProfile();
         if (profile != null) {
-            stmt.bindString(17, profile);
+            stmt.bindString(18, profile);
         }
  
         String referId = entity.getReferId();
         if (referId != null) {
-            stmt.bindString(18, referId);
+            stmt.bindString(19, referId);
         }
  
         String intro = entity.getIntro();
         if (intro != null) {
-            stmt.bindString(19, intro);
+            stmt.bindString(20, intro);
         }
  
         String content = entity.getContent();
         if (content != null) {
-            stmt.bindString(20, content);
+            stmt.bindString(21, content);
         }
     }
 
@@ -233,35 +236,36 @@ public class ForumTopicDao extends AbstractDao<ForumTopic, Long> {
         if (hash != null) {
             stmt.bindString(14, hash);
         }
+        stmt.bindLong(15, entity.getBookmark());
  
         String contactInfo = entity.getContactInfo();
         if (contactInfo != null) {
-            stmt.bindString(15, contactInfo);
+            stmt.bindString(16, contactInfo);
         }
  
         String userName = entity.getUserName();
         if (userName != null) {
-            stmt.bindString(16, userName);
+            stmt.bindString(17, userName);
         }
  
         String profile = entity.getProfile();
         if (profile != null) {
-            stmt.bindString(17, profile);
+            stmt.bindString(18, profile);
         }
  
         String referId = entity.getReferId();
         if (referId != null) {
-            stmt.bindString(18, referId);
+            stmt.bindString(19, referId);
         }
  
         String intro = entity.getIntro();
         if (intro != null) {
-            stmt.bindString(19, intro);
+            stmt.bindString(20, intro);
         }
  
         String content = entity.getContent();
         if (content != null) {
-            stmt.bindString(20, content);
+            stmt.bindString(21, content);
         }
     }
 
@@ -287,12 +291,13 @@ public class ForumTopicDao extends AbstractDao<ForumTopic, Long> {
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // text
             cursor.getInt(offset + 12), // type
             cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // hash
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // contactInfo
-            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // userName
-            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // profile
-            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // referId
-            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18), // intro
-            cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19) // content
+            cursor.getInt(offset + 14), // bookmark
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // contactInfo
+            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // userName
+            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // profile
+            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18), // referId
+            cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19), // intro
+            cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20) // content
         );
         return entity;
     }
@@ -313,12 +318,13 @@ public class ForumTopicDao extends AbstractDao<ForumTopic, Long> {
         entity.setText(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
         entity.setType(cursor.getInt(offset + 12));
         entity.setHash(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
-        entity.setContactInfo(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
-        entity.setUserName(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
-        entity.setProfile(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
-        entity.setReferId(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
-        entity.setIntro(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
-        entity.setContent(cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19));
+        entity.setBookmark(cursor.getInt(offset + 14));
+        entity.setContactInfo(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setUserName(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
+        entity.setProfile(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
+        entity.setReferId(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
+        entity.setIntro(cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19));
+        entity.setContent(cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20));
      }
     
     @Override

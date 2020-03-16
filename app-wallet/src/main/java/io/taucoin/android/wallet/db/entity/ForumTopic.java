@@ -27,6 +27,7 @@ public class ForumTopic {
     private String text;
     private int type;
     private String hash;
+    private int bookmark;
 
     // personal info
     private String contactInfo;
@@ -42,12 +43,13 @@ public class ForumTopic {
     private int commentCount;
     @Transient
     private long tauTotal;
-    @Generated(hash = 1104854910)
+
+    @Generated(hash = 857308824)
     public ForumTopic(Long id, String chainid, String txId, String blockHash,
             long nounce, long timeStamp, String tSender, String isender,
             String relayMa, long fee, String title, String text, int type,
-            String hash, String contactInfo, String userName, String profile,
-            String referId, String intro, String content) {
+            String hash, int bookmark, String contactInfo, String userName,
+            String profile, String referId, String intro, String content) {
         this.id = id;
         this.chainid = chainid;
         this.txId = txId;
@@ -62,6 +64,7 @@ public class ForumTopic {
         this.text = text;
         this.type = type;
         this.hash = hash;
+        this.bookmark = bookmark;
         this.contactInfo = contactInfo;
         this.userName = userName;
         this.profile = profile;
@@ -69,128 +72,9 @@ public class ForumTopic {
         this.intro = intro;
         this.content = content;
     }
+
     @Generated(hash = 1734309132)
     public ForumTopic() {
-    }
-    public Long getId() {
-        return this.id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public String getChainid() {
-        return this.chainid;
-    }
-    public void setChainid(String chainid) {
-        this.chainid = chainid;
-    }
-    public String getTxId() {
-        return this.txId;
-    }
-    public void setTxId(String txId) {
-        this.txId = txId;
-    }
-    public String getBlockHash() {
-        return this.blockHash;
-    }
-    public void setBlockHash(String blockHash) {
-        this.blockHash = blockHash;
-    }
-    public long getNounce() {
-        return this.nounce;
-    }
-    public void setNounce(long nounce) {
-        this.nounce = nounce;
-    }
-    public long getTimeStamp() {
-        return this.timeStamp;
-    }
-    public void setTimeStamp(long timeStamp) {
-        this.timeStamp = timeStamp;
-    }
-    public String getTSender() {
-        return this.tSender;
-    }
-    public void setTSender(String tSender) {
-        this.tSender = tSender;
-    }
-    public String getIsender() {
-        return this.isender;
-    }
-    public void setIsender(String isender) {
-        this.isender = isender;
-    }
-    public String getRelayMa() {
-        return this.relayMa;
-    }
-    public void setRelayMa(String relayMa) {
-        this.relayMa = relayMa;
-    }
-    public long getFee() {
-        return this.fee;
-    }
-    public void setFee(long fee) {
-        this.fee = fee;
-    }
-    public String getTitle() {
-        return this.title;
-    }
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    public String getText() {
-        return this.text;
-    }
-    public void setText(String text) {
-        this.text = text;
-    }
-    public int getType() {
-        return this.type;
-    }
-    public void setType(int type) {
-        this.type = type;
-    }
-    public String getHash() {
-        return this.hash;
-    }
-    public void setHash(String hash) {
-        this.hash = hash;
-    }
-    public String getContactInfo() {
-        return this.contactInfo;
-    }
-    public void setContactInfo(String contactInfo) {
-        this.contactInfo = contactInfo;
-    }
-    public String getUserName() {
-        return this.userName;
-    }
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-    public String getProfile() {
-        return this.profile;
-    }
-    public void setProfile(String profile) {
-        this.profile = profile;
-    }
-    public String getReferId() {
-        return this.referId;
-    }
-    public void setReferId(String referId) {
-        this.referId = referId;
-    }
-    public String getIntro() {
-        return this.intro;
-    }
-    public void setIntro(String intro) {
-        this.intro = intro;
-    }
-    public String getContent() {
-        return this.content;
-    }
-    public void setContent(String content) {
-        this.content = content;
     }
 
     public int getCommentCount() {
@@ -207,5 +91,173 @@ public class ForumTopic {
 
     public void setTauTotal(long tauTotal) {
         this.tauTotal = tauTotal;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getChainid() {
+        return this.chainid;
+    }
+
+    public void setChainid(String chainid) {
+        this.chainid = chainid;
+    }
+
+    public String getTxId() {
+        return this.txId;
+    }
+
+    public void setTxId(String txId) {
+        this.txId = txId;
+    }
+
+    public String getBlockHash() {
+        return this.blockHash;
+    }
+
+    public void setBlockHash(String blockHash) {
+        this.blockHash = blockHash;
+    }
+
+    public long getNounce() {
+        return this.nounce;
+    }
+
+    public void setNounce(long nounce) {
+        this.nounce = nounce;
+    }
+
+    public long getTimeStamp() {
+        return this.timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    public String getTSender() {
+        return this.tSender;
+    }
+
+    public void setTSender(String tSender) {
+        this.tSender = tSender;
+    }
+
+    public String getIsender() {
+        return this.isender;
+    }
+
+    public void setIsender(String isender) {
+        this.isender = isender;
+    }
+
+    public String getRelayMa() {
+        return this.relayMa;
+    }
+
+    public void setRelayMa(String relayMa) {
+        this.relayMa = relayMa;
+    }
+
+    public long getFee() {
+        return this.fee;
+    }
+
+    public void setFee(long fee) {
+        this.fee = fee;
+    }
+
+    public String getTitle() {
+        return this.title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getText() {
+        return this.text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public int getType() {
+        return this.type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getHash() {
+        return this.hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+
+    public int getBookmark() {
+        return this.bookmark;
+    }
+
+    public void setBookmark(int bookmark) {
+        this.bookmark = bookmark;
+    }
+
+    public String getContactInfo() {
+        return this.contactInfo;
+    }
+
+    public void setContactInfo(String contactInfo) {
+        this.contactInfo = contactInfo;
+    }
+
+    public String getUserName() {
+        return this.userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getProfile() {
+        return this.profile;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
+
+    public String getReferId() {
+        return this.referId;
+    }
+
+    public void setReferId(String referId) {
+        this.referId = referId;
+    }
+
+    public String getIntro() {
+        return this.intro;
+    }
+
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
+
+    public String getContent() {
+        return this.content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

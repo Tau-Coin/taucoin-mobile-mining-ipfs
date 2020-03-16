@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
             android:textStyle="bold"
-            android:text="c/TAUcoin · "/>
+            android:text="@string/forum_community"/>
 
         <TextView
             style="@style/style_middle_grey_light"

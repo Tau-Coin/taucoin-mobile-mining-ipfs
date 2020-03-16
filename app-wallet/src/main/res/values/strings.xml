@@ -84,6 +84,7 @@
     <string name="send_tx_fee_tip">The higher fee, the faster trx processing.</string>
     <string name="send_transaction_expiry" formatted="false"><Data><![CDATA[Transaction expires in <font color="#0E88EF">%s</font> (≈%s minutes) blocks.]]> </Data></string>
     <string name="send_to">To</string>
+    <string name="send_dialog_spammer">Spammer</string>
     <string name="send_dialog_yes">Proceed</string>
     <string name="send_dialog_no">Back</string>
     <string name="send_tx_success">Transaction sent</string>
@@ -261,6 +262,8 @@
     <string name="setting_change_name">Rename</string>
     <string name="setting_spammer">Spammer</string>
     <string name="setting_message_que">Message Que</string>
+    <string name="setting_message_edit">Edit</string>
+    <string name="setting_message_done">Done</string>
     <string name="setting_mode_fast">Fast Mode Mining</string>
     <string name="setting_mode_full_node">Full Node Mode Mining</string>
     <string name="setting_transaction_expiry">Transaction Expiry</string>
@@ -270,6 +273,7 @@
     <string name="setting_reset_data_success">Successful</string>
     <string name="setting_reset_data_fail">Failed</string>
     <string name="setting_reset_data_tips">Restarting Verify will not affect private key.</string>
+    <string name="setting_unspam">Unspam</string>
 
     <string name="main_de_fi">DeFi</string>
     <string name="de_fi_coming_soon">Coming Soon</string>
@@ -307,7 +311,7 @@
     <string name="forum_comment">Comment</string>
     <string name="forum_best_comment">BEST COMMENTS</string>
     <string name="forum_add_comment">Add a comment</string>
-    <string name="forum_comment_name_block">yang · block 123</string>
+    <string name="forum_comment_name_block">%s&#160;·&#160;%s</string>
     <string name="forum_gateway_checked">36/36 gateway checked</string>
     <string name="forum_gateway_offline">-&#160;Offline&#160;-&#160;%s</string>
     <string name="forum_gateway_online" formatted="false">-&#160;Online&#160;-&#160;<Data><![CDATA[<font color="#0E88EF">%s</font>]]> </Data></string>
@@ -348,12 +352,20 @@
     <string name="forum_library">Library</string>
     <string name="forum_voice">Voice</string>
 
-    <string name="forum_posted">u/yang123</string>
+    <string name="forum_community">c&#047;%s&#160;·&#160;</string>
+    <string name="forum_posted">u&#047;%s</string>
     <string name="forum_more">···</string>
-    <string name="forum_block">Block 222</string>
 
     <string name="forum_home">Home</string>
     <string name="forum_bookmark">Bookmark</string>
     <string name="forum_follow">Follow</string>
+    <string name="forum_follow_more">More to come</string>
+    <string name="forum_main_chain">TAU Main Chain</string>
+    <string name="forum_follow_leave">Leave</string>
+
+    <string name="forum_personal_name">u&#047;</string>
+    <string name="forum_personal_telegram">TelegramID&#047;</string>
+    <string name="forum_personal_info">Info&#047;</string>
+
 
 </resources>

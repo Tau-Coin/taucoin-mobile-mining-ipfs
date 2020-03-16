@@ -20,6 +20,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import java.util.List;
 
 import io.taucoin.android.wallet.db.entity.ForumTopic;
+import io.taucoin.android.wallet.db.entity.Spammer;
 import io.taucoin.android.wallet.module.bean.MediaBean;
 import io.taucoin.foundation.net.callback.LogicObserver;
 
@@ -27,7 +28,9 @@ public interface IForumModel {
 
     void postMedia(ForumTopic forumTopic, LogicObserver<Boolean> observer);
 
-    void getForumTopicList(int pageNo, String time, LogicObserver<List<ForumTopic>> observer);
+    void updateBookmark(String txId, int bookmark, LogicObserver<Boolean> observer);
+
+    void getForumTopicList(int pageNo, String time, int bookmark, LogicObserver<List<ForumTopic>> observer);
 
     void getCommentList(int pageNo, String time, String replayId, LogicObserver<List<ForumTopic>> observer);
 
@@ -42,4 +45,14 @@ public interface IForumModel {
     void audioCompression(LocalMedia localMedia);
 
     void videoCompression(LocalMedia localMedia);
+
+    void spamAddress(String tSender);
+
+    void getSpamList(int pageNo, String time, LogicObserver<List<Spammer>> observer);
+
+    void unSpamList(List<String> list, LogicObserver<Boolean> observer);
+
+    void getMessageQue(int pageNo, String time, LogicObserver<List<ForumTopic>> observer);
+
+    void deleteMessage(long id, LogicObserver<Boolean> observer);
 }

@@ -7,7 +7,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.github.naturs.logger.Logger;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -47,8 +46,6 @@ public class TopicSearchActivity extends ForumBaseActivity {
     LinearLayout llSearchBar;
     @BindView(R.id.et_search_key)
     EditText etSearchKey;
-    @BindView(R.id.tv_search_key)
-    TextView tvSearchKey;
 
     private TopicAdapter mAdapter;
     private List<ForumTopic> topicsList = new ArrayList<>();
@@ -76,8 +73,8 @@ public class TopicSearchActivity extends ForumBaseActivity {
                     }
                     if(forumTopics.size() > 0){
                         topicsList.addAll(forumTopics);
-                        mAdapter.setListData(topicsList);
                     }
+                    mAdapter.setListData(topicsList);
                     boolean isLoadMore = topicsList.size() % TransmitKey.PAGE_SIZE == 0 && topicsList.size() > 0;
                     refreshLayout.setEnableLoadmore(isLoadMore);
                     refreshLayout.finishLoadmore(100);
@@ -108,7 +105,6 @@ public class TopicSearchActivity extends ForumBaseActivity {
                 String searchLast = StringUtil.getTag(etSearchKey);
                 Logger.d("searchKey=%s, searchLast=%s", searchKey, searchLast);
                 if(StringUtil.isNotSame(searchKey, searchLast)){
-                    tvSearchKey.setText(searchKey);
                     etSearchKey.setTag(searchKey);
                     hideOrShowSearchView(StringUtil.isNotEmpty(searchKey));
                     onRefresh(null);

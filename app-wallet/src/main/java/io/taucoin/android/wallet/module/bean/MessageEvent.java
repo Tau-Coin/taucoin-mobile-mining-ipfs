@@ -31,6 +31,7 @@ public class MessageEvent {
         COMPRESSION_SUCCESS,
         TOPIC_REFRESH,
         COMMENT_REFRESH,
+        BOOKMARK_REFRESH,
     }
     private Object data;
 

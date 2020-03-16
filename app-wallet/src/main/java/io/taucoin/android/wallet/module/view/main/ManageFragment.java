@@ -27,6 +27,7 @@ import io.taucoin.android.wallet.base.BaseFragment;
 import io.taucoin.android.wallet.base.TransmitKey;
 import io.taucoin.android.wallet.db.entity.KeyValue;
 import io.taucoin.android.wallet.module.bean.MessageEvent;
+import io.taucoin.android.wallet.module.presenter.ForumPresenter;
 import io.taucoin.android.wallet.module.presenter.UserPresenter;
 import io.taucoin.android.wallet.module.service.UpgradeService;
 import io.taucoin.android.wallet.module.view.main.iview.IManageView;
@@ -35,7 +36,9 @@ import io.taucoin.android.wallet.module.view.manage.HelpActivity;
 import io.taucoin.android.wallet.module.view.manage.IPFSInfoActivity;
 import io.taucoin.android.wallet.module.view.manage.ImportKeyActivity;
 import io.taucoin.android.wallet.module.view.manage.KeysActivity;
+import io.taucoin.android.wallet.module.view.manage.MessageQueActivity;
 import io.taucoin.android.wallet.module.view.manage.ProfileActivity;
+import io.taucoin.android.wallet.module.view.manage.SpammerActivity;
 import io.taucoin.android.wallet.util.ActivityUtil;
 import io.taucoin.android.wallet.util.EventBusUtil;
 import io.taucoin.android.wallet.util.ForumUtil;
@@ -62,12 +65,14 @@ public class ManageFragment extends BaseFragment implements IManageView {
     @BindView(R.id.item_transaction_expiry)
     ItemTextView transactionExpiry;
     private UserPresenter mPresenter;
+    private ForumPresenter mForumPresenter;
 
     @Override
     public View getViewLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_manage, container, false);
         butterKnifeBinder(this, view);
         mPresenter = new UserPresenter();
+        mForumPresenter = new ForumPresenter();
         initView();
         loadTransExpiryView();
         return view;
@@ -126,10 +131,10 @@ public class ManageFragment extends BaseFragment implements IManageView {
                 showModeSwitchDialog((ItemTextView)view);
                 break;
             case R.id.item_msg_que:
-                ToastUtils.showShortToast("item_msg_que");
+                ActivityUtil.startActivity(getActivity(), MessageQueActivity.class);
                 break;
             case R.id.item_spammer:
-                ToastUtils.showShortToast("item_spammer");
+                ActivityUtil.startActivity(getActivity(), SpammerActivity.class);
                 break;
             default:
                 break;
@@ -139,7 +144,7 @@ public class ManageFragment extends BaseFragment implements IManageView {
     @OnTouch({R.id.tv_nick, R.id.item_keys, R.id.item_address_book,
             R.id.item_reset_data, R.id.item_transaction_expiry,
             R.id.item_change_name, R.id.item_mode_switched})
-    public boolean onTouch(View view, MotionEvent event) {
+    boolean onTouch(View view, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP && !UserUtil.isImportKey()) {
             ActivityUtil.startActivity(getActivity(), ImportKeyActivity.class);
             return true;
@@ -257,7 +262,7 @@ public class ManageFragment extends BaseFragment implements IManageView {
                 .setInputHint(inputHint)
                 .setNegativeButton(R.string.common_back, (InputDialog.InputDialogListener) (dialog, text) -> dialog.cancel())
                 .setPositiveButton(R.string.common_yes, (InputDialog.InputDialogListener) (dialog, text) -> {
-                    ToastUtils.showShortToast(R.string.forum_change_name_successfully);
+                    mForumPresenter.changeName();
                     dialog.cancel();
                 }).create().show();
     }

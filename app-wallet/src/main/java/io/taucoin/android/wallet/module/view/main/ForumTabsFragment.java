@@ -20,6 +20,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import io.taucoin.android.wallet.R;
 import io.taucoin.android.wallet.base.BaseFragment;
+import io.taucoin.android.wallet.base.TransmitKey;
 import io.taucoin.android.wallet.module.view.forum.TopicAddActivity;
 import io.taucoin.android.wallet.module.view.forum.TopicSearchActivity;
 import io.taucoin.android.wallet.util.ActivityUtil;
@@ -50,8 +51,12 @@ public class ForumTabsFragment extends BaseFragment {
 
     private void initView() {
         fragmentList.add(new ForumFragment());
-        fragmentList.add(new ForumFragment());
-        fragmentList.add(new ForumFragment());
+        Fragment bookmark = new ForumFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(TransmitKey.FORUM_BOOKMARK, 1);
+        bookmark.setArguments(bundle);
+        fragmentList.add(bookmark);
+        fragmentList.add(new FollowFragment());
         FragmentManager fragmentManager = this.getFragmentManager();
         MyAdapter fragmentAdapter = new MyAdapter(fragmentManager);
         viewPager.setAdapter(fragmentAdapter);

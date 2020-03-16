@@ -1,9 +1,10 @@
-package io.taucoin.android.wallet.module.view.forum;
+package io.taucoin.android.wallet.module.view.manage;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,19 +16,27 @@ import butterknife.ButterKnife;
 import io.taucoin.android.wallet.R;
 import io.taucoin.android.wallet.db.entity.ForumTopic;
 import io.taucoin.android.wallet.util.ForumUtil;
+import io.taucoin.android.wallet.util.ResourcesUtil;
 
-public class CommentAdapter extends BaseAdapter {
+public class MessageAdapter extends BaseAdapter {
 
     private List<ForumTopic> list = new ArrayList<>();
-    private TopicDetailActivity activity;
-
-    CommentAdapter(TopicDetailActivity activity) {
+    private MessageQueActivity activity;
+    private boolean isEdit = false;
+    MessageAdapter(MessageQueActivity activity){
         this.activity = activity;
     }
 
     void setListData(List<ForumTopic> list) {
-        this.list = list;
+        this.list.clear();
+        this.list.addAll(list);
         notifyDataSetChanged();
+    }
+
+    boolean updateEdit() {
+        isEdit = !isEdit;
+        notifyDataSetChanged();
+        return isEdit;
     }
 
     @Override
@@ -49,32 +58,30 @@ public class CommentAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_comment, parent, false);
+            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_message, parent, false);
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         ForumTopic bean = list.get(position);
-        String name = activity.getString(R.string.forum_comment_name_block);
-        String userName = ForumUtil.getUserName(bean.getUserName(), bean.getTSender());
-        name = String.format(name, userName, bean.getIsender());
-        viewHolder.tvUsername.setText(name);
-        viewHolder.tvTitle.setText(bean.getText());
+        if(bean.getType() == 0){
+            viewHolder.tvText.setText(bean.getTitle());
+        }else if(bean.getType() == 1){
+            viewHolder.tvText.setText(bean.getText());
+        }else if(bean.getType() == 2){
+            viewHolder.tvText.setText(bean.getUserName());
+        }
+        viewHolder.ivDelete.setVisibility(isEdit ? View.VISIBLE : View.GONE);
+        viewHolder.ivDelete.setOnClickListener(v -> activity.deleteMessage(bean.getId()));
         return convertView;
     }
 
     class ViewHolder {
-        @BindView(R.id.tv_username)
-        TextView tvUsername;
-        @BindView(R.id.tv_title)
-        TextView tvTitle;
-        @BindView(R.id.iv_vote_down)
-        ImageView ivVoteDown;
-        @BindView(R.id.tv_vote)
-        TextView tvVote;
-        @BindView(R.id.iv_vote_up)
-        ImageView ivVoteUp;
+        @BindView(R.id.iv_delete)
+        ImageView ivDelete;
+        @BindView(R.id.tv_text)
+        TextView tvText;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

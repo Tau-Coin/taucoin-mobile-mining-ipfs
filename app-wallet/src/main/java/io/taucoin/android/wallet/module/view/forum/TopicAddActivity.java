@@ -75,7 +75,7 @@ public class TopicAddActivity extends ForumBaseActivity implements PhotoItemSele
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_add);
-        mPresenter = new ForumPresenter(this);
+        mPresenter = new ForumPresenter();
         ButterKnife.bind(this);
         initView();
     }

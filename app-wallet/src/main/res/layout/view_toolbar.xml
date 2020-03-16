@@ -51,5 +51,16 @@
             android:background="#00000000"
             android:contentDescription="@null"
             android:src="@mipmap/icon_refresh" />
+
+        <TextView
+            android:id="@+id/tv_right"
+            style="@style/style_normal_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="center"
+            android:layout_marginEnd="17dp"
+            android:singleLine="true" />
     </RelativeLayout>
 </LinearLayout>

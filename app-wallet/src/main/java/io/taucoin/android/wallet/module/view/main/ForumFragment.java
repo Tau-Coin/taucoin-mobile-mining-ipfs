@@ -44,6 +44,7 @@ public class ForumFragment extends BaseFragment {
     private List<ForumTopic> topicsList = new ArrayList<>();
     private int mPageNo = 1;
     private String mTime;
+    private int mBookmark = -1;
 
     @Override
     public View getViewLayout(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,7 +57,7 @@ public class ForumFragment extends BaseFragment {
     }
 
     private void loadData() {
-        mPresenter.getForumTopicList(mPageNo, mTime, new LogicObserver<List<ForumTopic>>() {
+        mPresenter.getForumTopicList(mPageNo, mTime, mBookmark, new LogicObserver<List<ForumTopic>>() {
             @Override
             public void handleData(List<ForumTopic> forumTopics) {
                 if(refreshLayout == null || mAdapter == null){
@@ -67,8 +68,8 @@ public class ForumFragment extends BaseFragment {
                 }
                 if(forumTopics.size() > 0){
                     topicsList.addAll(forumTopics);
-                    mAdapter.setListData(topicsList);
                 }
+                mAdapter.setListData(topicsList);
                 boolean isLoadMore = topicsList.size() % TransmitKey.PAGE_SIZE == 0 && topicsList.size() > 0;
                 refreshLayout.setEnableLoadmore(isLoadMore);
                 refreshLayout.finishLoadmore(100);
@@ -87,6 +88,11 @@ public class ForumFragment extends BaseFragment {
         }
         mAdapter = new TopicAdapter(activity, 1);
         listView.setAdapter(mAdapter);
+
+        Bundle bundle = getArguments();
+        if(bundle != null){
+            mBookmark = bundle.getInt(TransmitKey.FORUM_BOOKMARK, -1);
+        }
     }
 
     @Override
@@ -94,7 +100,14 @@ public class ForumFragment extends BaseFragment {
     public void onEvent(MessageEvent object) {
         switch (object.getCode()) {
             case TOPIC_REFRESH:
-                onRefresh(null);
+                if(mBookmark == -1){
+                    onRefresh(null);
+                }
+                break;
+            case BOOKMARK_REFRESH:
+                if(mBookmark != -1){
+                    onRefresh(null);
+                }
                 break;
             default:
                 break;

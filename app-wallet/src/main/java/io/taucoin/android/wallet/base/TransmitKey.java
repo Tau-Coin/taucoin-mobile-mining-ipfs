@@ -96,6 +96,7 @@ public class TransmitKey {
     public static final String STATES_TAG_DOWNLOAD = "states_tag_download";
     public static final String STATES_TAG_START_NO = "states_tag_start_no";
 
+    public static final String FORUM_BOOKMARK = "forum_bookmark";
     public static final String FORUM_BROWSE_MODEL = "forum_browse_model";
     public static class ForumBrowseModel{
         public static final String SAFE = "safe";

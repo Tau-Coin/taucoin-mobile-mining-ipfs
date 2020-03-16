@@ -21,7 +21,6 @@ import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DateUtils;
 import com.lwy.righttopmenu.MenuItem;
-import com.lwy.righttopmenu.RightTopMenu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +41,7 @@ import io.taucoin.android.wallet.util.GlideEngine;
 import io.taucoin.android.wallet.util.MediaPlayerUtil;
 import io.taucoin.android.wallet.util.PopupMenuUtil;
 import io.taucoin.android.wallet.util.ToastUtils;
+import io.taucoin.android.wallet.widget.CommonDialog;
 import io.taucoin.android.wallet.widget.ForumComment;
 import io.taucoin.foundation.net.callback.LogicObserver;
 import io.taucoin.foundation.util.StringUtil;
@@ -133,8 +133,13 @@ public class TopicAdapter extends BaseAdapter {
         }
         viewHolder.tvTitle.setText(bean.getTitle());
 
-        int txtRid = pageType == 2 ? R.string.forum_block : R.string.forum_posted;
-        viewHolder.tvUsername.setText(txtRid);
+        String communityName = activity.getString(R.string.forum_community);
+        String userName = activity.getString(R.string.forum_posted);
+        String appName = activity.getString(R.string.app_name);
+        communityName = String.format(communityName, appName);
+        userName = String.format(userName, ForumUtil.getUserName(bean.getUserName(), bean.getTSender()));
+        viewHolder.tvCommunityName.setText(communityName);
+        viewHolder.tvUsername.setText(userName);
         viewHolder.forumComment.setData(bean.getCommentCount(), bean.getTauTotal());
 
         if(pageType != 3){
@@ -147,6 +152,7 @@ public class TopicAdapter extends BaseAdapter {
 //        viewHolder.llPermalink.setOnClickListener(v -> ActivityUtil.startActivity(activity, PermalinkActivity.class));
         viewHolder.llPermalink.setVisibility(View.GONE);
         viewHolder.tvMore.setOnClickListener(v -> showMenuItem(activity, v, bean));
+        viewHolder.tvUsername.setOnClickListener(v -> showPersonalInfo(activity, bean));
     }
 
     private static void handlePicView(ForumBaseActivity activity, ViewHolder viewHolder, ForumTopic bean) {
@@ -312,14 +318,23 @@ public class TopicAdapter extends BaseAdapter {
     }
 
 
-    private static void showMenuItem(FragmentActivity activity, View view, ForumTopic bean){
+    private static void showMenuItem(ForumBaseActivity activity, View view, ForumTopic bean){
+        if(bean == null){
+            return;
+        }
         List<MenuItem> menuItems = new ArrayList<>();
-        menuItems.add(new MenuItem(R.mipmap.icon_bmark_no, "Bookmark"));
+        int bookmark = bean.getBookmark() == 0 ? R.mipmap.icon_bmark_no : R.mipmap.icon_bmark_yes;
+        menuItems.add(new MenuItem(bookmark, "Bookmark"));
         menuItems.add(new MenuItem(R.mipmap.icon_ipfs, "IPFS Address"));
         PopupMenuUtil.showMenuItem(activity, view, menuItems, pos -> {
             ToastUtils.showShortToast(bean.getTSender() + pos);
             switch (pos){
                 case 0:
+                    if(activity != null && activity.mPresenter != null){
+                        int newBookmark = bean.getBookmark() == 0 ? 1 : 0;
+                        bean.setBookmark(newBookmark);
+                        activity.mPresenter.updateBookmark(bean.getTxId(), newBookmark);
+                    }
                     break;
                 case 1:
                     break;
@@ -327,5 +342,24 @@ public class TopicAdapter extends BaseAdapter {
                     break;
             }
         });
+    }
+
+    private static void showPersonalInfo(ForumBaseActivity activity, ForumTopic bean) {
+        View view = LinearLayout.inflate(activity, R.layout.view_dialog_personal_info, null);
+        TextView tvName = view.findViewById(R.id.tv_name);
+        TextView tvTelegram = view.findViewById(R.id.tv_telegram);
+        TextView tvInfo = view.findViewById(R.id.tv_info);
+        tvName.setText(ForumUtil.getUserName(bean.getUserName(), bean.getTSender()));
+        tvTelegram.setText(bean.getContactInfo());
+        tvInfo.setText(bean.getProfile());
+        new CommonDialog.Builder(activity)
+                .setContentView(view)
+                .setButtonWidth(240)
+                .setPositiveButton(R.string.send_dialog_spammer, (dialog, which) -> {
+                    dialog.cancel();
+                    if(activity != null && activity.mPresenter != null){
+                        activity.mPresenter.spamAddress(bean.getTSender());
+                    }
+                }).create().show();
     }
 }

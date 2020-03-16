@@ -39,6 +39,7 @@ import io.taucoin.foundation.util.StringUtil;
 
 public class ToolbarView extends RelativeLayout {
     private String titleText;
+    private String rightText;
     private int titleBackground;
     private int leftImage;
     private int rightImage;
@@ -68,6 +69,7 @@ public class ToolbarView extends RelativeLayout {
         this.leftImagePadding = a.getDimensionPixelSize(R.styleable.ToolbarView_leftImagePadding, -1);
         this.titleText = a.getString(R.styleable.ToolbarView_titleText);
         this.titleBackground = a.getColor(R.styleable.ToolbarView_titleBackground, -1);
+        this.rightText = a.getString(R.styleable.ToolbarView_titleRightText);
         a.recycle();
         loadView();
     }
@@ -101,6 +103,14 @@ public class ToolbarView extends RelativeLayout {
         if (titleBackground != -1) {
             view.setBackgroundColor(titleBackground);
         }
+
+        if (StringUtil.isNotEmpty(rightText)) {
+            viewHolder.tvRight.setText(rightText);
+            viewHolder.tvRight.setVisibility(VISIBLE);
+        }else{
+            viewHolder.tvRight.setVisibility(INVISIBLE);
+        }
+
         requestLayout();
     }
 
@@ -122,6 +132,8 @@ public class ToolbarView extends RelativeLayout {
         TextView tvTitle;
         @BindView(R.id.rl_tool_bar)
         RelativeLayout rlToolBar;
+        @BindView(R.id.tv_right)
+        TextView tvRight;
 
         @OnClick(R.id.iv_left_back)
         void leftBack(View view) {

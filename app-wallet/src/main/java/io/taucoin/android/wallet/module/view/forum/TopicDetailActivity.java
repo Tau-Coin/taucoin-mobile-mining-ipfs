@@ -138,8 +138,8 @@ public class TopicDetailActivity extends ForumBaseActivity {
                 }
                 if(forumTopics.size() > 0){
                     topicsList.addAll(forumTopics);
-                    mAdapter.setListData(topicsList);
                 }
+                mAdapter.setListData(topicsList);
                 boolean isLoadMore = topicsList.size() % TransmitKey.PAGE_SIZE == 0 && topicsList.size() > 0;
                 refreshLayout.setEnableLoadmore(isLoadMore);
                 refreshLayout.finishLoadmore(100);
