@@ -61,6 +61,7 @@ public class ForumTabsFragment extends BaseFragment {
         MyAdapter fragmentAdapter = new MyAdapter(fragmentManager);
         viewPager.setAdapter(fragmentAdapter);
         tabLayout.setupWithViewPager(viewPager);
+        viewPager.setOffscreenPageLimit(fragmentList.size());
     }
 
     @OnClick({R.id.iv_create, R.id.ll_search_bar})

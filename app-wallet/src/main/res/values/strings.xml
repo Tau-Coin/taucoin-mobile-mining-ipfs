@@ -9,6 +9,7 @@
     <string name="common_back">Back</string>
     <string name="common_yes">Yes</string>
     <string name="common_no">No</string>
+    <string name="common_submit">Submit</string>
     <string name="common_continue">Continue</string>
     <string name="common_balance" formatted="false"><Data><![CDATA[<font color="#f19322">%s</font>&nbsp;TAU]]> </Data></string>
     <string name="common_exit" formatted="false">Do you want to stop mining?</string>
@@ -264,7 +265,7 @@
     <string name="setting_message_que">Message Que</string>
     <string name="setting_message_edit">Edit</string>
     <string name="setting_message_done">Done</string>
-    <string name="setting_mode_fast">Fast Mode Mining</string>
+    <string name="setting_mode_fast">Light Node Mode Mining</string>
     <string name="setting_mode_full_node">Full Node Mode Mining</string>
     <string name="setting_transaction_expiry">Transaction Expiry</string>
     <string name="setting_transaction_expiry_tip">Please enter the transaction expiry</string>
@@ -333,14 +334,14 @@
     <string name="forum_change_name_successfully">Change Name Successfully</string>
     <string name="forum_change_name_failed">Change Name Failed</string>
 
-    <string name="forum_switched_fast_title">Switched to fast mining</string>
+    <string name="forum_switched_fast_title">Switched to light node mining</string>
     <string name="forum_switched_full_node_title">Switched to full node mining</string>
 
-    <string name="forum_switched_fast_content">Fast mining is one that has verified all prior transactions. It takes less resources on the phone.</string>
+    <string name="forum_switched_fast_content">Light node mining is one that has verified all prior transactions. It takes less resources on the phone.</string>
     <string name="forum_switched_full_node_content">A full node is a complete copy of the blockchain and is able to verify all transactions since the beginning.
     This requires more storage.</string>
 
-    <string name="forum_switched_fast">Switched to fast mining mode</string>
+    <string name="forum_switched_fast">Switched to light node mining mode</string>
     <string name="forum_switched_full_node">Switched to full node mining mode</string>
 
     <string name="forum_comment_count">%s&#160;Comment</string>
@@ -366,6 +367,8 @@
     <string name="forum_personal_name">u&#047;</string>
     <string name="forum_personal_telegram">TelegramID&#047;</string>
     <string name="forum_personal_info">Info&#047;</string>
-
+    <string name="forum_figure_limit">In eight figures at most</string>
+    <string name="forum_fee_tip">*More transaction fees more oppotunities be packaged miner.</string>
+    <string name="forum_fee_enter_tip">Please enter the transaction fee</string>
 
 </resources>

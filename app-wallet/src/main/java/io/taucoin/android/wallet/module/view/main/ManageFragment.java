@@ -64,6 +64,8 @@ public class ManageFragment extends BaseFragment implements IManageView {
     View versionUpgrade;
     @BindView(R.id.item_transaction_expiry)
     ItemTextView transactionExpiry;
+    @BindView(R.id.item_mode_switched)
+    ItemTextView modeSwitched;
     private UserPresenter mPresenter;
     private ForumPresenter mForumPresenter;
 
@@ -84,6 +86,10 @@ public class ManageFragment extends BaseFragment implements IManageView {
         versionName = String.format(versionName, AppUtil.getVersionName(getActivity()));
         tvVersion.setText(versionName);
         onEvent(EventBusUtil.getMessageEvent(MessageEvent.EventCode.ALL));
+
+        boolean isFastModel = ForumUtil.isFastMiningModel();
+        int reId = isFastModel ? R.string.setting_mode_fast : R.string.setting_mode_full_node;
+        modeSwitched.setLeftText(getResources().getText(reId).toString());
     }
 
     @OnClick({R.id.tv_nick, R.id.item_keys, R.id.item_address_book, R.id.item_help, R.id.tv_version,

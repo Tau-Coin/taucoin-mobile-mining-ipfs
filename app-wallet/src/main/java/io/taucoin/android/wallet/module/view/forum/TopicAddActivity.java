@@ -44,6 +44,7 @@ import io.taucoin.android.wallet.module.bean.MediaBean;
 import io.taucoin.android.wallet.module.bean.MessageEvent;
 import io.taucoin.android.wallet.module.presenter.ForumPresenter;
 import io.taucoin.android.wallet.util.DateUtil;
+import io.taucoin.android.wallet.util.FmtMicrometer;
 import io.taucoin.android.wallet.util.GlideEngine;
 import io.taucoin.android.wallet.util.MediaUtil;
 import io.taucoin.android.wallet.util.NotchUtil;
@@ -56,7 +57,7 @@ import io.taucoin.foundation.util.StringUtil;
 import static io.taucoin.android.wallet.module.bean.MessageEvent.EventCode.COMPRESSION_FAIL;
 import static io.taucoin.android.wallet.module.bean.MessageEvent.EventCode.COMPRESSION_SUCCESS;
 
-public class TopicAddActivity extends ForumBaseActivity implements PhotoItemSelectedDialog.OnItemClickListener {
+public class TopicAddActivity extends ForumBaseActivity implements PhotoItemSelectedDialog.OnItemClickListener{
 
     @BindView(R.id.ll_toolbar)
     RelativeLayout llToolbar;
@@ -66,6 +67,8 @@ public class TopicAddActivity extends ForumBaseActivity implements PhotoItemSele
     EditText etTitle;
     @BindView(R.id.et_text)
     EditText etText;
+    @BindView(R.id.tv_fee)
+    TextView tvFee;
 
     private ViewHolder viewHolder;
     private MediaBean mediaBean;
@@ -92,9 +95,13 @@ public class TopicAddActivity extends ForumBaseActivity implements PhotoItemSele
 
         mediaView.setVisibility(View.GONE);
         viewHolder = new ViewHolder(mediaView);
+
+        String medianFee = "17.6";
+        tvFee.setText(medianFee);
+        tvFee.setTag(medianFee);
     }
 
-    @OnClick({R.id.iv_cancel, R.id.tv_post, R.id.iv_camera, R.id.iv_library, R.id.iv_voice})
+    @OnClick({R.id.iv_cancel, R.id.tv_post, R.id.iv_camera, R.id.iv_library, R.id.iv_voice, R.id.ll_fee})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_cancel:
@@ -112,6 +119,9 @@ public class TopicAddActivity extends ForumBaseActivity implements PhotoItemSele
             case R.id.iv_voice:
                 MediaUtil.voiceClick(this);
                 break;
+            case R.id.ll_fee:
+                mPresenter.showEditFeeDialog(this, tvFee, true);
+                break;
             default:
                 break;
         }
@@ -121,23 +131,43 @@ public class TopicAddActivity extends ForumBaseActivity implements PhotoItemSele
         ForumTopic forumTopic = new ForumTopic();
         String title = etTitle.getText().toString().trim();
         String text = etText.getText().toString().trim();
-        if(type == -1 && StringUtil.isNotEmpty(text)){
-            type = 0;
+        if(StringUtil.isEmpty(title)){
+           return;
         }
+        type = 0;
         forumTopic.setTitle(title);
         forumTopic.setType(type);
-        forumTopic.setFee(0);
+        String fee = tvFee.getText().toString().trim();
+        forumTopic.setFee(FmtMicrometer.fmtFormatMoney(fee));
         forumTopic.setTimeStamp(DateUtil.getTime());
         forumTopic.setTSender(MyApplication.getKeyValue().getAddress());
         switch (type){
             case 0:
                 forumTopic.setText(text);
-                mPresenter.postMedia(forumTopic);
+                mPresenter.postMedia(forumTopic, new LogicObserver<Boolean>() {
+                    @Override
+                    public void handleData(Boolean aBoolean) {
+                        if(etTitle != null && etText != null){
+                            etTitle.getText().clear();
+                            etText.getText().clear();
+                        }
+                    }
+
+                    @Override
+                    public void handleError(int code, String msg) {
+                        super.handleError(code, msg);
+                    }
+                });
                 break;
             case 1:
             case 2:
             case 3:
-                mPresenter.uploadFileToLocalIPFS(mediaBean, forumTopic);
+                mPresenter.uploadFileToLocalIPFS(mediaBean, forumTopic, new LogicObserver<Boolean>() {
+                    @Override
+                    public void handleData(Boolean aBoolean) {
+
+                    }
+                });
                 break;
             default:
                 break;

@@ -115,7 +115,6 @@
                     app:rightTextColor="@color/color_black" />
 
                 <RelativeLayout
-                    android:visibility="gone"
                     android:background="@color/color_white"
                     android:layout_marginTop="1dp"
                     android:layout_width="match_parent"
@@ -130,7 +129,7 @@
                         app:itemRightImage="@mipmap/icon_arrow"
                         app:itemRightTextColor="@color/color_black"
                         app:itemLeftTextColor="@color/color_black"
-                        app:itemLeftText="@string/setting_mode_full_node" />
+                        app:itemLeftText="@string/setting_mode_fast" />
 
                     <ImageView
                         android:layout_width="25dp"

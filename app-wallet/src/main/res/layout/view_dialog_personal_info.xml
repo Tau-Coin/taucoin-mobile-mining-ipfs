@@ -30,6 +30,7 @@
     <LinearLayout
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -50,6 +51,7 @@
     <LinearLayout
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

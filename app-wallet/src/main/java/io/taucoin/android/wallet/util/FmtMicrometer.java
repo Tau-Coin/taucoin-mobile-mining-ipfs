@@ -217,4 +217,15 @@ public class FmtMicrometer {
         bigDecimal = bigDecimal.divide(new BigDecimal(mDecimal8), mScale8, RoundingMode.HALF_UP);
         return bigDecimal.longValue();
     }
+
+    public static long fmtFormatMoney(String num) {
+        try {
+            BigDecimal number = new BigDecimal(num);
+            number = number.multiply(new BigDecimal(mDecimal8));
+
+            return number.longValue();
+        } catch (Exception e) {
+            return 0;
+        }
+    }
 }
